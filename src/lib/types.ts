@@ -3,12 +3,18 @@ enum stage {
   knockout,
 }
 
+export interface Team {
+  id: number;
+  name: string;
+  logoUrl: string;
+}
+
 export interface Match {
   id: number;
   date: string;
   stage: stage;
-  homeTeam: string;
-  awayTeam: string;
+  homeTeam: Team;
+  awayTeam: Team;
   homeScore: number;
   awayScore: number;
 }

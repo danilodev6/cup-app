@@ -6,18 +6,17 @@ const mockMatches: Match[] = [
     id: 1,
     date: "2024-06-15",
     stage: 0,
-    homeTeam: "Boca Juniors",
-    awayTeam: "Talleres",
+    homeTeam: {
+      name: "Boca Juniors",
+      logoUrl: "/club-logo/boca-juniors.png",
+      id: 0,
+    },
+    awayTeam: {
+      name: "Talleres Cordoba",
+      logoUrl: "/club-logo/talleres.png",
+      id: 1,
+    },
     homeScore: 3,
-    awayScore: 1,
-  },
-  {
-    id: 2,
-    date: "2024-06-15",
-    stage: 0,
-    homeTeam: "Racing",
-    awayTeam: "Rosario",
-    homeScore: 1,
     awayScore: 1,
   },
 ];
