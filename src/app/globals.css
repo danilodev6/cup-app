@@ -131,6 +131,11 @@ li {
     @apply text-gradient text-6xl font-semibold max-sm:text-4xl;
   }
 
+  h2 {
+    @apply text-gradient text-5xl font-semibold max-sm:text-4xl;
+  }
+
+
   h3 {
     @apply font-schibsted-grotesk text-2xl font-bold;
   }

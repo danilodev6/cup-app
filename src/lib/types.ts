@@ -22,8 +22,8 @@ export interface Match {
   id: number;
   date: string;
   stage: stage;
-  homeTeam: Team;
-  awayTeam: Team;
+  homeTeamId: number;
+  awayTeamId: number;
   homeScore: number;
   awayScore: number;
 }

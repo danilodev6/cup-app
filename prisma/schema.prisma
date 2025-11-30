@@ -7,27 +7,61 @@ datasource db {
   provider = "postgresql"
 }
 
-model User {
-  id       Int    @id @default(autoincrement())
-  name     String @unique
-  password String
+enum stage {
+    GROUP
+    KNOCKOUT
+}
 
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  password  String
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
 
-// model User {
-//   id    Int     @id @default(autoincrement())
-//   email String  @unique
-//   name  String?
-//   posts Post[]
-// }
-//
-// model Post {
-//   id        Int     @id @default(autoincrement())
-//   title     String
-//   content   String?
-//   published Boolean @default(false)
-//   authorId  Int
-//   author    User    @relation(fields: [authorId], references: [id])
-// }
+model Tournament {
+  id        Int      @id @default(autoincrement())
+  name      String   @unique
+  location  String
+  date      DateTime
+  teamCount Int
+  teams     Team[]
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Team {
+  id            Int        @id @default(autoincrement())
+  name          String     @unique
+  logoUrl       String
+  players      Player[]
+  group        String
+  tournamentId  Int
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt @default(now())
+}
+
+model Player {
+  id        Int      @id @default(autoincrement())
+  name      String
+  photoUrl  String
+  teamId    Int
+  team      Team     @relation(fields: [teamId], references: [id])
+  score     Int      @default(0)
+  yellowCards Int      @default(0)
+  redCards    Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt @default(now())
+}
+
+model Match {
+    id            Int      @id @default(autoincrement())
+    date          DateTime
+    stage         stage
+    homeTeamId    Int
+    awayTeamId    Int
+    homeScore     Int      @default(0)
+    awayScore     Int      @default(0)
+}
