@@ -44,6 +44,14 @@
   --sidebar-ring: oklch(0.708 0 0);
 }
 
+ul {
+  style-type: disc;
+}
+
+li {
+  style-type: none;
+}
+
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
@@ -132,6 +140,7 @@
   }
 }
 
+
 @layer components {
   #home {
     .subheading {
@@ -164,4 +173,8 @@
     }
   }
 
+}
+
+ul {
+  list-style-type: none
 }
