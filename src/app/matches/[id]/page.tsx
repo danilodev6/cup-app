@@ -67,7 +67,7 @@ export default async function MatchPage({
           <ul>
             {match.awayTeam.players.map((player: Player) => (
               <li
-                className="flex flex-col gap-4 items-center mt-4 text-md"
+                className="flex flex-col gap-4 items-center mt-4 text-xl"
                 key={player.id}
               >
                 {" "}

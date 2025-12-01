@@ -22,6 +22,7 @@ model Tournament {
   date      DateTime
   teamCount Int
   teams     Team[]
+  matches   Match[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
@@ -60,6 +61,8 @@ model Match {
     id            Int      @id @default(autoincrement())
     date          DateTime
     stage         String
+    tournamentId  Int
+    tournament    Tournament @relation(fields: [tournamentId], references: [id])
     homeTeamId    Int
     homeTeam      Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
     awayTeamId    Int
