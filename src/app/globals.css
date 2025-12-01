@@ -183,3 +183,9 @@ li {
 ul {
   list-style-type: none
 }
+
+#playerPhoto {
+  width: 75px;
+  height: 75px;
+  border-radius: 100%;
+}

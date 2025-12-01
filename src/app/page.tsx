@@ -4,6 +4,9 @@ import prisma from "@/lib/prisma";
 
 export default async function Home() {
   const tournament = await prisma.tournament.findFirst();
+  const matches = await prisma.match.findMany({
+    include: { homeTeam: true, awayTeam: true },
+  });
 
   return (
     <section>
@@ -14,7 +17,7 @@ export default async function Home() {
       <div className="text-center mt-5 space-y-7">
         <DatePicker />
       </div>
-      <MatchDay />
+      <MatchDay matches={matches} />
     </section>
   );
 }

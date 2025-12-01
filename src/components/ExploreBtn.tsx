@@ -1,26 +1,20 @@
 import Link from "next/link";
-import type { Match } from "@/lib/types";
+import type { MatchWithTeams } from "@/lib/types";
 
-const ExploreBtn = ({
-  id,
-  date,
-  stage,
-  homeTeam,
-  awayTeam,
-  homeScore,
-  awayScore,
-}: Match) => {
+const ExploreBtn = ({ match }: { match: MatchWithTeams }) => {
   return (
-    <Link href="/">
-      <button type="button" id="explore-btn" className="mt-7 mx-auto">
-        <span className="flex-1 text-right mr-1">{homeTeam.name} </span>
-        <img className="w-[25px] h-[25px]" src={homeTeam.logoUrl} />
-        <span className="px-3 whitespace-nowrap">
-          {homeScore} - {awayScore}
-        </span>
-        <img className="w-[25px] h-[25px]" src={awayTeam.logoUrl} />
-        <span className="flex-1 text-left ml-1">{awayTeam.name}</span>
-      </button>
+    <Link
+      href={`/matches/${match.id}`}
+      id="explore-btn"
+      className="mt-7 mx-auto"
+    >
+      <span className="flex-1 text-right mr-1">{match.homeTeam.name}</span>
+      <img className="w-[25px] h-[25px]" src={match.homeTeam.logoUrl} />
+      <span className="px-3 whitespace-nowrap">
+        {match.homeScore} - {match.awayScore}
+      </span>
+      <img className="w-[25px] h-[25px]" src={match.awayTeam.logoUrl} />
+      <span className="flex-1 text-left ml-1">{match.awayTeam.name}</span>
     </Link>
   );
 };
