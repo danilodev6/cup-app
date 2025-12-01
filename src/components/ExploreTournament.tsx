@@ -1,7 +1,7 @@
 import Link from "next/link";
 import type { Tournament } from "@/generated/prisma/client";
 
-const ExploreTournament = (tournament: Tournament) => {
+const ExploreTournament = ({ tournament }: { tournament: Tournament }) => {
   return (
     <Link
       href={`/tournaments/${tournament.id}`}

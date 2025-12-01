@@ -9,7 +9,7 @@ const Teams = async () => {
     <div className="flex mx-auto">
       <ul>
         {teams.map((team: Team) => (
-          <Link href={`/teams/${team.id}`}>
+          <Link key={team.id} href={`/teams/${team.id}`}>
             <li key={team.id} className="flex gap-4 mt-4" id="explore-btn">
               <img className="w-[30px] h-[30px]" src={team.logoUrl} />
               <span className="text-2xl">{team.name}</span>
