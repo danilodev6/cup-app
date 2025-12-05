@@ -17,7 +17,7 @@ const NavBar = () => {
         <ul>
           <Link href="/">Home</Link>
           <Link href="/teams">Teams</Link>
-          <Link href="/">Stats</Link>
+          <Link href="/about">About</Link>
         </ul>
       </nav>
     </header>

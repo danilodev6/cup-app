@@ -3,7 +3,7 @@ import GroupsView from "@/components/TournamentTabs/GroupsView";
 import Link from "next/link";
 import { KnockoutView } from "@/components/TournamentTabs/KnockoutView";
 import FixtureView from "@/components/TournamentTabs/FixtureView";
-import { StatsView } from "@/components/TournamentTabs/StatsView";
+import StatsView from "@/components/TournamentTabs/StatsView";
 
 export default async function TournamentPage({
   params,
@@ -22,9 +22,9 @@ export default async function TournamentPage({
 
   return (
     <div>
-      <h2>{tournament?.name}</h2>
+      <h2 className="text-center">{tournament?.name}</h2>
       {/* Tabs navigation */}
-      <div className="flex gap-4 mb-6">
+      <div className="flex gap-6 mb-6 mt-6" id="explore-btn">
         <Link
           href={`/tournaments/${id}?tab=groups`}
           className={activeTab === "groups" ? "active" : ""}
@@ -39,7 +39,7 @@ export default async function TournamentPage({
       {activeTab === "groups" && <GroupsView tournamentId={id} />}
       {activeTab === "knockout" && <KnockoutView />}
       {activeTab === "fixture" && <FixtureView tournamentId={id} />}
-      {activeTab === "stats" && <StatsView />}
+      {activeTab === "stats" && <StatsView tournamentId={id} />}
     </div>
   );
 }
