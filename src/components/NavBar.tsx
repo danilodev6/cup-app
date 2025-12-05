@@ -16,8 +16,6 @@ const NavBar = () => {
 
         <ul>
           <Link href="/">Home</Link>
-          <Link href="/groups">Groups</Link>
-          <Link href="/">Knockout</Link>
           <Link href="/teams">Teams</Link>
           <Link href="/">Stats</Link>
         </ul>
