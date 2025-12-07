@@ -4,6 +4,7 @@ import {
   formatArgentinianDate,
   formatArgentinianDateTime,
 } from "@/lib/date-utils";
+import Link from "next/link";
 
 export default async function KnockoutView({
   tournamentId,
@@ -79,7 +80,7 @@ function MatchCard({
     return;
   }
   return (
-    <div className="ko-card md:w-[105px]">
+    <Link href={`/komatches/${match.id}`} className="ko-card md:w-[105px]">
       {label && <div className="ko-label">{label}</div>}
       {match.date && <div>{formatArgentinianDate(match.date.toString())}</div>}
       {match.date && (
@@ -107,6 +108,6 @@ function MatchCard({
         <span>-</span>
         <span>{match.awayScore}</span>
       </div>
-    </div>
+    </Link>
   );
 }

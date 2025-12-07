@@ -1,6 +1,5 @@
 import prisma from "@/lib/prisma";
 import ExploreTournament from "../components/ExploreTournament";
-import Link from "next/link";
 
 export default async function Home() {
   const tournaments = await prisma.tournament.findMany();
@@ -16,9 +15,6 @@ export default async function Home() {
           <ExploreTournament key={tournament.id} tournament={tournament} />
         ))}
       </div>
-      <Link href={"/matches"} className="mt-7" id="explore-btn">
-        All matches
-      </Link>
     </section>
   );
 }
