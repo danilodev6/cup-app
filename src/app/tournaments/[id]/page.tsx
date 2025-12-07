@@ -1,7 +1,7 @@
 import prisma from "@/lib/prisma";
 import GroupsView from "@/components/TournamentTabs/GroupsView";
 import Link from "next/link";
-import { KnockoutView } from "@/components/TournamentTabs/KnockoutView";
+import KnockoutView from "@/components/TournamentTabs/KnockoutView";
 import FixtureView from "@/components/TournamentTabs/FixtureView";
 import StatsView from "@/components/TournamentTabs/StatsView";
 
@@ -37,7 +37,7 @@ export default async function TournamentPage({
       </div>
       {/* Renderizado condicional */}
       {activeTab === "groups" && <GroupsView tournamentId={id} />}
-      {activeTab === "knockout" && <KnockoutView />}
+      {activeTab === "knockout" && <KnockoutView tournamentId={id} />}
       {activeTab === "fixture" && <FixtureView tournamentId={id} />}
       {activeTab === "stats" && <StatsView tournamentId={id} />}
     </div>

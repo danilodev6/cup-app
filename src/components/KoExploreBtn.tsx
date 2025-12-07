@@ -1,0 +1,26 @@
+import Link from "next/link";
+import type { KnockoutMatchWithTeams } from "@/lib/types";
+import { formatArgentinianDate } from "../lib/date-utils";
+
+const KoExploreBtn = ({ match }: { match: KnockoutMatchWithTeams }) => {
+  return (
+    <Link
+      href={`/komatches/${match.id}`}
+      id="explore-btn"
+      className="mt-7 mx-auto"
+    >
+      <span className="text-center mr-3">
+        {formatArgentinianDate(match.date)}
+      </span>
+      <span className="flex-1 text-center mr-1">{match.homeTeam.name}</span>
+      <img className="w-[25px] h-[25px]" src={match.homeTeam.logoUrl} />
+      <span className="px-3 whitespace-nowrap">
+        {match.homeScore} - {match.awayScore}
+      </span>
+      <img className="w-[25px] h-[25px]" src={match.awayTeam.logoUrl} />
+      <span className="flex-1 text-center ml-1">{match.awayTeam.name}</span>
+    </Link>
+  );
+};
+
+export default KoExploreBtn;

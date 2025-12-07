@@ -187,3 +187,57 @@ ul {
   height: 75px;
   border-radius: 100%;
 }
+
+/* Bracket css */
+.bracket-flex {
+  display: flex;
+  flex-direction: row;
+  max-width: 100%;
+  margin: 12 auto;
+}
+
+.bracket-grid {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  grid-template-rows: repeat(7, auto);
+  gap: 0.5rem;
+  max-width: 100%;
+  margin: 0 auto;
+}
+
+.ko-card {
+  background: #0d161a;
+  border: 1px solid #182830;
+  border-radius: 8px;
+  padding: 0.5rem;
+  text-align: center;
+  font-size: 0.85rem;
+}
+
+.ko-label {
+  font-size: 0.6rem;
+  font-weight: bold;
+  color: #fbbf24;
+  margin-bottom: 0.25rem;
+  text-transform: uppercase;
+}
+
+.ko-team-logo {
+  width: 18px;
+}
+
+.ko-teams {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  font-weight: 600;
+  margin-bottom: 0.25rem;
+}
+
+.ko-scores {
+  display: flex;
+  gap: 0.25rem;
+  justify-content: center;
+  color: #59deca;
+  font-weight: bold;
+}

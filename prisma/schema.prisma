@@ -23,6 +23,7 @@ model Tournament {
   teamCount Int
   teams     Team[]
   matches   Match[]
+  koMatches  KnockoutMatch[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
@@ -30,6 +31,7 @@ model Tournament {
 model Team {
   id            Int        @id @default(autoincrement())
   name          String     @unique
+  shortName     String     
   logoUrl       String
   players       Player[]
   group         String?
@@ -40,6 +42,11 @@ model Team {
   // Relaciones para matches
   homeMatches   Match[]    @relation("HomeTeam")
   awayMatches   Match[]    @relation("AwayTeam")
+
+  // Relaciones para ko
+  homeKoMatches   KnockoutMatch[]    @relation("HomeTeam")
+  awayKoMatches   KnockoutMatch[]    @relation("AwayTeam")
+
 
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt @default(now())
@@ -61,7 +68,6 @@ model Player {
 model Match {
     id            Int      @id @default(autoincrement())
     date          DateTime
-    stage         String
     tournamentId  Int
     tournament    Tournament @relation(fields: [tournamentId], references: [id])
     homeTeamId    Int
@@ -70,4 +76,21 @@ model Match {
     awayTeam      Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
     homeScore     Int      @default(0)
     awayScore     Int      @default(0)
+}
+
+model KnockoutMatch {
+  id            Int        @id @default(autoincrement())
+  date          DateTime
+  tournamentId  Int
+  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  koPosition    Int        // 1-16
+  homeTeamId    Int        // shortName of the home team
+  homeTeam      Team       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  awayTeamId    Int        // shortName of the away team
+  awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  homeScore     Int        @default(0)
+  awayScore     Int        @default(0)
+  createdAt     DateTime   @default(now())
+  updatedAt     DateTime   @updatedAt @default(now())
+  @@unique([tournamentId, koPosition]) 
 }

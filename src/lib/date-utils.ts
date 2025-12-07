@@ -10,12 +10,19 @@ export function getTodayString(): string {
   return formatDate(new Date());
 }
 
-export function formatArgentinianDate(dateString: string): string {
-  const date = parseDate(dateString);
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}/${month}/${year}`;
+export function formatArgentinianDate(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = d.getFullYear();
+  return `${day}-${month}-${year}`;
+}
+
+export function formatArgentinianDateTime(date: Date | string): string {
+  const d = typeof date === "string" ? new Date(date) : date;
+  const hours = String(d.getHours()).padStart(2, "0");
+  const minutes = String(d.getMinutes()).padStart(2, "0");
+  return `${hours}:${minutes}`;
 }
 
 export function isToday(dateString: string): boolean {
