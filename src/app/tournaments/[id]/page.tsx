@@ -31,9 +31,24 @@ export default async function TournamentPage({
         >
           Groups
         </Link>
-        <Link href={`/tournaments/${id}?tab=knockout`}>Knockout</Link>
-        <Link href={`/tournaments/${id}?tab=fixture`}>Fixture</Link>
-        <Link href={`/tournaments/${id}?tab=stats`}>Stats</Link>
+        <Link
+          href={`/tournaments/${id}?tab=knockout`}
+          className={activeTab === "knockout" ? "active" : ""}
+        >
+          Knockout
+        </Link>
+        <Link
+          href={`/tournaments/${id}?tab=fixture`}
+          className={activeTab === "fixture" ? "active" : ""}
+        >
+          Fixture
+        </Link>
+        <Link
+          href={`/tournaments/${id}?tab=stats`}
+          className={activeTab === "stats" ? "active" : ""}
+        >
+          Stats
+        </Link>
       </div>
       {/* Renderizado condicional */}
       {activeTab === "groups" && <GroupsView tournamentId={id} />}

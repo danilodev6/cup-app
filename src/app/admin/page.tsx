@@ -1,68 +1,151 @@
-import prisma from "@/lib/prisma";
-import Form from "next/form";
+import Link from "next/link";
+import CreateKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/CreateForm";
+import CreateMatchForm from "@/components/AdminTabs/match/CreateForm";
+import CreateMatchEventForm from "@/components/AdminTabs/matchEvent/CreateForm";
+import CreatePlayerForm from "@/components/AdminTabs/player/CreateForm";
+import CreateTeamForm from "@/components/AdminTabs/team/CreateForm";
+import CreateTournamentForm from "@/components/AdminTabs/tournament/CreateForm";
+import EditTournamentForm from "@/components/AdminTabs/tournament/EditForm";
+import DeleteTournamentForm from "@/components/AdminTabs/tournament/DeleteForm";
+import EditTeamForm from "@/components/AdminTabs/team/EditForm";
+import DeleteTeamForm from "@/components/AdminTabs/team/DeleteForm";
+import EditPlayerForm from "@/components/AdminTabs/player/EditForm";
+import DeletePlayerForm from "@/components/AdminTabs/player/DeleteForm";
+import EditMatchForm from "@/components/AdminTabs/match/EditForm";
+import DeleteMatchForm from "@/components/AdminTabs/match/DeleteForm";
+import EditKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/EditForm";
+import DeleteKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/DeleteForm";
+import EditMatchEventForm from "@/components/AdminTabs/matchEvent/EditForm";
+import DeleteMatchEventForm from "@/components/AdminTabs/matchEvent/DeleteForm";
 
-interface User {
-  id: number;
-  name: string;
-  password: string;
-}
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ tab?: string; entity?: string }>;
+}) {
+  const { tab, entity } = await searchParams;
+  const activeTab = tab || "create";
+  const activeEntity = entity || "tournament";
 
-export default async function UserPage() {
-  const users = await prisma.user.findMany();
-
-  async function createUser(formData: FormData) {
-    "use server";
-    const name = formData.get("name") as string;
-    const password = formData.get("password") as string;
-
-    await prisma.user.create({
-      data: {
-        name,
-        password,
-      },
-    });
-  }
+  console.log("Search Params:", await searchParams);
 
   return (
-    <>
-      <div className="p-4">
-        <h1 className="text-2xl font-bold mb-4">User List</h1>
-        <ul className="list-disc pl-5">
-          {users.map((user: User) => (
-            <li key={user.id}>{user.name}</li>
-          ))}
-        </ul>
+    <div>
+      <h2 className="text-center">Admin</h2>
+      <div className="flex gap-6 mb-6 mt-6" id="explore-btn">
+        <Link
+          href={`/admin?tab=create`}
+          className={activeTab === "create" ? "active" : ""}
+        >
+          Create
+        </Link>
+        <Link
+          href={`/admin?tab=edit`}
+          className={activeTab === "edit" ? "active" : ""}
+        >
+          Edit
+        </Link>
+        <Link
+          href={`/admin?tab=delete`}
+          className={activeTab === "delete" ? "active" : ""}
+        >
+          Delete
+        </Link>
       </div>
-      <div className="p-4 mt-8">
-        <Form action={createUser}>
-          <div className="mb-4">
-            <label
-              htmlFor="name"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            ></label>
-            <input type="text" id="name" name="name" placeholder="enter name" />
-          </div>
-          <div className="mb-4">
-            <label
-              htmlFor="password"
-              className="block text-sm font-medium text-gray-700 mb-1"
-            ></label>
-            <input
-              type="text"
-              name="password"
-              id="password"
-              placeholder="enter password"
-            />
-          </div>
-
-          <button
-            type="submit"
-            className="w-full bg-blue-500 text-white py-3 rounded-lg hover:bg-blue-600"
-          >
-            Create
-          </button>
-        </Form>
+      <div
+        className="flex items-center text-center text-sm gap-6 mb-6 mt-6"
+        id="explore-btn"
+      >
+        <Link
+          href={`/admin?tab=${activeTab}&entity=tournament`}
+          className={activeEntity === "tournament" ? "active" : ""}
+        >
+          Tournament
+        </Link>
+        <Link
+          href={`/admin?tab=${activeTab}&entity=team`}
+          className={activeEntity === "team" ? "active" : ""}
+        >
+          Team
+        </Link>
+        <Link
+          href={`/admin?tab=${activeTab}&entity=player`}
+          className={activeEntity === "player" ? "active" : ""}
+        >
+          Player
+        </Link>
+        <Link
+          href={`/admin?tab=${activeTab}&entity=match`}
+          className={activeEntity === "match" ? "active" : ""}
+        >
+          Match
+        </Link>
+        <Link
+          href={`/admin?tab=${activeTab}&entity=komatch`}
+          className={activeEntity === "komatch" ? "active" : ""}
+        >
+          Knockout Match
+        </Link>
+        <Link
+          href={`/admin?tab=${activeTab}&entity=matchevent`}
+          className={activeEntity === "matchevent" ? "active" : ""}
+        >
+          Match Event
+        </Link>
       </div>
-    </>
+      {/* Renderizado condicional */}
+      <div className="form-container">
+        {activeTab === "create" && activeEntity === "tournament" && (
+          <CreateTournamentForm />
+        )}
+        {activeTab === "edit" && activeEntity === "tournament" && (
+          <EditTournamentForm />
+        )}
+        {activeTab === "delete" && activeEntity === "tournament" && (
+          <DeleteTournamentForm />
+        )}
+        {activeTab === "create" && activeEntity === "team" && (
+          <CreateTeamForm />
+        )}
+        {activeTab === "edit" && activeEntity === "team" && <EditTeamForm />}
+        {activeTab === "delete" && activeEntity === "team" && (
+          <DeleteTeamForm />
+        )}
+        {activeTab === "create" && activeEntity === "player" && (
+          <CreatePlayerForm />
+        )}
+        {activeTab === "edit" && activeEntity === "player" && (
+          <EditPlayerForm />
+        )}
+        {activeTab === "delete" && activeEntity === "player" && (
+          <DeletePlayerForm />
+        )}
+        {activeTab === "create" && activeEntity === "match" && (
+          <CreateMatchForm />
+        )}
+        {activeTab === "edit" && activeEntity === "match" && <EditMatchForm />}
+        {activeTab === "delete" && activeEntity === "match" && (
+          <DeleteMatchForm />
+        )}
+        {activeTab === "create" && activeEntity === "komatch" && (
+          <CreateKnockoutMatchForm />
+        )}
+        {activeTab === "edit" && activeEntity === "komatch" && (
+          <EditKnockoutMatchForm />
+        )}
+        {activeTab === "delete" && activeEntity === "komatch" && (
+          <DeleteKnockoutMatchForm />
+        )}
+        {activeTab === "create" && activeEntity === "matchevent" && (
+          <CreateMatchEventForm />
+        )}
+        {activeTab === "edit" && activeEntity === "matchevent" && (
+          <EditMatchEventForm />
+        )}
+        {activeTab === "delete" && activeEntity === "matchevent" && (
+          <DeleteMatchEventForm />
+        )}
+      </div>
+    </div>
   );
 }
