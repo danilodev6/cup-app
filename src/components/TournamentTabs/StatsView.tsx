@@ -5,31 +5,43 @@ export default async function StatsView({
 }: {
   tournamentId: string;
 }) {
-  // const teams = await prisma.team.findMany({
-  //   where: { tournamentId: Number(tournamentId) },
-  //   include: { players: true },
-  // });
-  // const playersList = teams.flatMap((team) => team.players);
-
   const playersList = await prisma.player.findMany({
     where: { team: { tournamentId: Number(tournamentId) } },
     include: {
       team: true,
+      matchEvents: {
+        where: {
+          tournamentId: Number(tournamentId),
+        },
+      },
     },
   });
 
+  // Calcular estadísticas desde matchEvents
+  const playersWithStats = playersList.map((player) => ({
+    ...player,
+    goals: player.matchEvents.filter((e) => e.eventType === "goal").length,
+    yellowCards: player.matchEvents.filter((e) => e.eventType === "yellow_card")
+      .length,
+    redCards: player.matchEvents.filter((e) => e.eventType === "red_card")
+      .length,
+  }));
+
   // Top 3 scorers
-  const topScorers = [...playersList]
-    .sort((a, b) => b.score - a.score)
+  const topScorers = [...playersWithStats]
+    .filter((player) => player.goals > 0)
+    .sort((a, b) => b.goals - a.goals)
     .slice(0, 3);
 
   // Top 3 yellow cards
-  const topYellowCards = [...playersList]
+  const topYellowCards = [...playersWithStats]
+    .filter((player) => player.yellowCards > 0)
     .sort((a, b) => b.yellowCards - a.yellowCards)
     .slice(0, 3);
 
   // Top 3 red cards
-  const topRedCards = [...playersList]
+  const topRedCards = [...playersWithStats]
+    .filter((player) => player.redCards > 0)
     .sort((a, b) => b.redCards - a.redCards)
     .slice(0, 3);
 
@@ -55,7 +67,7 @@ export default async function StatsView({
                 />
                 <span>{player.name}</span>
                 <span className="text-gray-400">{player.team.name}</span>
-                <span className="ml-auto mr-4 font-bold">{player.score}</span>
+                <span className="ml-auto mr-4 font-bold">{player.goals}</span>
               </div>
             ))}
           </div>

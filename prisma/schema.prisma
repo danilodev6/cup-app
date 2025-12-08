@@ -24,6 +24,7 @@ model Tournament {
   teams     Team[]
   matches   Match[]
   koMatches  KnockoutMatch[]
+  matchEvents MatchEvent[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
@@ -58,9 +59,7 @@ model Player {
   photoUrl  String
   teamId    Int
   team      Team     @relation(fields: [teamId], references: [id])
-  score     Int      @default(0)
-  yellowCards Int      @default(0)
-  redCards    Int      @default(0)
+  matchEvents MatchEvent[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }
@@ -76,6 +75,10 @@ model Match {
     awayTeam      Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
     homeScore     Int      @default(0)
     awayScore     Int      @default(0)
+    matchEvents   MatchEvent[]
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt @default(now())
+
 }
 
 model KnockoutMatch {
@@ -90,7 +93,22 @@ model KnockoutMatch {
   awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
   homeScore     Int        @default(0)
   awayScore     Int        @default(0)
+  matchEvents   MatchEvent[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt @default(now())
   @@unique([tournamentId, koPosition]) 
+}
+
+model MatchEvent {
+  id                Int              @id @default(autoincrement())
+  tournamentId      Int
+  tournament        Tournament       @relation(fields: [tournamentId], references: [id])
+  matchId           Int?
+  match             Match?           @relation(fields: [matchId], references: [id])
+  knockoutMatchId   Int?
+  knockoutMatch     KnockoutMatch?   @relation(fields: [knockoutMatchId], references: [id])
+  playerId          Int
+  player            Player           @relation(fields: [playerId], references: [id])
+  eventType         String           // "goal", "yellow_card", "red_card"
+  createdAt         DateTime         @default(now())
 }
