@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { editTournament } from "./actions";
 import type { Tournament } from "@/generated/prisma/client";
 
@@ -11,6 +11,7 @@ type Props = {
 export default function EditTournamentForm({ tournaments }: Props) {
   const [selectedTournament, setSelectedTournament] =
     useState<Tournament | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const formatDateTimeLocal = (date: Date) => {
     const year = date.getFullYear();
@@ -21,6 +22,12 @@ export default function EditTournamentForm({ tournaments }: Props) {
     return `${year}-${month}-${day}T${hours}:${minutes}`;
   };
 
+  const handleSubmit = async (formData: FormData) => {
+    await editTournament(formData);
+    setSelectedTournament(null);
+    formRef.current?.reset();
+  };
+
   const handleSelectTournament = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
     const tournament = tournaments.find((t) => t.id === selectedId) || null;
@@ -29,7 +36,8 @@ export default function EditTournamentForm({ tournaments }: Props) {
 
   return (
     <form
-      action={editTournament}
+      action={handleSubmit}
+      ref={formRef}
       className="flex flex-col gap-4"
       key={selectedTournament?.id || "no-selection"}
     >

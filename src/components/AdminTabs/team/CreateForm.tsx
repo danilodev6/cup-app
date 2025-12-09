@@ -1,6 +1,8 @@
 "use client";
 
+import { useState, useRef } from "react";
 import { createTeam } from "./actions";
+import { supabase } from "@/lib/supabase";
 import type { Tournament } from "@/generated/prisma/client";
 
 type Props = {
@@ -8,12 +10,92 @@ type Props = {
 };
 
 export default function CreateTeamForm({ tournaments }: Props) {
+  const [uploading, setUploading] = useState(false);
+  const [logoUrl, setLogoUrl] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    try {
+      setUploading(true);
+
+      if (!e.target.files || e.target.files.length === 0) {
+        return;
+      }
+
+      const file = e.target.files[0];
+      const fileExt = file.name.split(".").pop();
+      const fileName = `${Math.random()}.${fileExt}`;
+      const filePath = `teams/${fileName}`;
+
+      // Upload to supabase
+      const { error: uploadError } = await supabase.storage
+        .from("Photos")
+        .upload(filePath, file, {
+          contentType: file.type,
+          cacheControl: "3600",
+          upsert: false,
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      // Get URL
+      const { data } = supabase.storage.from("Photos").getPublicUrl(filePath);
+
+      setLogoUrl(data.publicUrl);
+    } catch (error) {
+      alert("Error uploading image!");
+      console.error(error);
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const handleSubmit = async (formData: FormData) => {
+    await createTeam(formData);
+    formRef.current?.reset();
+    setUploading(false);
+    setLogoUrl("");
+  };
+
   return (
-    <form action={createTeam} className="flex flex-col gap-4">
+    <form action={handleSubmit} ref={formRef} className="flex flex-col gap-4">
       <input name="name" placeholder="Name" required />
-      <input name="shortName" placeholder="Short Name" required />
-      <label className="text-white">Team Logo Image:</label>
-      <input type="file" name="logoImage" accept="image/*" required />
+      <input
+        name="shortName"
+        placeholder="Short Name (3 letters)"
+        maxLength={3}
+        required
+      />
+
+      {/* Input de archivo */}
+      <div>
+        <label className="block mb-2">Team Logo:</label>
+        <input
+          type="file"
+          accept="image/*"
+          onChange={handleImageUpload}
+          disabled={uploading}
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+        />
+        {uploading && (
+          <p className="text-sm text-gray-400 mt-1">Uploading...</p>
+        )}
+        {logoUrl && (
+          <div className="mt-2">
+            <img
+              src={logoUrl}
+              alt="Preview"
+              className="w-20 h-20 object-contain ml-6"
+            />
+          </div>
+        )}
+      </div>
+
+      {/* Hidden input con la URL */}
+      <input type="hidden" name="logoUrl" value={logoUrl} />
+
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -26,12 +108,15 @@ export default function CreateTeamForm({ tournaments }: Props) {
           </option>
         ))}
       </select>
-      <input name="group" placeholder="Group" required />
+
+      <input name="group" placeholder="Group (A, B, C...)" required />
+
       <button
-        className="bg-green-600 text-white px-4 py-2 rounded-md"
+        className="bg-green-600 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
         type="submit"
+        disabled={uploading || !logoUrl}
       >
-        Create
+        Create Team
       </button>
     </form>
   );
