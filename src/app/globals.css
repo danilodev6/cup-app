@@ -234,9 +234,6 @@ ul {
 }
 
 .ko-scores {
-  display: flex;
-  gap: 0.25rem;
-  justify-content: center;
   color: #59deca;
   font-weight: bold;
 }

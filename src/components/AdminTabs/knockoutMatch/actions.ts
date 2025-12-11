@@ -3,8 +3,11 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function createKnockoutMatch(formData: FormData) {
+export async function createKnockoutMatch(
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string }> {
   const dateRaw = formData.get("date");
+  const date = new Date(dateRaw as string);
   const tournamentId = Number(formData.get("tournamentId"));
   const koPosition = Number(formData.get("koPosition"));
   const homeTeamId = Number(formData.get("homeTeamId"));
@@ -13,7 +16,16 @@ export async function createKnockoutMatch(formData: FormData) {
   const awayScore = Number(formData.get("awayScore") || 0);
   const isFinished = formData.get("isFinished") === "on";
 
-  const date = new Date(dateRaw as string);
+  const exists = await prisma.knockoutMatch.findUnique({
+    where: { tournamentId_koPosition: { tournamentId, koPosition } },
+  });
+
+  if (exists) {
+    return {
+      ok: false,
+      error: "Error:Position already used for this tournament.",
+    };
+  }
 
   await prisma.knockoutMatch.create({
     data: {
@@ -29,9 +41,12 @@ export async function createKnockoutMatch(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  return { ok: true };
 }
 
-export async function editKnockoutMatch(formData: FormData) {
+export async function editKnockoutMatch(
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string }> {
   const rawId = formData.get("id") as string;
   const id = Number(rawId);
   const dateRaw = formData.get("date");
@@ -44,6 +59,21 @@ export async function editKnockoutMatch(formData: FormData) {
   const isFinished = formData.get("isFinished") === "on";
 
   const date = new Date(dateRaw as string);
+
+  const existing = await prisma.knockoutMatch.findFirst({
+    where: {
+      tournamentId,
+      koPosition,
+      id: { not: id },
+    },
+  });
+
+  if (existing) {
+    return {
+      ok: false,
+      error: "Error: Position already used for this tournament.",
+    };
+  }
 
   await prisma.knockoutMatch.update({
     where: {
@@ -62,6 +92,7 @@ export async function editKnockoutMatch(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  return { ok: true };
 }
 
 export async function deleteKnockoutMatch(formData: FormData) {
@@ -75,4 +106,5 @@ export async function deleteKnockoutMatch(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  return { ok: true };
 }

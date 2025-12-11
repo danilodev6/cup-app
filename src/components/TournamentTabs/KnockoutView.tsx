@@ -80,7 +80,7 @@ function MatchCard({
     <Link href={`/komatches/${match.id}`} className="ko-card md:w-[105px]">
       {label && <div className="ko-label">{label}</div>}
       {match.date && <div>{formatArgentinianDate(match.date.toString())}</div>}
-      <div className="flex justify-center gap-3 mb-1">
+      <div className="flex justify-center gap-3 mb-1 mt-1">
         <img
           className="ko-team-logo"
           src={match.homeTeam.logoUrl}
@@ -94,13 +94,10 @@ function MatchCard({
       </div>
       <div className="ko-teams">
         <span>{match.homeTeam.shortName}</span>
+        <span className="ko-scores">({match.homeScore}</span>
         <span>-</span>
+        <span className="ko-scores">{match.awayScore})</span>
         <span>{match.awayTeam.shortName}</span>
-      </div>
-      <div className="ko-scores">
-        <span>{match.homeScore}</span>
-        <span>-</span>
-        <span>{match.awayScore}</span>
       </div>
     </Link>
   );

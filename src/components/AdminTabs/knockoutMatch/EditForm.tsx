@@ -26,6 +26,7 @@ export default function EditKnockoutMatchForm({
 }: Props) {
   const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
     useState<KnockoutMatchWithTeams | null>(null);
+  const [msg, setMsg] = useState("");
 
   const handleSelectKnockoutMatch = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -37,8 +38,12 @@ export default function EditKnockoutMatchForm({
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await editKnockoutMatch(formData);
-    setSelectedKnockoutMatch(null);
+    const res = await editKnockoutMatch(formData);
+    if (!res.ok && res.error) setMsg(res.error);
+    else {
+      setMsg("");
+      setSelectedKnockoutMatch(null);
+    }
   };
 
   if (!knockoutMatches || knockoutMatches.length === 0) {
@@ -46,7 +51,7 @@ export default function EditKnockoutMatchForm({
   }
 
   return (
-    <div className="flex flex-col md:flex-row gap-4 items-start">
+    <div className="flex flex-col md:flex-row gap-4">
       <form
         action={handleSubmit}
         className="flex flex-col gap-4"
@@ -176,12 +181,15 @@ export default function EditKnockoutMatchForm({
         >
           Edit Knockout Match
         </button>
+        {msg && (
+          <p className="text-center text-sm text-red-400 font-medium">{msg}</p>
+        )}
       </form>
 
       <img
         src="/images/bracket-guide.png"
         alt="Bracket Guide"
-        className="w-full md:w-auto md:max-w-[400px] object-contain"
+        className="w-full md:w-auto md:max-w-[500px] object-contain"
       />
     </div>
   );

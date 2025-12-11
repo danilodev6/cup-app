@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { createKnockoutMatch } from "./actions";
 import type { Tournament, Team } from "@/generated/prisma/client";
 
@@ -9,9 +10,27 @@ type Props = {
 };
 
 export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
+  const [msg, setMsg] = useState("");
+
+  const handleSubmit = async (fd: FormData) => {
+    const res = await createKnockoutMatch(fd);
+    if (!res.ok && res.error) setMsg(res.error);
+    else {
+      setMsg("");
+      (fd as any).target?.reset();
+    }
+  };
+
   return (
     <div className="flex flex-col md:flex-row gap-4">
-      <form action={createKnockoutMatch} className="flex flex-col gap-4">
+      <form
+        action={handleSubmit}
+        className="flex flex-col gap-4"
+        onSubmit={(e) => {
+          e.preventDefault();
+          handleSubmit(new FormData(e.currentTarget));
+        }}
+      >
         <input type="datetime-local" name="date" required />
 
         <select
@@ -86,6 +105,9 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         >
           Create Knockout Match
         </button>
+        {msg && (
+          <p className="text-center text-sm text-red-400 font-medium">{msg}</p>
+        )}
       </form>
 
       <img
