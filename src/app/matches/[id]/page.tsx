@@ -1,5 +1,6 @@
 import prisma from "@/lib/prisma";
 import type { Player, MatchEvent } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type PlayerWithEvents = Player & {
   matchEvents: MatchEvent[];
@@ -53,6 +54,11 @@ export default async function MatchPage({
           {match.awayTeam.name}
         </span>
       </div>
+      <span className="mt-4 text-center text-xl">
+        {" "}
+        {formatArgentinianDate(match.date)}{" "}
+      </span>
+
       <h3 className="text-center mt-4">Lineup</h3>
 
       <div className="flex justify-between w-[90%] mx-auto mt-4">

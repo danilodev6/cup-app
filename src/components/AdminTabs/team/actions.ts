@@ -57,25 +57,28 @@ export async function deleteTeam(formData: FormData) {
   const rawId = formData.get("TeamId") as string;
   const id = Number(rawId);
 
-  // 1. Get team from DB
   const team = await prisma.team.findUnique({
     where: { id },
-    select: { logoUrl: true },
+    include: { players: true },
   });
 
   if (!team) {
     throw new Error("Team not found");
   }
 
-  // 2. Get Path from URl
-  // URL: https://xxx.supabase.co/storage/v1/object/public/Photos/teams/123.png
-  // Path: teams/123.png
+  // Delete photo players
+  for (const player of team.players) {
+    if (player.photoUrl) {
+      const filePath = player.photoUrl.split("/Photos/")[1];
+      await supabaseAdmin.storage.from("Photos").remove([filePath]);
+    }
+  }
+
+  // Delete photo team
   if (team.logoUrl) {
     const urlParts = team.logoUrl.split("/Photos/");
     if (urlParts.length > 1) {
-      const filePath = urlParts[1]; // "teams/123.png"
-
-      // 3. Delete image from storage
+      const filePath = urlParts[1];
       const { error: storageError } = await supabaseAdmin.storage
         .from("Photos")
         .remove([filePath]);
@@ -86,7 +89,6 @@ export async function deleteTeam(formData: FormData) {
     }
   }
 
-  // 4. delete team from DB
   await prisma.team.delete({
     where: { id },
   });

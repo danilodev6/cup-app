@@ -18,7 +18,7 @@ export default async function GroupsView({
         {groups.map((groupName) => (
           <div
             key={groupName}
-            className="border border-dark-200 bg-dark-100 rounded-3xl p-4"
+            className="md:w-[450px] md:mx-auto border border-dark-200 bg-dark-100 rounded-3xl p-4"
           >
             <h3 className="text-xl font-semibold text-center mb-4">
               Group {groupName}

@@ -37,7 +37,7 @@ model Team {
   players       Player[]
   group         String?
   tournamentId  Int
-  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   teamScore     Int        @default(0)
 
   // Relaciones para matches
@@ -58,7 +58,7 @@ model Player {
   name      String
   photoUrl  String
   teamId    Int
-  team      Team     @relation(fields: [teamId], references: [id])
+  team      Team     @relation(fields: [teamId], references: [id], onDelete: Cascade)
   matchEvents MatchEvent[]
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
@@ -68,11 +68,11 @@ model Match {
     id            Int      @id @default(autoincrement())
     date          DateTime
     tournamentId  Int
-    tournament    Tournament @relation(fields: [tournamentId], references: [id])
+    tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
     homeTeamId    Int
-    homeTeam      Team     @relation("HomeTeam", fields: [homeTeamId], references: [id])
+    homeTeam      Team     @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
     awayTeamId    Int
-    awayTeam      Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
+    awayTeam      Team     @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
     homeScore     Int      @default(0)
     awayScore     Int      @default(0)
     isFinished    Boolean  @default(false)
@@ -86,12 +86,12 @@ model KnockoutMatch {
   id            Int        @id @default(autoincrement())
   date          DateTime
   tournamentId  Int
-  tournament    Tournament @relation(fields: [tournamentId], references: [id])
+  tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   koPosition    Int        // 1-16
   homeTeamId    Int        // shortName of the home team
-  homeTeam      Team       @relation("HomeTeam", fields: [homeTeamId], references: [id])
+  homeTeam      Team       @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
   awayTeamId    Int        // shortName of the away team
-  awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
+  awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
   homeScore     Int        @default(0)
   awayScore     Int        @default(0)
   isFinished    Boolean    @default(false)
@@ -104,13 +104,13 @@ model KnockoutMatch {
 model MatchEvent {
   id                Int              @id @default(autoincrement())
   tournamentId      Int
-  tournament        Tournament       @relation(fields: [tournamentId], references: [id])
+  tournament        Tournament       @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   matchId           Int?
-  match             Match?           @relation(fields: [matchId], references: [id])
+  match             Match?           @relation(fields: [matchId], references: [id], onDelete: Cascade)
   knockoutMatchId   Int?
-  knockoutMatch     KnockoutMatch?   @relation(fields: [knockoutMatchId], references: [id])
+  knockoutMatch     KnockoutMatch?   @relation(fields: [knockoutMatchId], references: [id], onDelete: Cascade)
   playerId          Int
-  player            Player           @relation(fields: [playerId], references: [id])
+  player            Player           @relation(fields: [playerId], references: [id], onDelete: Cascade)
   eventType         String           // "goal", "yellow_card", "red_card"
   createdAt         DateTime         @default(now())
 }

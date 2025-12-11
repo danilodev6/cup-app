@@ -68,7 +68,7 @@ export async function deleteTournament(formData: FormData) {
     include: { players: true },
   });
 
-  // Delete players and their photos
+  // Delete photo players
   for (const team of teams) {
     for (const player of team.players) {
       if (player.photoUrl) {
@@ -78,7 +78,7 @@ export async function deleteTournament(formData: FormData) {
     }
   }
 
-  // Delete teams and their logos
+  // Delete photo teams
   for (const team of teams) {
     if (team.logoUrl) {
       const filePath = team.logoUrl.split("/Photos/")[1];
