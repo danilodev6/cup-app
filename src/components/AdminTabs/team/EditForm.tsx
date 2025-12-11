@@ -58,6 +58,10 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
     formRef.current?.reset();
   };
 
+  if (!teams || teams.length === 0) {
+    return <p>No teams available</p>;
+  }
+
   return (
     <form
       ref={formRef}
@@ -140,6 +144,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         ))}
       </select>
 
+      {/* FORM FIELDS */}
       <input
         name="group"
         placeholder="Group"

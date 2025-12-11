@@ -34,6 +34,10 @@ export default function EditTournamentForm({ tournaments }: Props) {
     setSelectedTournament(tournament);
   };
 
+  if (!tournaments || tournaments.length === 0) {
+    return <p>No tournaments available</p>;
+  }
+
   return (
     <form
       action={handleSubmit}

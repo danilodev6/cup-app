@@ -20,13 +20,9 @@ import DeleteKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/Delete
 import EditMatchEventForm from "@/components/AdminTabs/matchEvent/EditForm";
 import DeleteMatchEventForm from "@/components/AdminTabs/matchEvent/DeleteForm";
 
-import type {
-  Tournament,
-  Team,
-  Player,
-  Match,
-  KnockoutMatch,
-} from "@/generated/prisma/client";
+import type { Tournament, Team, Player } from "@/generated/prisma/client";
+
+import type { MatchWithTeams, KnockoutMatchWithTeams } from "@/lib/types";
 
 type Props = {
   initialTab: "create" | "edit" | "delete";
@@ -40,8 +36,9 @@ type Props = {
   tournaments: Tournament[];
   teams: Team[];
   players: Player[];
-  matches: Match[];
-  knockoutMatches: KnockoutMatch[];
+  matches: MatchWithTeams[];
+  knockoutMatches: KnockoutMatchWithTeams[];
+  matchEvents: any[];
 };
 
 export default function AdminTabsClient({
@@ -52,6 +49,7 @@ export default function AdminTabsClient({
   players,
   matches,
   knockoutMatches,
+  matchEvents,
 }: Props) {
   const [tab, setTab] = useState(initialTab);
   const [entity, setEntity] = useState(initialEntity);
@@ -139,37 +137,60 @@ export default function AdminTabsClient({
         {tab === "delete" && entity === "team" && (
           <DeleteTeamForm teams={teams} />
         )}
-        {tab === "create" && entity === "player" && <CreatePlayerForm />}
+        {tab === "create" && entity === "player" && (
+          <CreatePlayerForm teams={teams} />
+        )}
         {tab === "edit" && entity === "player" && (
-          <EditPlayerForm players={players} />
+          <EditPlayerForm teams={teams} players={players} />
         )}
         {tab === "delete" && entity === "player" && (
           <DeletePlayerForm players={players} />
         )}
-        {tab === "create" && entity === "match" && <CreateMatchForm />}
+        {tab === "create" && entity === "match" && (
+          <CreateMatchForm teams={teams} tournaments={tournaments} />
+        )}
         {tab === "edit" && entity === "match" && (
-          <EditMatchForm matches={matches} />
+          <EditMatchForm
+            tournaments={tournaments}
+            teams={teams}
+            matches={matches}
+          />
         )}
         {tab === "delete" && entity === "match" && (
           <DeleteMatchForm matches={matches} />
         )}
         {tab === "create" && entity === "komatch" && (
-          <CreateKnockoutMatchForm />
+          <CreateKnockoutMatchForm tournaments={tournaments} teams={teams} />
         )}
         {tab === "edit" && entity === "komatch" && (
-          <EditKnockoutMatchForm komatches={komatches} />
+          <EditKnockoutMatchForm
+            tournaments={tournaments}
+            teams={teams}
+            knockoutMatches={knockoutMatches}
+          />
         )}
         {tab === "delete" && entity === "komatch" && (
-          <DeleteKnockoutMatchForm komatches={komatches} />
+          <DeleteKnockoutMatchForm knockoutMatches={knockoutMatches} />
         )}
         {tab === "create" && entity === "matchevent" && (
-          <CreateMatchEventForm />
+          <CreateMatchEventForm
+            tournaments={tournaments}
+            matches={matches}
+            knockoutMatches={knockoutMatches}
+            players={players}
+          />
         )}
         {tab === "edit" && entity === "matchevent" && (
-          <EditMatchEventForm matchevents={matchevents} />
+          <EditMatchEventForm
+            tournaments={tournaments}
+            matches={matches}
+            knockoutMatches={knockoutMatches}
+            players={players}
+            matchEvents={matchEvents}
+          />
         )}
         {tab === "delete" && entity === "matchevent" && (
-          <DeleteMatchEventForm matchevents={matchevents} />
+          <DeleteMatchEventForm matchEvents={matchEvents} />
         )}
       </div>
     </>

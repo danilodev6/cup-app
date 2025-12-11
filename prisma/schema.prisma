@@ -75,6 +75,7 @@ model Match {
     awayTeam      Team     @relation("AwayTeam", fields: [awayTeamId], references: [id])
     homeScore     Int      @default(0)
     awayScore     Int      @default(0)
+    isFinished    Boolean  @default(false)
     matchEvents   MatchEvent[]
     createdAt     DateTime   @default(now())
     updatedAt     DateTime   @updatedAt @default(now())
@@ -93,6 +94,7 @@ model KnockoutMatch {
   awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id])
   homeScore     Int        @default(0)
   awayScore     Int        @default(0)
+  isFinished    Boolean    @default(false)
   matchEvents   MatchEvent[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt @default(now())

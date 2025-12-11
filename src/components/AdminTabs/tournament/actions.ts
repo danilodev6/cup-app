@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
+import { supabaseAdmin } from "@/lib/supabase-admin";
 
 export async function createTournament(formData: FormData) {
   const name = formData.get("name") as string;
@@ -62,10 +63,31 @@ export async function deleteTournament(formData: FormData) {
   const rawId = formData.get("tournamentId") as string;
   const id = Number(rawId);
 
+  const teams = await prisma.team.findMany({
+    where: { tournamentId: id },
+    include: { players: true },
+  });
+
+  // Delete players and their photos
+  for (const team of teams) {
+    for (const player of team.players) {
+      if (player.photoUrl) {
+        const filePath = player.photoUrl.split("/Photos/")[1];
+        await supabaseAdmin.storage.from("Photos").remove([filePath]);
+      }
+    }
+  }
+
+  // Delete teams and their logos
+  for (const team of teams) {
+    if (team.logoUrl) {
+      const filePath = team.logoUrl.split("/Photos/")[1];
+      await supabaseAdmin.storage.from("Photos").remove([filePath]);
+    }
+  }
+
   await prisma.tournament.delete({
-    where: {
-      id,
-    },
+    where: { id },
   });
 
   revalidatePath("/admin");

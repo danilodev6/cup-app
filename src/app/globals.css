@@ -242,6 +242,7 @@ ul {
 }
 
 #explore-btn button {
+  flex: 1;
   opacity: 0.6;
   transition: opacity 0.2s;
 }
@@ -254,6 +255,10 @@ ul {
 
 #explore-btn button:hover {
   opacity: 1;
+}
+
+.form-container {
+  @apply md:w-[500px] mx-auto;
 }
 
 input {

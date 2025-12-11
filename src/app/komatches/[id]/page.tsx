@@ -1,5 +1,9 @@
 import prisma from "@/lib/prisma";
-import type { Player } from "@/generated/prisma/client";
+import type { Player, MatchEvent } from "@/generated/prisma/client";
+
+type PlayerWithEvents = Player & {
+  matchEvents: MatchEvent[];
+};
 
 export default async function KoMatchPage({
   params,
@@ -15,12 +19,20 @@ export default async function KoMatchPage({
     include: {
       homeTeam: {
         include: {
-          players: true,
+          players: {
+            include: {
+              matchEvents: { where: { knockoutMatchId: Number(id) } },
+            },
+          },
         },
       },
       awayTeam: {
         include: {
-          players: true,
+          players: {
+            include: {
+              matchEvents: { where: { knockoutMatchId: Number(id) } },
+            },
+          },
         },
       },
     },
@@ -50,30 +62,68 @@ export default async function KoMatchPage({
       <div className="flex justify-between w-[90%] mx-auto mt-4">
         <div>
           <ul>
-            {match.homeTeam.players.map((player: Player) => (
+            {match.homeTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col gap-4 items-center mt-4 text-xl"
                 key={player.id}
               >
                 {" "}
-                <img id="playerPhoto" src={player.photoUrl} /> {
-                  player.name
-                }{" "}
+                <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
+                <div className="text-sm flex gap-1 items-center">
+                  <img className="w-10 h-10" src="/icons/goals.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "goal",
+                    ).length
+                  }
+                  <img className="w-10 h-10" src="/icons/yellow-card.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "yellow_card",
+                    ).length
+                  }
+                  <img className="w-10 h-10" src="/icons/red-card.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "red_card",
+                    ).length
+                  }
+                  <span className="text-sm"></span>
+                </div>
               </li>
             ))}
           </ul>
         </div>
         <div className="ml-4">
           <ul>
-            {match.awayTeam.players.map((player: Player) => (
+            {match.awayTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col gap-4 items-center mt-4 text-xl"
                 key={player.id}
               >
                 {" "}
-                <img id="playerPhoto" src={player.photoUrl} /> {
-                  player.name
-                }{" "}
+                <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
+                <div className="text-sm flex gap-1 items-center">
+                  <img className="w-10 h-10" src="/icons/goals.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "goal",
+                    ).length
+                  }
+                  <img className="w-10 h-10" src="/icons/yellow-card.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "yellow_card",
+                    ).length
+                  }
+                  <img className="w-10 h-10" src="/icons/red-card.png" />
+                  {
+                    player.matchEvents.filter(
+                      (e: MatchEvent) => e.eventType === "red_card",
+                    ).length
+                  }
+                  <span className="text-sm"></span>
+                </div>
               </li>
             ))}
           </ul>

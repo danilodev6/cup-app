@@ -7,7 +7,7 @@ type Props = {
   teams: Team[];
 };
 
-export default function DeleteTournamentForm({ teams }: Props) {
+export default function DeleteTeamForm({ teams }: Props) {
   if (!teams || teams.length === 0) {
     return <p>No teams available</p>;
   }

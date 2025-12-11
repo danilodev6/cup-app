@@ -27,8 +27,35 @@ export default async function AdminPage({
   const tournaments = await prisma.tournament.findMany({});
   const teams = await prisma.team.findMany({});
   const players = await prisma.player.findMany({});
-  const matches = await prisma.match.findMany({});
-  const knockoutMatches = await prisma.knockoutMatch.findMany({});
+  const matches = await prisma.match.findMany({
+    include: {
+      homeTeam: true,
+      awayTeam: true,
+    },
+  });
+  const knockoutMatches = await prisma.knockoutMatch.findMany({
+    include: {
+      homeTeam: true,
+      awayTeam: true,
+    },
+  });
+  const matchEvents = await prisma.matchEvent.findMany({
+    include: {
+      player: true,
+      match: {
+        include: {
+          homeTeam: true,
+          awayTeam: true,
+        },
+      },
+      knockoutMatch: {
+        include: {
+          homeTeam: true,
+          awayTeam: true,
+        },
+      },
+    },
+  });
 
   return (
     <div>
@@ -42,6 +69,7 @@ export default async function AdminPage({
         players={players}
         matches={matches}
         knockoutMatches={knockoutMatches}
+        matchEvents={matchEvents}
       />
     </div>
   );

@@ -1,9 +1,6 @@
 import prisma from "@/lib/prisma";
 import type { KnockoutMatchWithTeams } from "@/lib/types";
-import {
-  formatArgentinianDate,
-  formatArgentinianDateTime,
-} from "@/lib/date-utils";
+import { formatArgentinianDate } from "@/lib/date-utils";
 import Link from "next/link";
 
 export default async function KnockoutView({
@@ -83,9 +80,6 @@ function MatchCard({
     <Link href={`/komatches/${match.id}`} className="ko-card md:w-[105px]">
       {label && <div className="ko-label">{label}</div>}
       {match.date && <div>{formatArgentinianDate(match.date.toString())}</div>}
-      {match.date && (
-        <div className="mb-1">{formatArgentinianDateTime(match.date)}</div>
-      )}
       <div className="flex justify-center gap-3 mb-1">
         <img
           className="ko-team-logo"
