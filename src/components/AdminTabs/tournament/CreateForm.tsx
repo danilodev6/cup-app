@@ -4,7 +4,10 @@ import { createTournament } from "./actions";
 
 export default function CreateTournamentForm() {
   return (
-    <form action={createTournament} className="flex flex-col gap-4">
+    <form
+      action={createTournament}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <input name="name" placeholder="Name" required />
       <input name="location" placeholder="Location" required />
       <input type="number" name="teamCount" placeholder="Team Count" />

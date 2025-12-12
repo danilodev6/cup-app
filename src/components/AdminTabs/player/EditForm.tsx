@@ -66,7 +66,7 @@ export default function EditPlayerForm({ teams, players }: Props) {
     <form
       ref={formRef}
       action={handleSubmit}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 form-container-small"
       key={selectedPlayer?.id || "no-selection"}
     >
       <input type="hidden" name="id" value={selectedPlayer?.id || ""} />

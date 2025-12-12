@@ -60,7 +60,11 @@ export default function CreateTeamForm({ tournaments }: Props) {
   };
 
   return (
-    <form action={handleSubmit} ref={formRef} className="flex flex-col gap-4">
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <input name="name" placeholder="Name" required />
       <input
         name="shortName"

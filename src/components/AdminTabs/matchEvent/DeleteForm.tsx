@@ -34,7 +34,10 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
   }
 
   return (
-    <form action={deleteMatchEvent} className="flex flex-col gap-4">
+    <form
+      action={deleteMatchEvent}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="MatchEventId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"

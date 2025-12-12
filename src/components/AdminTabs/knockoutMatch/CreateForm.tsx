@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createKnockoutMatch } from "./actions";
 import type { Tournament, Team } from "@/generated/prisma/client";
 
@@ -11,6 +11,7 @@ type Props = {
 
 export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
   const [msg, setMsg] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (fd: FormData) => {
     const res = await createKnockoutMatch(fd);
@@ -19,13 +20,15 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
       setMsg("");
       (fd as any).target?.reset();
     }
+    formRef.current?.reset();
   };
 
   return (
     <div className="flex flex-col md:flex-row gap-4">
       <form
         action={handleSubmit}
-        className="flex flex-col gap-4"
+        ref={formRef}
+        className="flex flex-col gap-4 form-container-small"
         onSubmit={(e) => {
           e.preventDefault();
           handleSubmit(new FormData(e.currentTarget));
@@ -54,6 +57,17 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           max={16}
           required
         />
+        <select
+          name="leg"
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          required
+        >
+          <option value="" disabled>
+            Select Leg
+          </option>
+          <option value="first">First Leg</option>
+          <option value="second">Second Leg</option>
+        </select>
 
         <select
           name="homeTeamId"
@@ -95,8 +109,8 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           defaultValue={0}
         />
 
-        <label>
-          <input type="checkbox" name="isFinished" /> Finished
+        <label className="text-center">
+          <input type="checkbox" name="isFinished" /> Finished?
         </label>
 
         <button

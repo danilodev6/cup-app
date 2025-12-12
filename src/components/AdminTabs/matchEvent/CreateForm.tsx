@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { createMatchEvent } from "./actions";
 import type {
   Tournament,
@@ -34,8 +34,18 @@ export default function CreateMatchEventForm({
 }: Props) {
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
+  const handleSubmit = async (formData: FormData) => {
+    await createMatchEvent(formData);
+    formRef.current?.reset();
+  };
+
   return (
-    <form action={createMatchEvent} className="flex flex-col gap-4">
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -80,7 +90,8 @@ export default function CreateMatchEventForm({
         <option value="">Select Knockout Match (optional)</option>
         {knockoutMatches.map((km) => (
           <option key={km.id} value={km.id}>
-            KO {km.koPosition} - {km.homeTeam.name} vs {km.awayTeam.name}
+            KO {km.koPosition} - {km.leg} : {km.homeTeam.name} vs{" "}
+            {km.awayTeam.name}
           </option>
         ))}
       </select>

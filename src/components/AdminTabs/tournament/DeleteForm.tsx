@@ -13,7 +13,10 @@ export default function DeleteTournamentForm({ tournaments }: Props) {
   }
 
   return (
-    <form action={deleteTournament} className="flex flex-col gap-4">
+    <form
+      action={deleteTournament}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"

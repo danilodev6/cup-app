@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { editMatchEvent } from "./actions";
 import type {
   Tournament,
@@ -46,6 +46,7 @@ export default function EditMatchEventForm({
     useState<MatchEventWithRelations | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectMatchEvent = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
@@ -58,6 +59,7 @@ export default function EditMatchEventForm({
   const handleSubmit = async (formData: FormData) => {
     await editMatchEvent(formData);
     setSelectedMatchEvent(null);
+    formRef.current?.reset();
   };
 
   if (!matchEvents || matchEvents.length === 0) {
@@ -67,7 +69,8 @@ export default function EditMatchEventForm({
   return (
     <form
       action={handleSubmit}
-      className="flex flex-col gap-4"
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
       key={selectedMatchEvent?.id || "no-selection"}
     >
       <input type="hidden" name="id" value={selectedMatchEvent?.id || ""} />

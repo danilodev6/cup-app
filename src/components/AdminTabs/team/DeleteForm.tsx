@@ -13,7 +13,10 @@ export default function DeleteTeamForm({ teams }: Props) {
   }
 
   return (
-    <form action={deleteTeam} className="flex flex-col gap-4">
+    <form
+      action={deleteTeam}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="TeamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"

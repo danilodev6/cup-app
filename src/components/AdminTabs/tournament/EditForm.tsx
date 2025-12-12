@@ -42,7 +42,7 @@ export default function EditTournamentForm({ tournaments }: Props) {
     <form
       action={handleSubmit}
       ref={formRef}
-      className="flex flex-col gap-4"
+      className="flex flex-col gap-4 form-container-small"
       key={selectedTournament?.id || "no-selection"}
     >
       <input type="hidden" name="id" value={selectedTournament?.id || ""} />

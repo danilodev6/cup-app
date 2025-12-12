@@ -10,6 +10,7 @@ export async function createKnockoutMatch(
   const date = new Date(dateRaw as string);
   const tournamentId = Number(formData.get("tournamentId"));
   const koPosition = Number(formData.get("koPosition"));
+  const leg = formData.get("leg") as string;
   const homeTeamId = Number(formData.get("homeTeamId"));
   const awayTeamId = Number(formData.get("awayTeamId"));
   const homeScore = Number(formData.get("homeScore") || 0);
@@ -17,7 +18,7 @@ export async function createKnockoutMatch(
   const isFinished = formData.get("isFinished") === "on";
 
   const exists = await prisma.knockoutMatch.findUnique({
-    where: { tournamentId_koPosition: { tournamentId, koPosition } },
+    where: { tournamentId_koPosition_leg: { tournamentId, koPosition, leg } },
   });
 
   if (exists) {
@@ -32,6 +33,7 @@ export async function createKnockoutMatch(
       date,
       tournamentId,
       koPosition,
+      leg,
       homeTeamId,
       awayTeamId,
       homeScore,
@@ -52,6 +54,7 @@ export async function editKnockoutMatch(
   const dateRaw = formData.get("date");
   const tournamentId = Number(formData.get("tournamentId"));
   const koPosition = Number(formData.get("koPosition"));
+  const leg = formData.get("leg") as string;
   const homeTeamId = Number(formData.get("homeTeamId"));
   const awayTeamId = Number(formData.get("awayTeamId"));
   const homeScore = Number(formData.get("homeScore") || 0);
@@ -64,6 +67,7 @@ export async function editKnockoutMatch(
     where: {
       tournamentId,
       koPosition,
+      leg,
       id: { not: id },
     },
   });
@@ -83,6 +87,7 @@ export async function editKnockoutMatch(
       date,
       tournamentId,
       koPosition,
+      leg,
       homeTeamId,
       awayTeamId,
       homeScore,

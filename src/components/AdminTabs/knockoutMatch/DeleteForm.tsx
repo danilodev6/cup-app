@@ -1,5 +1,6 @@
 "use client";
 
+import { useRef } from "react";
 import { deleteKnockoutMatch } from "./actions";
 import type { KnockoutMatch, Team } from "@/generated/prisma/client";
 
@@ -17,8 +18,19 @@ export default function DeleteKnockoutMatchForm({ knockoutMatches }: Props) {
     return <p>No knockout matches available</p>;
   }
 
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (formData: FormData) => {
+    await deleteKnockoutMatch(formData);
+    formRef.current?.reset();
+  };
+
   return (
-    <form action={deleteKnockoutMatch} className="flex flex-col gap-4">
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="KnockoutMatchId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"

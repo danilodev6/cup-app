@@ -87,17 +87,18 @@ model KnockoutMatch {
   tournamentId  Int
   tournament    Tournament @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   koPosition    Int        // 1-16
+  leg           String     // first | second
   homeTeamId    Int        // shortName of the home team
   homeTeam      Team       @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
   awayTeamId    Int        // shortName of the away team
   awayTeam      Team       @relation("AwayTeam", fields: [awayTeamId], references: [id], onDelete: Cascade)
-  homeScore     Int        @default(0)
-  awayScore     Int        @default(0)
+  homeScore Int        @default(0)
+  awayScore Int        @default(0)
   isFinished    Boolean    @default(false)
   matchEvents   MatchEvent[]
   createdAt     DateTime   @default(now())
   updatedAt     DateTime   @updatedAt @default(now())
-  @@unique([tournamentId, koPosition]) 
+  @@unique([tournamentId, koPosition, leg]) 
 }
 
 model MatchEvent {

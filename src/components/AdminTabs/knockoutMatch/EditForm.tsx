@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { editKnockoutMatch } from "./actions";
 import type {
   Tournament,
@@ -27,6 +27,7 @@ export default function EditKnockoutMatchForm({
   const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
     useState<KnockoutMatchWithTeams | null>(null);
   const [msg, setMsg] = useState("");
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectKnockoutMatch = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -44,6 +45,7 @@ export default function EditKnockoutMatchForm({
       setMsg("");
       setSelectedKnockoutMatch(null);
     }
+    formRef.current?.reset();
   };
 
   if (!knockoutMatches || knockoutMatches.length === 0) {
@@ -54,7 +56,8 @@ export default function EditKnockoutMatchForm({
     <div className="flex flex-col md:flex-row gap-4">
       <form
         action={handleSubmit}
-        className="flex flex-col gap-4"
+        ref={formRef}
+        className="flex flex-col gap-4 form-container-small"
         key={selectedKnockoutMatch?.id || "no-selection"}
       >
         <input
@@ -74,7 +77,7 @@ export default function EditKnockoutMatchForm({
           </option>
           {knockoutMatches.map((km) => (
             <option key={km.id} value={km.id}>
-              KO {km.koPosition}: {km.homeTeam?.name || "Home"} vs{" "}
+              KO {km.koPosition} {km.leg}: {km.homeTeam?.name || "Home"} vs{" "}
               {km.awayTeam?.name || "Away"}
             </option>
           ))}
@@ -118,6 +121,19 @@ export default function EditKnockoutMatchForm({
           required
         />
 
+        <select
+          name="leg"
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          disabled={!selectedKnockoutMatch}
+          defaultValue={selectedKnockoutMatch?.leg || ""}
+          required
+        >
+          <option value="" disabled>
+            Select Leg
+          </option>
+          <option value="first">First Leg</option>
+          <option value="second">Second Leg</option>
+        </select>
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -164,14 +180,14 @@ export default function EditKnockoutMatchForm({
           defaultValue={selectedKnockoutMatch?.awayScore || 0}
         />
 
-        <label>
+        <label className="text-center">
           <input
             type="checkbox"
             name="isFinished"
             disabled={!selectedKnockoutMatch}
             defaultChecked={selectedKnockoutMatch?.isFinished || false}
           />{" "}
-          Finished
+          Finished?
         </label>
 
         <button

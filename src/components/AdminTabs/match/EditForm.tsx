@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { editMatch } from "./actions";
 import type { Tournament, Team, Match } from "@/generated/prisma/client";
 
@@ -17,11 +17,13 @@ type Props = {
 
 export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectMatch = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
     const match = matches.find((m) => m.id === selectedId) || null;
     setSelectedMatch(match);
+    formRef.current?.reset();
   };
 
   const handleSubmit = async (formData: FormData) => {
@@ -36,7 +38,8 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   return (
     <form
       action={handleSubmit}
-      className="flex flex-col gap-4"
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
       key={selectedMatch?.id || "no-selection"}
     >
       <input type="hidden" name="id" value={selectedMatch?.id || ""} />
@@ -130,7 +133,7 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         defaultValue={selectedMatch?.awayScore || 0}
       />
 
-      <label>
+      <label className="text-center">
         <input
           type="checkbox"
           name="isFinished"

@@ -255,6 +255,10 @@ ul {
 }
 
 .form-container {
+  @apply md:w-[800px] mx-auto;
+}
+
+.form-container-small {
   @apply md:w-[500px] mx-auto;
 }
 

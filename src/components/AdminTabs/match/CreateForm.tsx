@@ -2,6 +2,7 @@
 
 import { createMatch } from "./actions";
 import type { Tournament, Team } from "@/generated/prisma/client";
+import { useRef } from "react";
 
 type Props = {
   tournaments: Tournament[];
@@ -9,8 +10,19 @@ type Props = {
 };
 
 export default function CreateMatchForm({ tournaments, teams }: Props) {
+  const formRef = useRef<HTMLFormElement>(null);
+
+  const handleSubmit = async (formData: FormData) => {
+    await createMatch(formData);
+    formRef.current?.reset();
+  };
+
   return (
-    <form action={createMatch} className="flex flex-col gap-4">
+    <form
+      action={handleSubmit}
+      ref={formRef}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <input type="datetime-local" name="date" required />
 
       <select
@@ -66,8 +78,8 @@ export default function CreateMatchForm({ tournaments, teams }: Props) {
         defaultValue={0}
       />
 
-      <label>
-        <input type="checkbox" name="isFinished" /> Finished
+      <label className="text-center">
+        <input type="checkbox" name="isFinished" /> Finished?
       </label>
 
       <button

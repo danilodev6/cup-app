@@ -13,7 +13,10 @@ export default function DeletePlayerForm({ players }: Props) {
   }
 
   return (
-    <form action={deletePlayer} className="flex flex-col gap-4">
+    <form
+      action={deletePlayer}
+      className="flex flex-col gap-4 form-container-small"
+    >
       <select
         name="PlayerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
