@@ -4,6 +4,7 @@ import Link from "next/link";
 import KnockoutView from "@/components/TournamentTabs/KnockoutView";
 import FixtureView from "@/components/TournamentTabs/FixtureView";
 import StatsView from "@/components/TournamentTabs/StatsView";
+import TeamsView from "@/components/TournamentTabs/TeamsView";
 
 export default async function TournamentPage({
   params,
@@ -44,6 +45,12 @@ export default async function TournamentPage({
           Fixture
         </Link>
         <Link
+          href={`/tournaments/${id}?tab=teams`}
+          className={activeTab === "teams" ? "active" : ""}
+        >
+          Teams
+        </Link>
+        <Link
           href={`/tournaments/${id}?tab=stats`}
           className={activeTab === "stats" ? "active" : ""}
         >
@@ -55,6 +62,7 @@ export default async function TournamentPage({
       {activeTab === "knockout" && <KnockoutView tournamentId={id} />}
       {activeTab === "fixture" && <FixtureView tournamentId={id} />}
       {activeTab === "stats" && <StatsView tournamentId={id} />}
+      {activeTab === "teams" && <TeamsView tournamentId={id} />}
     </div>
   );
 }
