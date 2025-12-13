@@ -8,9 +8,9 @@ datasource db {
 }
 
 model User {
-  id        Int      @id @default(autoincrement())
-  name      String   @unique
-  password  String
+  id       Int       @id @default(autoincrement())
+  username String    @unique
+  password String    // bcrypt hash
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt @default(now())
 }

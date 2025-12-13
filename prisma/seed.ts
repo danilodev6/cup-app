@@ -1,52 +1,24 @@
-import { PrismaClient, Prisma } from "@/generated/prisma/client";
-import { PrismaPg } from "@prisma/adapter-pg";
-import "dotenv/config";
+import { hash } from "bcryptjs";
+import prisma from "../src/lib/prisma";
 
-const adapter = new PrismaPg({
-  connectionString: process.env.DIRECT_URL,
-});
+async function main() {
+  const hashedPassword = await hash(process.env.ADMIN_PW!, 10);
 
-const prisma = new PrismaClient({
-  adapter,
-});
-
-const userData: Prisma.UserCreateInput[] = [
-  {
-    name: "Alice",
-    email: "alice@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Join the Prisma Discord",
-          content: "https://pris.ly/discord",
-          published: true,
-        },
-        {
-          title: "Prisma on YouTube",
-          content: "https://pris.ly/youtube",
-        },
-      ],
+  await prisma.user.upsert({
+    where: { username: "admin" },
+    update: {},
+    create: {
+      username: "admin",
+      password: hashedPassword,
     },
-  },
-  {
-    name: "Bob",
-    email: "bob@prisma.io",
-    posts: {
-      create: [
-        {
-          title: "Follow Prisma on Twitter",
-          content: "https://www.twitter.com/prisma",
-          published: true,
-        },
-      ],
-    },
-  },
-];
-
-export async function main() {
-  for (const u of userData) {
-    await prisma.user.create({ data: u });
-  }
+  });
 }
 
-main();
+main()
+  .catch((e) => {
+    console.error(e);
+    process.exit(1);
+  })
+  .finally(async () => {
+    await prisma.$disconnect();
+  });

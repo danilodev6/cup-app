@@ -6,7 +6,7 @@ const ExploreTournament = ({ tournament }: { tournament: Tournament }) => {
     <Link
       href={`/tournaments/${tournament.id}`}
       id="explore-btn"
-      className="mt-4 mx-auto w-[250px]"
+      className="mt-4 mx-auto w-[350px]"
     >
       <span className="px-3 whitespace-nowrap">{tournament.name}</span>
     </Link>
