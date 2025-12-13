@@ -102,7 +102,7 @@ export default function AdminTabsClient({
           onClick={() => setEntity("match")}
           className={entity === "match" ? "active" : ""}
         >
-          Match
+          Group Match
         </button>
         <button
           onClick={() => setEntity("komatch")}

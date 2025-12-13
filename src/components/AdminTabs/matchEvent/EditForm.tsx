@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { editMatchEvent } from "./actions";
 import type {
   Tournament,
@@ -46,6 +46,9 @@ export default function EditMatchEventForm({
     useState<MatchEventWithRelations | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
+
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectMatchEvent = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -57,9 +60,17 @@ export default function EditMatchEventForm({
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await editMatchEvent(formData);
-    setSelectedMatchEvent(null);
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await editMatchEvent(formData);
+        setMessage("✅ Match Event updated successfully!");
+        setSelectedMatchEvent(null);
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error updating match event");
+      }
+    });
   };
 
   if (!matchEvents || matchEvents.length === 0) {
@@ -79,6 +90,7 @@ export default function EditMatchEventForm({
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectMatchEvent}
         value={selectedMatchEvent?.id || ""}
+        disabled={isPending}
         required
       >
         <option value="" disabled>
@@ -101,7 +113,7 @@ export default function EditMatchEventForm({
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatchEvent}
+        disabled={!selectedMatchEvent || isPending}
         defaultValue={selectedMatchEvent?.tournamentId || ""}
         required
       >
@@ -121,7 +133,7 @@ export default function EditMatchEventForm({
           setSelectedMatchId(e.target.value);
           if (e.target.value) setSelectedKoMatchId("");
         }}
-        disabled={!selectedMatchEvent || !!selectedKoMatchId}
+        disabled={!selectedMatchEvent || !!selectedKoMatchId || isPending}
       >
         <option value="">Select Group Match (optional)</option>
         {matches.map((m) => (
@@ -139,7 +151,7 @@ export default function EditMatchEventForm({
           setSelectedKoMatchId(e.target.value);
           if (e.target.value) setSelectedMatchId("");
         }}
-        disabled={!selectedMatchEvent || !!selectedMatchId}
+        disabled={!selectedMatchEvent || !!selectedMatchId || isPending}
       >
         <option value="">Select Knockout Match (optional)</option>
         {knockoutMatches.map((km) => (
@@ -152,7 +164,7 @@ export default function EditMatchEventForm({
       <select
         name="playerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatchEvent}
+        disabled={!selectedMatchEvent || isPending}
         defaultValue={selectedMatchEvent?.playerId || ""}
         required
       >
@@ -167,7 +179,7 @@ export default function EditMatchEventForm({
       <select
         name="eventType"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatchEvent}
+        disabled={!selectedMatchEvent || isPending}
         defaultValue={selectedMatchEvent?.eventType || ""}
         required
       >
@@ -180,10 +192,17 @@ export default function EditMatchEventForm({
       <button
         className={`text-white px-4 py-2 rounded-md ${selectedMatchEvent ? "bg-blue-600" : "bg-gray-400"}`}
         type="submit"
-        disabled={!selectedMatchEvent}
+        disabled={!selectedMatchEvent || isPending}
       >
-        Edit Match Event
+        {isPending ? "Updating..." : "Edit Match Event"}
       </button>
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

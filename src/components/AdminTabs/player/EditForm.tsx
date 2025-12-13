@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { editPlayer } from "./actions";
 import { supabase } from "@/lib/supabase";
 import type { Team, Player } from "@/generated/prisma/client";
@@ -12,6 +12,8 @@ type Props = {
 
 export default function EditPlayerForm({ teams, players }: Props) {
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -52,10 +54,18 @@ export default function EditPlayerForm({ teams, players }: Props) {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await editPlayer(formData);
-    setSelectedPlayer(null);
-    setPhotoUrl("");
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await editPlayer(formData);
+        setMessage("✅ Player updated successfully!");
+        setSelectedPlayer(null);
+        setPhotoUrl("");
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error updating player");
+      }
+    });
   };
 
   if (!players || players.length === 0) {
@@ -76,6 +86,7 @@ export default function EditPlayerForm({ teams, players }: Props) {
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectPlayer}
         value={selectedPlayer?.id || ""}
+        disabled={isPending}
         required
       >
         <option value="" disabled>
@@ -93,7 +104,7 @@ export default function EditPlayerForm({ teams, players }: Props) {
         name="name"
         placeholder="Name"
         required
-        disabled={!selectedPlayer}
+        disabled={!selectedPlayer || uploading || isPending}
         defaultValue={selectedPlayer?.name || ""}
       />
 
@@ -104,7 +115,7 @@ export default function EditPlayerForm({ teams, players }: Props) {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          disabled={uploading || !selectedPlayer}
+          disabled={uploading || !selectedPlayer || isPending}
           className="bg-gray-600 text-white rounded-md px-4 py-2"
         />
         {uploading && (
@@ -118,13 +129,17 @@ export default function EditPlayerForm({ teams, players }: Props) {
           />
         )}
       </div>
-      <input type="hidden" name="photoUrl" value={photoUrl} />
+      <input
+        type="hidden"
+        name="photoUrl"
+        value={photoUrl || selectedPlayer?.photoUrl || ""}
+      />
 
       {/* TEAM SELECT */}
       <select
         name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedPlayer}
+        disabled={!selectedPlayer || isPending}
         defaultValue={selectedPlayer?.teamId || ""}
         required
       >
@@ -140,10 +155,18 @@ export default function EditPlayerForm({ teams, players }: Props) {
       <button
         className={`text-white px-4 py-2 rounded-md ${selectedPlayer ? "bg-blue-600" : "bg-gray-400"}`}
         type="submit"
-        disabled={!selectedPlayer}
+        disabled={!selectedPlayer || isPending}
       >
-        Edit Player
+        {isPending ? "Updating..." : "Edit Player"}
       </button>
+
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { editKnockoutMatch } from "./actions";
 import type {
   Tournament,
@@ -26,7 +26,8 @@ export default function EditKnockoutMatchForm({
 }: Props) {
   const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
     useState<KnockoutMatchWithTeams | null>(null);
-  const [msg, setMsg] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectKnockoutMatch = (
@@ -39,13 +40,17 @@ export default function EditKnockoutMatchForm({
   };
 
   const handleSubmit = async (formData: FormData) => {
-    const res = await editKnockoutMatch(formData);
-    if (!res.ok && res.error) setMsg(res.error);
-    else {
-      setMsg("");
-      setSelectedKnockoutMatch(null);
-    }
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await editKnockoutMatch(formData);
+        setMessage("✅ Knockout Match updated successfully!");
+        setSelectedKnockoutMatch(null);
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error updating knockout match");
+      }
+    });
   };
 
   if (!knockoutMatches || knockoutMatches.length === 0) {
@@ -70,6 +75,7 @@ export default function EditKnockoutMatchForm({
           className="bg-gray-600 text-white rounded-md px-4 py-2"
           onChange={handleSelectKnockoutMatch}
           value={selectedKnockoutMatch?.id || ""}
+          disabled={isPending}
           required
         >
           <option value="" disabled>
@@ -87,7 +93,7 @@ export default function EditKnockoutMatchForm({
           type="datetime-local"
           name="date"
           required
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={
             selectedKnockoutMatch
               ? new Date(selectedKnockoutMatch.date).toISOString().slice(0, 16)
@@ -98,7 +104,7 @@ export default function EditKnockoutMatchForm({
         <select
           name="tournamentId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.tournamentId || ""}
           required
         >
@@ -116,7 +122,7 @@ export default function EditKnockoutMatchForm({
           placeholder="KO Position (1-16)"
           min={1}
           max={16}
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.koPosition || ""}
           required
         />
@@ -124,7 +130,7 @@ export default function EditKnockoutMatchForm({
         <select
           name="leg"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.leg || ""}
           required
         >
@@ -137,7 +143,7 @@ export default function EditKnockoutMatchForm({
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.homeTeamId || ""}
           required
         >
@@ -152,7 +158,7 @@ export default function EditKnockoutMatchForm({
         <select
           name="awayTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.awayTeamId || ""}
           required
         >
@@ -168,7 +174,7 @@ export default function EditKnockoutMatchForm({
           type="number"
           name="homeScore"
           placeholder="Home Score"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.homeScore || 0}
         />
 
@@ -176,7 +182,7 @@ export default function EditKnockoutMatchForm({
           type="number"
           name="awayScore"
           placeholder="Away Score"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
           defaultValue={selectedKnockoutMatch?.awayScore || 0}
         />
 
@@ -184,21 +190,26 @@ export default function EditKnockoutMatchForm({
           <input
             type="checkbox"
             name="isFinished"
-            disabled={!selectedKnockoutMatch}
+            disabled={!selectedKnockoutMatch || isPending}
             defaultChecked={selectedKnockoutMatch?.isFinished || false}
           />{" "}
           Finished?
         </label>
 
         <button
-          className={`text-white px-4 py-2 rounded-md ${selectedKnockoutMatch ? "bg-blue-600" : "bg-gray-400"}`}
+          className={`text-white px-4 py-2 rounded-md ${selectedKnockoutMatch && !isPending ? "bg-blue-600" : "bg-gray-400"}`}
           type="submit"
-          disabled={!selectedKnockoutMatch}
+          disabled={!selectedKnockoutMatch || isPending}
         >
-          Edit Knockout Match
+          {isPending ? "Updating..." : "Edit Knockout Match"}
         </button>
-        {msg && (
-          <p className="text-center text-sm text-red-400 font-medium">{msg}</p>
+
+        {message && (
+          <p
+            className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+          >
+            {message}
+          </p>
         )}
       </form>
 

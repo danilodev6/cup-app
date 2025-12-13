@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { createTeam } from "./actions";
 import { supabase } from "@/lib/supabase";
 import type { Tournament } from "@/generated/prisma/client";
@@ -10,6 +10,8 @@ type Props = {
 };
 
 export default function CreateTeamForm({ tournaments }: Props) {
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -53,10 +55,18 @@ export default function CreateTeamForm({ tournaments }: Props) {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await createTeam(formData);
-    formRef.current?.reset();
-    setUploading(false);
-    setLogoUrl("");
+    startTransition(async () => {
+      try {
+        await createTeam(formData);
+        setMessage("✅ Team created successfully!");
+        formRef.current?.reset();
+        setUploading(false);
+        setLogoUrl("");
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error creating team");
+      }
+    });
   };
 
   return (
@@ -65,11 +75,12 @@ export default function CreateTeamForm({ tournaments }: Props) {
       ref={formRef}
       className="flex flex-col gap-4 form-container-small"
     >
-      <input name="name" placeholder="Name" required />
+      <input name="name" placeholder="Name" required disabled={isPending} />
       <input
         name="shortName"
         placeholder="Short Name (3 letters)"
         maxLength={3}
+        disabled={isPending}
         required
       />
 
@@ -80,7 +91,7 @@ export default function CreateTeamForm({ tournaments }: Props) {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          disabled={uploading}
+          disabled={uploading || isPending}
           className="bg-gray-600 text-white rounded-md px-4 py-2"
         />
         {uploading && (
@@ -98,11 +109,17 @@ export default function CreateTeamForm({ tournaments }: Props) {
       </div>
 
       {/* Hidden input con la URL */}
-      <input type="hidden" name="logoUrl" value={logoUrl} />
+      <input
+        type="hidden"
+        name="logoUrl"
+        value={logoUrl}
+        disabled={isPending}
+      />
 
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        disabled={isPending}
         required
       >
         <option value="">Select Tournament</option>
@@ -113,15 +130,28 @@ export default function CreateTeamForm({ tournaments }: Props) {
         ))}
       </select>
 
-      <input name="group" placeholder="Group (A, B, C...)" required />
+      <input
+        name="group"
+        placeholder="Group (A, B, C...)"
+        required
+        disabled={isPending}
+      />
 
       <button
         className="bg-green-600 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
         type="submit"
-        disabled={uploading || !logoUrl}
+        disabled={uploading || !logoUrl || isPending}
       >
-        Create Team
+        {isPending ? "Creating..." : "Create"}
       </button>
+
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

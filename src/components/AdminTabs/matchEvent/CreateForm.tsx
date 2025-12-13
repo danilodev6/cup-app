@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { createMatchEvent } from "./actions";
 import type {
   Tournament,
@@ -34,10 +34,22 @@ export default function CreateMatchEventForm({
 }: Props) {
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
+
   const formRef = useRef<HTMLFormElement>(null);
+
   const handleSubmit = async (formData: FormData) => {
-    await createMatchEvent(formData);
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await createMatchEvent(formData);
+        setMessage("✅ Match Event created successfully!");
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error creating match event");
+      }
+    });
   };
 
   return (
@@ -49,6 +61,7 @@ export default function CreateMatchEventForm({
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        disabled={isPending}
         required
       >
         <option value="">Select Tournament</option>
@@ -67,7 +80,7 @@ export default function CreateMatchEventForm({
           setSelectedMatchId(e.target.value);
           if (e.target.value) setSelectedKoMatchId("");
         }}
-        disabled={!!selectedKoMatchId}
+        disabled={!!selectedKoMatchId || isPending}
       >
         <option value="">Select Group Match (optional)</option>
         {matches.map((m) => (
@@ -85,7 +98,7 @@ export default function CreateMatchEventForm({
           setSelectedKoMatchId(e.target.value);
           if (e.target.value) setSelectedMatchId("");
         }}
-        disabled={!!selectedMatchId}
+        disabled={!!selectedMatchId || isPending}
       >
         <option value="">Select Knockout Match (optional)</option>
         {knockoutMatches.map((km) => (
@@ -99,6 +112,7 @@ export default function CreateMatchEventForm({
       <select
         name="playerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        disabled={isPending}
         required
       >
         <option value="">Select Player</option>
@@ -112,6 +126,7 @@ export default function CreateMatchEventForm({
       <select
         name="eventType"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        disabled={isPending}
         required
       >
         <option value="">Select Event Type</option>
@@ -121,11 +136,19 @@ export default function CreateMatchEventForm({
       </select>
 
       <button
-        className="bg-green-600 text-white px-4 py-2 rounded-md"
+        className="bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
         type="submit"
+        disabled={isPending}
       >
-        Create Match Event
+        {isPending ? "Creating..." : "Create"}
       </button>
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { createPlayer } from "./actions";
 import { supabase } from "@/lib/supabase";
 import type { Team } from "@/generated/prisma/client";
@@ -10,6 +10,8 @@ type Props = {
 };
 
 export default function CreatePlayerForm({ teams }: Props) {
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [photoUrl, setPhotoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -53,10 +55,18 @@ export default function CreatePlayerForm({ teams }: Props) {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await createPlayer(formData);
-    formRef.current?.reset();
-    setUploading(false);
-    setPhotoUrl("");
+    startTransition(async () => {
+      try {
+        await createPlayer(formData);
+        setMessage("✅ Player created successfully!");
+        formRef.current?.reset();
+        setUploading(false);
+        setPhotoUrl("");
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error creating player");
+      }
+    });
   };
 
   return (
@@ -65,7 +75,7 @@ export default function CreatePlayerForm({ teams }: Props) {
       ref={formRef}
       className="flex flex-col gap-4 form-container-small"
     >
-      <input name="name" placeholder="Name" required />
+      <input name="name" placeholder="Name" required disabled={isPending} />
       {/* Input de archivo */}
       <div>
         <label className="block mb-2">Player photo:</label>
@@ -73,7 +83,7 @@ export default function CreatePlayerForm({ teams }: Props) {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          disabled={uploading}
+          disabled={uploading || isPending}
           className="bg-gray-600 text-white rounded-md px-4 py-2"
         />
         {uploading && (
@@ -96,6 +106,7 @@ export default function CreatePlayerForm({ teams }: Props) {
       <select
         name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        disabled={isPending}
         required
       >
         <option value="">Select Team</option>
@@ -109,10 +120,18 @@ export default function CreatePlayerForm({ teams }: Props) {
       <button
         className="bg-green-600 text-white px-4 py-2 rounded-md disabled:bg-gray-400"
         type="submit"
-        disabled={uploading || !photoUrl}
+        disabled={uploading || !photoUrl || isPending}
       >
-        Create Player
+        {isPending ? "Creating..." : "Create"}
       </button>
+
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

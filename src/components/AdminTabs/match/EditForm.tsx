@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { editMatch } from "./actions";
 import type { Tournament, Team, Match } from "@/generated/prisma/client";
 
@@ -17,6 +17,8 @@ type Props = {
 
 export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSelectMatch = (e: React.ChangeEvent<HTMLSelectElement>) => {
@@ -27,8 +29,17 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await editMatch(formData);
-    setSelectedMatch(null);
+    startTransition(async () => {
+      try {
+        await editMatch(formData);
+        setMessage("✅ Match updated successfully!");
+        setSelectedMatch(null);
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error updating match");
+      }
+    });
   };
 
   if (!matches || matches.length === 0) {
@@ -48,6 +59,7 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectMatch}
         value={selectedMatch?.id || ""}
+        disabled={isPending}
         required
       >
         <option value="" disabled>
@@ -64,7 +76,7 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         type="datetime-local"
         name="date"
         required
-        disabled={!selectedMatch}
+        disabled={!selectedMatch || isPending}
         defaultValue={
           selectedMatch
             ? new Date(selectedMatch.date).toISOString().slice(0, 16)
@@ -75,7 +87,7 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatch}
+        disabled={!selectedMatch || isPending}
         defaultValue={selectedMatch?.tournamentId || ""}
         required
       >
@@ -87,10 +99,11 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         ))}
       </select>
 
+      <label className="block text-sm">Home Team</label>
       <select
         name="homeTeamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatch}
+        disabled={!selectedMatch || isPending}
         defaultValue={selectedMatch?.homeTeamId || ""}
         required
       >
@@ -102,10 +115,11 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         ))}
       </select>
 
+      <label className="block text-sm">Away Team</label>
       <select
         name="awayTeamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatch}
+        disabled={!selectedMatch || isPending}
         defaultValue={selectedMatch?.awayTeamId || ""}
         required
       >
@@ -117,27 +131,37 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         ))}
       </select>
 
-      <input
-        type="number"
-        name="homeScore"
-        placeholder="Home Score"
-        disabled={!selectedMatch}
-        defaultValue={selectedMatch?.homeScore || 0}
-      />
+      <div className="grid grid-cols-2 gap-4">
+        <div>
+          <label className="block text-sm mb-1">Home Team Score</label>
+          <input
+            type="number"
+            name="homeScore"
+            placeholder="0"
+            disabled={!selectedMatch || isPending}
+            defaultValue={selectedMatch?.homeScore || 0}
+            className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+          />
+        </div>
 
-      <input
-        type="number"
-        name="awayScore"
-        placeholder="Away Score"
-        disabled={!selectedMatch}
-        defaultValue={selectedMatch?.awayScore || 0}
-      />
+        <div>
+          <label className="block text-sm mb-1">Away Team Score</label>
+          <input
+            type="number"
+            name="awayScore"
+            placeholder="0"
+            disabled={!selectedMatch || isPending}
+            defaultValue={selectedMatch?.awayScore || 0}
+            className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+          />
+        </div>
+      </div>
 
       <label className="text-center">
         <input
           type="checkbox"
           name="isFinished"
-          disabled={!selectedMatch}
+          disabled={!selectedMatch || isPending}
           defaultChecked={selectedMatch?.isFinished || false}
         />{" "}
         Finished?
@@ -146,10 +170,17 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
       <button
         className={`text-white px-4 py-2 rounded-md ${selectedMatch ? "bg-blue-600" : "bg-gray-400"}`}
         type="submit"
-        disabled={!selectedMatch}
+        disabled={!selectedMatch || isPending}
       >
-        Edit Match
+        {isPending ? "Updating..." : "Edit Match"}
       </button>
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

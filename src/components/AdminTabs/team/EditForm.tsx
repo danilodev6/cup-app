@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { editTeam } from "./actions";
 import { supabase } from "@/lib/supabase";
 import type { Team, Tournament } from "@/generated/prisma/client";
@@ -12,6 +12,8 @@ type Props = {
 
 export default function EditTeamForm({ teams, tournaments }: Props) {
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -31,7 +33,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
 
       const file = e.target.files[0];
       const fileExt = file.name.split(".").pop();
-      const fileName = `${Date.now()}.${fileExt}`;
+      const fileName = `${Date.now()}.${fileExt}`; // Only if file change
       const filePath = `teams/${fileName}`;
 
       const { error: uploadError } = await supabase.storage
@@ -42,7 +44,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
 
       const { data } = supabase.storage.from("Photos").getPublicUrl(filePath);
 
-      setLogoUrl(data.publicUrl);
+      setLogoUrl(data.publicUrl); // Only if file change
     } catch (error) {
       alert("Error uploading image!");
       console.error(error);
@@ -52,10 +54,18 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
   };
 
   const handleSubmit = async (formData: FormData) => {
-    await editTeam(formData);
-    setSelectedTeam(null);
-    setLogoUrl("");
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await editTeam(formData);
+        setMessage("✅ Team updated successfully!");
+        setSelectedTeam(null);
+        setLogoUrl("");
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error updating team");
+      }
+    });
   };
 
   if (!teams || teams.length === 0) {
@@ -76,6 +86,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectTeam}
         value={selectedTeam?.id || ""}
+        disabled={isPending}
         required
       >
         <option value="" disabled>
@@ -93,7 +104,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         name="name"
         placeholder="Name"
         required
-        disabled={!selectedTeam}
+        disabled={!selectedTeam || isPending}
         defaultValue={selectedTeam?.name || ""}
       />
 
@@ -101,7 +112,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         name="shortName"
         placeholder="Short Name"
         required
-        disabled={!selectedTeam}
+        disabled={!selectedTeam || isPending}
         defaultValue={selectedTeam?.shortName || ""}
       />
 
@@ -112,7 +123,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
           type="file"
           accept="image/*"
           onChange={handleImageUpload}
-          disabled={uploading || !selectedTeam}
+          disabled={uploading || !selectedTeam || isPending}
           className="bg-gray-600 text-white rounded-md px-4 py-2"
         />
         {uploading && (
@@ -126,13 +137,17 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
           />
         )}
       </div>
-      <input type="hidden" name="logoUrl" value={logoUrl} />
+      <input
+        type="hidden"
+        name="logoUrl"
+        value={logoUrl || selectedTeam?.logoUrl || ""}
+      />
 
       {/* TOURNAMENT SELECT */}
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedTeam}
+        disabled={!selectedTeam || isPending}
         defaultValue={selectedTeam?.tournamentId || ""}
         required
       >
@@ -148,7 +163,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
       <input
         name="group"
         placeholder="Group"
-        disabled={!selectedTeam}
+        disabled={!selectedTeam || isPending}
         defaultValue={selectedTeam?.group || ""}
       />
 
@@ -156,10 +171,18 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
       <button
         className={`text-white px-4 py-2 rounded-md ${selectedTeam ? "bg-blue-600" : "bg-gray-400"}`}
         type="submit"
-        disabled={!selectedTeam}
+        disabled={!selectedTeam || isPending}
       >
-        Edit Team
+        {isPending ? "Updating..." : "Edit Team"}
       </button>
+
+      {message && (
+        <p
+          className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+        >
+          {message}
+        </p>
+      )}
     </form>
   );
 }

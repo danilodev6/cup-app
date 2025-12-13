@@ -32,10 +32,13 @@ export async function editTeam(formData: FormData) {
   const rawId = formData.get("id") as string;
   const id = Number(rawId);
   const name = formData.get("name") as string;
-  const shortName = formData.get("shortName") as string;
+  const rawShortName = formData.get("shortName") as string;
   const logoUrl = formData.get("logoUrl") as string;
   const tournamentId = Number(formData.get("tournamentId"));
-  const group = formData.get("group") as string;
+  const rawGroup = formData.get("group") as string;
+
+  const shortName = rawShortName.toUpperCase();
+  const group = rawGroup.toUpperCase();
 
   await prisma.team.update({
     where: {

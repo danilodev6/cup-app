@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useTransition } from "react";
 import { createKnockoutMatch } from "./actions";
 import type { Tournament, Team } from "@/generated/prisma/client";
 
@@ -10,17 +10,21 @@ type Props = {
 };
 
 export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
-  const [msg, setMsg] = useState("");
+  const [isPending, startTransition] = useTransition();
+  const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
   const handleSubmit = async (fd: FormData) => {
-    const res = await createKnockoutMatch(fd);
-    if (!res.ok && res.error) setMsg(res.error);
-    else {
-      setMsg("");
-      (fd as any).target?.reset();
-    }
-    formRef.current?.reset();
+    startTransition(async () => {
+      try {
+        await createKnockoutMatch(fd);
+        setMessage("✅ Knockout Match created successfully!");
+        formRef.current?.reset();
+        setTimeout(() => setMessage(""), 3000);
+      } catch (error) {
+        setMessage("❌ Error creating knockout match");
+      }
+    });
   };
 
   return (
@@ -34,11 +38,17 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           handleSubmit(new FormData(e.currentTarget));
         }}
       >
-        <input type="datetime-local" name="date" required />
+        <input
+          type="datetime-local"
+          name="date"
+          disabled={isPending}
+          required
+        />
 
         <select
           name="tournamentId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
+          disabled={isPending}
           required
         >
           <option value="">Select Tournament</option>
@@ -55,11 +65,14 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           placeholder="KO Position (1-16)"
           min={1}
           max={16}
+          disabled={isPending}
           required
         />
+
         <select
           name="leg"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
+          disabled={isPending}
           required
         >
           <option value="" disabled>
@@ -72,6 +85,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
+          disabled={isPending}
           required
         >
           <option value="">Select Home Team</option>
@@ -85,6 +99,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         <select
           name="awayTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
+          disabled={isPending}
           required
         >
           <option value="">Select Away Team</option>
@@ -100,6 +115,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           name="homeScore"
           placeholder="Home Score"
           defaultValue={0}
+          disabled={isPending}
         />
 
         <input
@@ -107,6 +123,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           name="awayScore"
           placeholder="Away Score"
           defaultValue={0}
+          disabled={isPending}
         />
 
         <label className="text-center">
@@ -114,13 +131,19 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         </label>
 
         <button
-          className="bg-green-600 text-white px-4 py-2 rounded-md"
+          className="bg-green-600 text-white px-4 py-2 rounded-md disabled:opacity-50"
           type="submit"
+          disabled={isPending}
         >
-          Create Knockout Match
+          {isPending ? "Creating..." : "Create"}
         </button>
-        {msg && (
-          <p className="text-center text-sm text-red-400 font-medium">{msg}</p>
+
+        {message && (
+          <p
+            className={`text-center text-sm font-medium ${message.includes("✅") ? "text-green-400" : "text-red-400"}`}
+          >
+            {message}
+          </p>
         )}
       </form>
 
