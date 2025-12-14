@@ -46,7 +46,7 @@ export default function EditKnockoutMatchForm({
         setMessage("✅ Knockout Match updated successfully!");
         setSelectedKnockoutMatch(null);
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating knockout match");
       }
@@ -140,6 +140,8 @@ export default function EditKnockoutMatchForm({
           <option value="first">First Leg</option>
           <option value="second">Second Leg</option>
         </select>
+
+        <label className="block text-sm">Home Team</label>
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -155,6 +157,7 @@ export default function EditKnockoutMatchForm({
           ))}
         </select>
 
+        <label className="block text-sm">Away Team</label>
         <select
           name="awayTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -170,21 +173,31 @@ export default function EditKnockoutMatchForm({
           ))}
         </select>
 
-        <input
-          type="number"
-          name="homeScore"
-          placeholder="Home Score"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.homeScore || 0}
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm mb-1">Home Team Score</label>
+            <input
+              type="number"
+              name="homeScore"
+              placeholder="0"
+              disabled={!selectedKnockoutMatch || isPending}
+              defaultValue={selectedKnockoutMatch?.homeScore || 0}
+              className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+            />
+          </div>
 
-        <input
-          type="number"
-          name="awayScore"
-          placeholder="Away Score"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.awayScore || 0}
-        />
+          <div>
+            <label className="block text-sm mb-1">Away Team Score</label>
+            <input
+              type="number"
+              name="awayScore"
+              placeholder="0"
+              disabled={!selectedKnockoutMatch || isPending}
+              defaultValue={selectedKnockoutMatch?.awayScore || 0}
+              className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+            />
+          </div>
+        </div>
 
         <label className="text-center">
           <input

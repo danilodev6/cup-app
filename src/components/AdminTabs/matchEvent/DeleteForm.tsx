@@ -47,7 +47,7 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
         await deleteMatchEvent(formData);
         setMessage("✅ Match Event deleted successfully!");
         setSelectedMatchEvent(null);
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error deleting match event");
       }

@@ -30,7 +30,7 @@ export default function DeleteKnockoutMatchForm({ knockoutMatches }: Props) {
         await deleteKnockoutMatch(formData);
         setMessage("✅ Knockout Match deleted successfully!");
         setSelectedKnockoutMatch(null);
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error deleting knockout match");
       }

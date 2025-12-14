@@ -9,11 +9,12 @@ export default async function TeamsView({
 }) {
   const teams = await prisma.team.findMany({
     where: { tournamentId: Number(tournamentId) },
+    orderBy: { name: "asc" },
   });
 
   return (
     <div className="flex items-center mx-auto">
-      <ul className="grid grid-cols-1 md:grid-cols-2 gap-4 mx-auto">
+      <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto">
         {teams.map((team: Team) => (
           <Link key={team.id} href={`/teams/${team.id}`}>
             <li key={team.id} className="flex gap-4" id="explore-btn">

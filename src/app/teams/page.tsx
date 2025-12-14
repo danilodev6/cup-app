@@ -3,7 +3,7 @@ import type { Team } from "@/generated/prisma/client";
 import Link from "next/link";
 
 const Teams = async () => {
-  const teams = await prisma.team.findMany();
+  const teams = await prisma.team.findMany({ orderBy: { name: "asc" } });
 
   return (
     <div className="flex mx-auto">

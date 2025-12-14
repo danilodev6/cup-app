@@ -31,7 +31,7 @@ export default function EditTournamentForm({ tournaments }: Props) {
         setMessage("✅ Tournament updated successfully!");
         setSelectedTournament(null);
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating tournament");
       }

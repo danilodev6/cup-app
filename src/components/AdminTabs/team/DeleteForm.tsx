@@ -24,7 +24,7 @@ export default function DeleteTeamForm({ teams }: Props) {
         await deleteTeam(formData);
         setMessage("✅ Team deleted successfully!");
         setSelectedTeam(null);
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error deleting team");
       }

@@ -9,7 +9,7 @@ import type {
   Player,
   MatchEvent,
 } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "../../../lib/date-utils";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: { id: number; name: string };
@@ -47,10 +47,28 @@ export default function EditMatchEventForm({
     useState<MatchEventWithRelations | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  // getting teams from selected match
+  const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
+  const selectedKoMatch = knockoutMatches.find(
+    (km) => km.id === Number(selectedKoMatchId),
+  );
+
+  const availableTeams = selectedMatch
+    ? [selectedMatch.homeTeam, selectedMatch.awayTeam]
+    : selectedKoMatch
+      ? [selectedKoMatch.homeTeam, selectedKoMatch.awayTeam]
+      : [];
+
+  // getting players from selected team
+  const filteredPlayers = selectedTeamId
+    ? players.filter((p) => p.teamId === Number(selectedTeamId))
+    : players;
 
   const handleSelectMatchEvent = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
@@ -58,6 +76,7 @@ export default function EditMatchEventForm({
     setSelectedMatchEvent(matchEvent);
     setSelectedMatchId(matchEvent?.matchId?.toString() || "");
     setSelectedKoMatchId(matchEvent?.knockoutMatchId?.toString() || "");
+    setSelectedTeamId(matchEvent?.player.teamId.toString() || "");
   };
 
   const handleSubmit = async (formData: FormData) => {
@@ -67,7 +86,7 @@ export default function EditMatchEventForm({
         setMessage("✅ Match Event updated successfully!");
         setSelectedMatchEvent(null);
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating match event");
       }
@@ -132,6 +151,7 @@ export default function EditMatchEventForm({
         value={selectedMatchId}
         onChange={(e) => {
           setSelectedMatchId(e.target.value);
+          setSelectedTeamId("");
           if (e.target.value) setSelectedKoMatchId("");
         }}
         disabled={!selectedMatchEvent || !!selectedKoMatchId || isPending}
@@ -150,6 +170,7 @@ export default function EditMatchEventForm({
         value={selectedKoMatchId}
         onChange={(e) => {
           setSelectedKoMatchId(e.target.value);
+          setSelectedTeamId("");
           if (e.target.value) setSelectedMatchId("");
         }}
         disabled={!selectedMatchEvent || !!selectedMatchId || isPending}
@@ -162,15 +183,32 @@ export default function EditMatchEventForm({
         ))}
       </select>
 
+      {availableTeams.length > 0 && (
+        <select
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          value={selectedTeamId}
+          onChange={(e) => setSelectedTeamId(e.target.value)}
+          disabled={!selectedMatchEvent || isPending}
+          required
+        >
+          <option value="">Select Team</option>
+          {availableTeams.map((team) => (
+            <option key={team.id} value={team.id}>
+              {team.name}
+            </option>
+          ))}
+        </select>
+      )}
+
       <select
         name="playerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={!selectedMatchEvent || isPending}
+        disabled={!selectedTeamId || isPending}
         defaultValue={selectedMatchEvent?.playerId || ""}
         required
       >
         <option value="">Select Player</option>
-        {players.map((p) => (
+        {filteredPlayers.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
           </option>

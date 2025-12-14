@@ -25,7 +25,7 @@ export default function DeleteTournamentForm({ tournaments }: Props) {
         await deleteTournament(formData);
         setMessage("✅ Tournament deleted successfully!");
         setSelectedTournament(null);
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error deleting tournament");
       }

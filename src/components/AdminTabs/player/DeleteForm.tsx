@@ -24,7 +24,7 @@ export default function DeletePlayerForm({ players }: Props) {
         await deletePlayer(formData);
         setMessage("✅ Player deleted successfully!");
         setSelectedPlayer(null);
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error deleting player");
       }

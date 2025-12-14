@@ -34,10 +34,28 @@ export default function CreateMatchEventForm({
 }: Props) {
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const [selectedTeamId, setSelectedTeamId] = useState("");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  // getting teams from selected match
+  const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
+  const selectedKoMatch = knockoutMatches.find(
+    (km) => km.id === Number(selectedKoMatchId),
+  );
+
+  const availableTeams = selectedMatch
+    ? [selectedMatch.homeTeam, selectedMatch.awayTeam]
+    : selectedKoMatch
+      ? [selectedKoMatch.homeTeam, selectedKoMatch.awayTeam]
+      : [];
+
+  // getting players from selected team
+  const filteredPlayers = selectedTeamId
+    ? players.filter((p) => p.teamId === Number(selectedTeamId))
+    : players;
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
@@ -45,7 +63,7 @@ export default function CreateMatchEventForm({
         await createMatchEvent(formData);
         setMessage("✅ Match Event created successfully!");
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating match event");
       }
@@ -78,6 +96,7 @@ export default function CreateMatchEventForm({
         value={selectedMatchId}
         onChange={(e) => {
           setSelectedMatchId(e.target.value);
+          setSelectedTeamId("");
           if (e.target.value) setSelectedKoMatchId("");
         }}
         disabled={!!selectedKoMatchId || isPending}
@@ -96,6 +115,7 @@ export default function CreateMatchEventForm({
         value={selectedKoMatchId}
         onChange={(e) => {
           setSelectedKoMatchId(e.target.value);
+          setSelectedTeamId("");
           if (e.target.value) setSelectedMatchId("");
         }}
         disabled={!!selectedMatchId || isPending}
@@ -109,6 +129,23 @@ export default function CreateMatchEventForm({
         ))}
       </select>
 
+      {availableTeams.length > 0 && (
+        <select
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          value={selectedTeamId}
+          onChange={(e) => setSelectedTeamId(e.target.value)}
+          disabled={isPending}
+          required
+        >
+          <option value="">Select Team</option>
+          {availableTeams.map((team) => (
+            <option key={team.id} value={team.id}>
+              {team.name}
+            </option>
+          ))}
+        </select>
+      )}
+
       <select
         name="playerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -116,7 +153,7 @@ export default function CreateMatchEventForm({
         required
       >
         <option value="">Select Player</option>
-        {players.map((p) => (
+        {filteredPlayers.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
           </option>

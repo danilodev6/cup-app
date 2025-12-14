@@ -61,7 +61,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         setSelectedTeam(null);
         setLogoUrl("");
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating team");
       }

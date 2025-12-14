@@ -20,7 +20,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         await createKnockoutMatch(fd);
         setMessage("✅ Knockout Match created successfully!");
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating knockout match");
       }
@@ -82,6 +82,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           <option value="second">Second Leg</option>
         </select>
 
+        <label className="block text-sm">Home Team</label>
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -96,6 +97,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           ))}
         </select>
 
+        <label className="block text-sm">Away Team</label>
         <select
           name="awayTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -110,21 +112,31 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
           ))}
         </select>
 
-        <input
-          type="number"
-          name="homeScore"
-          placeholder="Home Score"
-          defaultValue={0}
-          disabled={isPending}
-        />
+        <div className="grid grid-cols-2 gap-4">
+          <div>
+            <label className="block text-sm mb-1">Home Team Score</label>
+            <input
+              type="number"
+              name="homeScore"
+              placeholder="0"
+              defaultValue={0}
+              disabled={isPending}
+              className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+            />
+          </div>
 
-        <input
-          type="number"
-          name="awayScore"
-          placeholder="Away Score"
-          defaultValue={0}
-          disabled={isPending}
-        />
+          <div>
+            <label className="block text-sm mb-1">Away Team Score</label>
+            <input
+              type="number"
+              name="awayScore"
+              placeholder="0"
+              defaultValue={0}
+              disabled={isPending}
+              className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+            />
+          </div>
+        </div>
 
         <label className="text-center">
           <input type="checkbox" name="isFinished" /> Finished?

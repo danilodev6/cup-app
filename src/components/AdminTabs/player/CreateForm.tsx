@@ -62,7 +62,7 @@ export default function CreatePlayerForm({ teams }: Props) {
         formRef.current?.reset();
         setUploading(false);
         setPhotoUrl("");
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating player");
       }

@@ -35,7 +35,7 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         setMessage("✅ Match updated successfully!");
         setSelectedMatch(null);
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating match");
       }

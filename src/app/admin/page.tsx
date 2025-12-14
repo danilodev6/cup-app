@@ -30,8 +30,16 @@ export default async function AdminPage({
     | "matchevent";
 
   const tournaments = await prisma.tournament.findMany({});
-  const teams = await prisma.team.findMany({});
-  const players = await prisma.player.findMany({});
+  const teams = await prisma.team.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
+  const players = await prisma.player.findMany({
+    orderBy: {
+      name: "asc",
+    },
+  });
   const matches = await prisma.match.findMany({
     include: {
       homeTeam: true,

@@ -9,21 +9,19 @@ export default async function GroupsView({
     where: { tournamentId: Number(tournamentId) },
   });
 
-  // const groups = ["A", "B", "C", "D", "E", "F", "G", "H"];
   const groups = [...new Set(teams.map((team) => team.group))].sort();
 
   return (
     <div className="container mx-auto px-4 py-8">
-      <div className="grid grid-cols-1 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 md:mx-18">
         {groups.map((groupName) => (
           <div
             key={groupName}
-            className="md:w-[450px] md:mx-auto border border-dark-200 bg-dark-100 rounded-3xl p-4"
+            className="border border-dark-200 bg-dark-100 rounded-3xl p-4"
           >
             <h3 className="text-xl font-semibold text-center mb-4">
               Group {groupName}
             </h3>
-
             <div className="space-y-3">
               {teams
                 .filter((team) => team.group === groupName)

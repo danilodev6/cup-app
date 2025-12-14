@@ -2,6 +2,7 @@ import prisma from "@/lib/prisma";
 import type { KnockoutMatchWithTeams } from "@/lib/types";
 import { formatArgentinianDateKo } from "@/lib/date-utils";
 import Link from "next/link";
+import { calculateWinner } from "@/lib/knockout-utils";
 
 export default async function KnockoutView({
   tournamentId,
@@ -31,8 +32,81 @@ export default async function KnockoutView({
     return { first, second };
   };
 
+  // set winner if final match is finished
+  const finalMatches = getMatches(16);
+  const thirdPlaceMatches = getMatches(15);
+
+  const finalResult = calculateWinner(finalMatches);
+  const thirdPlaceResult = calculateWinner(thirdPlaceMatches);
+
   return (
     <div className="md:w-[555px] md:mx-auto">
+      {finalResult && (
+        <div className="mb-8 p-6 bg-gradient-to-b from-dark-100 to-dark-200 rounded-3xl border border-dark-200">
+          <h2 className="text-2xl font-bold text-center mb-6 text-gradient">
+            Tournament Results
+          </h2>
+
+          <div className="flex flex-col gap-4">
+            {/* Champ */}
+            <div className="flex items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
+              <div className="text-4xl">🏆</div>
+              <img
+                src={finalResult.winner.logoUrl}
+                alt={finalResult.winner.name}
+                className="w-12 h-12 object-contain"
+              />
+              <div>
+                <div className="text-xs text-yellow-500 font-semibold">
+                  CHAMPION
+                </div>
+                <div className="text-lg font-bold">
+                  {finalResult.winner.name}
+                </div>
+              </div>
+            </div>
+
+            {/* runner-up */}
+            <div className="flex items-center gap-4 p-4 bg-gray-500/10 border border-gray-500/30 rounded-xl">
+              <div className="text-3xl">🥈</div>
+              <img
+                src={finalResult.loser.logoUrl}
+                alt={finalResult.loser.name}
+                className="w-10 h-10 object-contain"
+              />
+              <div>
+                <div className="text-xs text-gray-400 font-semibold">
+                  RUNNER-UP
+                </div>
+                <div className="text-base font-bold">
+                  {finalResult.loser.name}
+                </div>
+              </div>
+            </div>
+
+            {/* Third place */}
+            {thirdPlaceResult && (
+              <div className="flex items-center gap-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl">
+                <div className="text-2xl">🥉</div>
+                <img
+                  src={thirdPlaceResult.winner.logoUrl}
+                  alt={thirdPlaceResult.winner.name}
+                  className="w-10 h-10 object-contain"
+                />
+                <div>
+                  <div className="text-xs text-orange-400 font-semibold">
+                    THIRD PLACE
+                  </div>
+                  <div className="text-base font-bold">
+                    {thirdPlaceResult.winner.name}
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
+
       {/* Row 1 */}
       <div className="bracket-flex justify-between">
         <MatchCard matches={getMatches(1)} label="8vos" />
@@ -52,7 +126,7 @@ export default async function KnockoutView({
       </div>
       {/* Row 4 */}
       <div className="bracket-flex justify-around">
-        <div className="w-[103px]" />
+        <div className="w-[97px]" />
         <MatchCard matches={getMatches(16)} label="FINAL" />
         <MatchCard matches={getMatches(15)} label="3ER POS" />
       </div>
@@ -92,7 +166,17 @@ function MatchCard({
 
   if (!first && !second) return null;
 
-  const displayMatch = first || second;
+  const displayMatch = first ?? second;
+
+  if (!displayMatch) return null;
+
+  // Calculate winner/loser for visual indication
+  const result = calculateWinner(matches);
+  const loser = result
+    ? result.loser === displayMatch.homeTeam
+      ? "home"
+      : "away"
+    : null;
 
   return (
     <Link href="/komatches" className="ko-card flex flex-col">
@@ -115,8 +199,12 @@ function MatchCard({
         />
       </div>
       <div className="ko-teams flex gap-1 items-center">
-        <span>{displayMatch?.homeTeam.shortName}</span>
-        <span>{displayMatch?.awayTeam.shortName}</span>
+        <span className={loser === "home" ? "line-through text-gray-500" : ""}>
+          {displayMatch?.homeTeam.shortName}
+        </span>
+        <span className={loser === "away" ? "line-through text-gray-500" : ""}>
+          {displayMatch?.awayTeam.shortName}
+        </span>
       </div>
 
       {/* Mostrar ambos partidos */}

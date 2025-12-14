@@ -62,7 +62,7 @@ export default function CreateTeamForm({ tournaments }: Props) {
         formRef.current?.reset();
         setUploading(false);
         setLogoUrl("");
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating team");
       }

@@ -20,7 +20,7 @@ export default function CreateMatchForm({ tournaments, teams }: Props) {
         await createMatch(formData);
         setMessage("✅ Match created successfully!");
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating match");
       }

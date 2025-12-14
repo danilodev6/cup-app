@@ -61,7 +61,7 @@ export default function EditPlayerForm({ teams, players }: Props) {
         setSelectedPlayer(null);
         setPhotoUrl("");
         formRef.current?.reset();
-        setTimeout(() => setMessage(""), 3000);
+        setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating player");
       }
