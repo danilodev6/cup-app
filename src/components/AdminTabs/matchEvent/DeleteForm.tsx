@@ -9,6 +9,7 @@ import type {
   Match,
   KnockoutMatch,
 } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: { id: number; name: string };
@@ -57,6 +58,14 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
     return <p>No match events available</p>;
   }
 
+  const itemName = selectedMatchEvent
+    ? selectedMatchEvent.match
+      ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - group match: (${selectedMatchEvent.match.homeTeam.name} vs ${selectedMatchEvent.match.awayTeam.name})`
+      : selectedMatchEvent.knockoutMatch
+        ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - ko match: (${selectedMatchEvent.knockoutMatch.homeTeam.name} vs ${selectedMatchEvent.knockoutMatch.awayTeam.name})`
+        : ""
+    : "";
+
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
@@ -73,20 +82,23 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
         required
       >
         <option value="">Select Match Event to Delete</option>
-        {matchEvents.map((me) => (
-          <option key={me.id} value={me.id}>
-            {me.player.name} - {me.eventType} ({me.match?.homeTeam.name} vs{" "}
-            {me.match?.awayTeam.name})
-          </option>
-        ))}
+        {matchEvents.map((me) => {
+          const matchInfo = me.match
+            ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
+            : me.knockoutMatch
+              ? `[${formatArgentinianDate(me.knockoutMatch.date)}] KO ${me.knockoutMatch.koPosition} ${me.knockoutMatch.leg} - ${me.knockoutMatch.homeTeam.name} vs ${me.knockoutMatch.awayTeam.name}`
+              : "No match";
+          return (
+            <option key={me.id} value={me.id}>
+              {me.player.name} - {me.eventType} ({matchInfo})
+            </option>
+          );
+        })}
       </select>
 
       <ConfirmDeleteModal
         entityName="Match Event"
-        itemName={
-          `${selectedMatchEvent?.player.name} - ${selectedMatchEvent?.eventType} (${selectedMatchEvent?.match?.homeTeam.name} vs ${selectedMatchEvent?.match?.awayTeam.name})` ||
-          ""
-        }
+        itemName={itemName || ""}
         onConfirm={handleDelete}
         disabled={!selectedMatchEvent || isPending}
       />

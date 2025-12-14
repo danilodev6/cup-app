@@ -9,6 +9,7 @@ import type {
   Player,
   MatchEvent,
 } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "../../../lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: { id: number; name: string };
@@ -98,9 +99,9 @@ export default function EditMatchEventForm({
         </option>
         {matchEvents.map((me) => {
           const matchInfo = me.match
-            ? `${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
+            ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
             : me.knockoutMatch
-              ? `KO ${me.knockoutMatch.koPosition} - ${me.knockoutMatch.homeTeam.name} vs ${me.knockoutMatch.awayTeam.name}`
+              ? `[${formatArgentinianDate(me.knockoutMatch.date)}] KO ${me.knockoutMatch.koPosition} ${me.knockoutMatch.leg} - ${me.knockoutMatch.homeTeam.name} vs ${me.knockoutMatch.awayTeam.name}`
               : "No match";
           return (
             <option key={me.id} value={me.id}>
