@@ -3,6 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { editMatch } from "./actions";
 import type { Tournament, Team, Match } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: Team;
@@ -20,6 +21,10 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const sortedMatches = [...matches].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
 
   const handleSelectMatch = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
@@ -65,9 +70,10 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
         <option value="" disabled>
           Select Match to Edit
         </option>
-        {matches.map((m) => (
+        {sortedMatches.map((m) => (
           <option key={m.id} value={m.id}>
-            {m.homeTeam?.name || "Home"} vs {m.awayTeam?.name || "Away"}
+            {formatArgentinianDate(m.date)} : {m.homeTeam?.name || "Home"} vs{" "}
+            {m.awayTeam?.name || "Away"}
           </option>
         ))}
       </select>

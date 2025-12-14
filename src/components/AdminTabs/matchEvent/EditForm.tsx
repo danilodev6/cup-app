@@ -53,6 +53,8 @@ export default function EditMatchEventForm({
 
   const formRef = useRef<HTMLFormElement>(null);
 
+  const sortedMatchEvents = [...matchEvents].sort((a, b) => a.id - b.id);
+
   // getting teams from selected match
   const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
   const selectedKoMatch = knockoutMatches.find(
@@ -116,7 +118,7 @@ export default function EditMatchEventForm({
         <option value="" disabled>
           Select Match Event to Edit
         </option>
-        {matchEvents.map((me) => {
+        {sortedMatchEvents.map((me) => {
           const matchInfo = me.match
             ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
             : me.knockoutMatch

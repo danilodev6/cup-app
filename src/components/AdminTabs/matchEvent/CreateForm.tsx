@@ -8,6 +8,7 @@ import type {
   KnockoutMatch,
   Player,
 } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "../../../lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: { id: number; name: string };
@@ -39,6 +40,14 @@ export default function CreateMatchEventForm({
   const [message, setMessage] = useState("");
 
   const formRef = useRef<HTMLFormElement>(null);
+
+  const sortedMatches = [...matches].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
+
+  const sortedKnockoutMatches = [...knockoutMatches].sort(
+    (a, b) => b.koPosition - a.koPosition,
+  );
 
   // getting teams from selected match
   const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
@@ -102,9 +111,10 @@ export default function CreateMatchEventForm({
         disabled={!!selectedKoMatchId || isPending}
       >
         <option value="">Select Group Match (optional)</option>
-        {matches.map((m) => (
+        {sortedMatches.map((m) => (
           <option key={m.id} value={m.id}>
-            {m.homeTeam.name} vs {m.awayTeam.name}
+            {formatArgentinianDate(m.date)}: {m.homeTeam.name} vs{" "}
+            {m.awayTeam.name}
           </option>
         ))}
       </select>
@@ -121,10 +131,10 @@ export default function CreateMatchEventForm({
         disabled={!!selectedMatchId || isPending}
       >
         <option value="">Select Knockout Match (optional)</option>
-        {knockoutMatches.map((km) => (
+        {sortedKnockoutMatches.map((km) => (
           <option key={km.id} value={km.id}>
-            KO {km.koPosition} - {km.leg} : {km.homeTeam.name} vs{" "}
-            {km.awayTeam.name}
+            {formatArgentinianDate(km.date)}: KO {km.koPosition} - {km.leg} :{" "}
+            {km.homeTeam.name} vs {km.awayTeam.name}
           </option>
         ))}
       </select>

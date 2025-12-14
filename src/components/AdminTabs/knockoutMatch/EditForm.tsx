@@ -7,6 +7,7 @@ import type {
   Team,
   KnockoutMatch,
 } from "@/generated/prisma/client";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type KnockoutMatchWithTeams = KnockoutMatch & {
   homeTeam: Team;
@@ -29,6 +30,10 @@ export default function EditKnockoutMatchForm({
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const sortedKnockoutMatches = [...knockoutMatches].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
+  );
 
   const handleSelectKnockoutMatch = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -81,10 +86,10 @@ export default function EditKnockoutMatchForm({
           <option value="" disabled>
             Select Knockout Match to Edit
           </option>
-          {knockoutMatches.map((km) => (
+          {sortedKnockoutMatches.map((km) => (
             <option key={km.id} value={km.id}>
-              KO {km.koPosition} {km.leg}: {km.homeTeam?.name || "Home"} vs{" "}
-              {km.awayTeam?.name || "Away"}
+              {formatArgentinianDate(km.date)}: KO {km.koPosition} {km.leg}:{" "}
+              {km.homeTeam?.name || "Home"} vs {km.awayTeam?.name || "Away"}
             </option>
           ))}
         </select>

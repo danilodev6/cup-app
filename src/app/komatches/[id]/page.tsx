@@ -59,7 +59,7 @@ export default async function KoMatchPage({
       </div>
       <h3 className="text-center mt-4">Lineup</h3>
 
-      <div className="flex justify-between w-[90%] mx-auto mt-4">
+      <div className="flex justify-between w-[90%] md:w-[60%] mx-auto mt-4">
         <div>
           <ul>
             {match.homeTeam.players.map((player: PlayerWithEvents) => (
