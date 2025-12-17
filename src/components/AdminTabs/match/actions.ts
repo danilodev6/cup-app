@@ -14,6 +14,15 @@ export async function createMatch(formData: FormData) {
 
   const date = new Date(dateRaw as string);
 
+  // Validations
+  if (homeScore < 0 || awayScore < 0) {
+    throw new Error("Scores cannot be negative");
+  }
+
+  if (homeTeamId === awayTeamId) {
+    throw new Error("Home and away teams cannot be the same");
+  }
+
   // if isFinished update teams scores
   if (isFinished) {
     if (homeScore > awayScore) {
@@ -67,6 +76,15 @@ export async function editMatch(formData: FormData) {
   const isFinished = formData.get("isFinished") === "on";
 
   const date = new Date(dateRaw as string);
+
+  // Validations
+  if (homeScore < 0 || awayScore < 0) {
+    throw new Error("Scores cannot be negative");
+  }
+
+  if (homeTeamId === awayTeamId) {
+    throw new Error("Home and away teams cannot be the same");
+  }
 
   // Fetch previous match to check if it was finished
   const oldMatch = await prisma.match.findUnique({

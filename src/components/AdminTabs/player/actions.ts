@@ -11,6 +11,23 @@ export async function createPlayer(formData: FormData) {
 
   const teamId = Number(rawTeamId);
 
+  // Validations
+  if (!name || name.length < 3) {
+    throw new Error("Player name must be at least 3 characters");
+  }
+
+  if (name.length > 100) {
+    throw new Error("Player name is too long (max 100 characters)");
+  }
+
+  if (!photoUrl) {
+    throw new Error("Photo URL is required");
+  }
+
+  if (!teamId || isNaN(teamId)) {
+    throw new Error("Valid team must be selected");
+  }
+
   await prisma.player.create({
     data: {
       name,
@@ -28,6 +45,23 @@ export async function editPlayer(formData: FormData) {
   const name = formData.get("name") as string;
   const photoUrl = formData.get("photoUrl") as string;
   const teamId = Number(formData.get("teamId"));
+
+  // Validations
+  if (!name || name.length < 3) {
+    throw new Error("Player name must be at least 3 characters");
+  }
+
+  if (name.length > 100) {
+    throw new Error("Player name is too long (max 100 characters)");
+  }
+
+  if (!photoUrl) {
+    throw new Error("Photo URL is required");
+  }
+
+  if (!teamId || isNaN(teamId)) {
+    throw new Error("Valid team must be selected");
+  }
 
   await prisma.player.update({
     where: {

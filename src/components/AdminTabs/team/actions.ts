@@ -15,6 +15,14 @@ export async function createTeam(formData: FormData) {
   const shortName = rawShortName.toUpperCase();
   const group = rawGroup.toUpperCase();
 
+  if (shortName.length !== 3) {
+    throw new Error("Short name must be exactly 3 characters");
+  }
+
+  if (!/^[A-Z]{3}$/.test(shortName)) {
+    throw new Error("Short name must contain only letters");
+  }
+
   await prisma.team.create({
     data: {
       name,
@@ -39,6 +47,14 @@ export async function editTeam(formData: FormData) {
 
   const shortName = rawShortName.toUpperCase();
   const group = rawGroup.toUpperCase();
+
+  if (shortName.length !== 3) {
+    throw new Error("Short name must be exactly 3 characters");
+  }
+
+  if (!/^[A-Z]{3}$/.test(shortName)) {
+    throw new Error("Short name must contain only letters");
+  }
 
   await prisma.team.update({
     where: {

@@ -17,6 +17,28 @@ export async function createKnockoutMatch(
   const awayScore = Number(formData.get("awayScore") || 0);
   const isFinished = formData.get("isFinished") === "on";
 
+  // Validations
+  if (homeScore < 0 || awayScore < 0) {
+    return {
+      ok: false,
+      error: "Error: Scores cannot be negative.",
+    };
+  }
+
+  if (homeTeamId === awayTeamId) {
+    return {
+      ok: false,
+      error: "Error: Home and away teams cannot be the same.",
+    };
+  }
+
+  if (koPosition < 1 || koPosition > 16) {
+    return {
+      ok: false,
+      error: "Error: KO position must be between 1 and 16.",
+    };
+  }
+
   const exists = await prisma.knockoutMatch.findUnique({
     where: { tournamentId_koPosition_leg: { tournamentId, koPosition, leg } },
   });
@@ -62,6 +84,28 @@ export async function editKnockoutMatch(
   const isFinished = formData.get("isFinished") === "on";
 
   const date = new Date(dateRaw as string);
+
+  // Validations
+  if (homeScore < 0 || awayScore < 0) {
+    return {
+      ok: false,
+      error: "Error: Scores cannot be negative.",
+    };
+  }
+
+  if (homeTeamId === awayTeamId) {
+    return {
+      ok: false,
+      error: "Error: Home and away teams cannot be the same.",
+    };
+  }
+
+  if (koPosition < 1 || koPosition > 16) {
+    return {
+      ok: false,
+      error: "Error: KO position must be between 1 and 16.",
+    };
+  }
 
   const existing = await prisma.knockoutMatch.findFirst({
     where: {
