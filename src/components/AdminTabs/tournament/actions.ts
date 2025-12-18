@@ -27,6 +27,8 @@ export async function createTournament(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  revalidatePath("/");
+  revalidatePath("/tournaments");
 }
 
 export async function editTournament(formData: FormData) {
@@ -57,6 +59,8 @@ export async function editTournament(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  revalidatePath("/");
+  revalidatePath("/tournaments");
 }
 
 export async function deleteTournament(formData: FormData) {
@@ -91,4 +95,5 @@ export async function deleteTournament(formData: FormData) {
   });
 
   revalidatePath("/admin");
+  revalidatePath("/");
 }
