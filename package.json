@@ -27,9 +27,9 @@
     "next": "16.0.7",
     "ogl": "^1.0.11",
     "pg": "^8.16.3",
-    "react": "^19.2.1",
+    "react": "19.2.3",
     "react-datepicker": "^8.9.0",
-    "react-dom": "^19.2.1",
+    "react-dom": "19.2.3",
     "tailwind-merge": "^3.4.0"
   },
   "devDependencies": {
