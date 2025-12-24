@@ -3,16 +3,34 @@
 import { useState, useTransition } from "react";
 import { deletePlayer } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type { Player } from "@/generated/prisma/client";
+import type { Tournament, Team, Player } from "@/generated/prisma/client";
 
 type Props = {
+  tournaments: Tournament[];
+  teams: Team[];
   players: Player[];
 };
 
-export default function DeletePlayerForm({ players }: Props) {
+export default function DeletePlayerForm({
+  tournaments,
+  teams,
+  players,
+}: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
+  const [selectedTeamId, setSelectedTeamId] = useState<number | null>(null);
   const [selectedPlayer, setSelectedPlayer] = useState<Player | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+
+  const filteredTeams = selectedTournamentId
+    ? teams.filter((t) => t.tournamentId === selectedTournamentId)
+    : [];
+
+  const filteredPlayers = selectedTeamId
+    ? players.filter((p) => p.teamId === selectedTeamId)
+    : [];
 
   const handleDelete = () => {
     if (!selectedPlayer) return;
@@ -38,6 +56,32 @@ export default function DeletePlayerForm({ players }: Props) {
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTeamId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Team</option>
+        {filteredTeams.map((team) => (
+          <option key={team.id} value={team.id}>
+            {team.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         name="PlayerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedPlayer?.id || ""}
@@ -46,9 +90,10 @@ export default function DeletePlayerForm({ players }: Props) {
           setSelectedPlayer(player || null);
         }}
         required
+        disabled={isPending || !selectedTournamentId || !selectedTeamId}
       >
         <option value="">Select Player to Delete</option>
-        {players.map((p) => (
+        {filteredPlayers.map((p) => (
           <option key={p.id} value={p.id}>
             {p.name}
           </option>
