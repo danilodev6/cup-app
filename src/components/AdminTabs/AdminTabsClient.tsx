@@ -165,7 +165,7 @@ export default function AdminTabsClient({
           />
         )}
         {tab === "delete" && entity === "match" && (
-          <DeleteMatchForm matches={matches} />
+          <DeleteMatchForm tournaments={tournaments} matches={matches} />
         )}
         {tab === "create" && entity === "komatch" && (
           <CreateKnockoutMatchForm tournaments={tournaments} teams={teams} />
