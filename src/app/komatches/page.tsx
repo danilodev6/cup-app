@@ -16,11 +16,11 @@ export default async function KoMatchesPage({
   });
 
   const rounds = [
-    { title: "8vos", positions: [1, 2, 3, 4, 5, 6, 7, 8] },
-    { title: "4tos", positions: [9, 10, 11, 12] },
-    { title: "SEMI", positions: [13, 14] },
-    { title: "3er pos", positions: [15] },
     { title: "FINAL", positions: [16] },
+    { title: "3er pos", positions: [15] },
+    { title: "SEMI", positions: [13, 14] },
+    { title: "4tos", positions: [9, 10, 11, 12] },
+    { title: "8vos", positions: [1, 2, 3, 4, 5, 6, 7, 8] },
   ];
 
   return (
