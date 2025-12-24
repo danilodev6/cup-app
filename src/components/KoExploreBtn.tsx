@@ -14,14 +14,17 @@ const KoExploreBtn = ({ match }: { match: KnockoutMatchWithTeams }) => {
           {formatArgentinianDate(match.date)}
         </span>
       </div>
-      <div className="flex items-center mx-auto mt-2">
-        <span className="flex-1 text-center mr-1">{match.homeTeam.name}</span>
+      <div className="flex items-center justify-center gap-2 mx-auto mt-2">
+        {" "}
+        <span className="text-right w-32 truncate">{match.homeTeam.name}</span>{" "}
         <img className="w-[25px] h-[25px]" src={match.homeTeam.logoUrl} />
-        <span className="px-3 whitespace-nowrap">
+        <span className="px-3 whitespace-nowrap font-bold">
           {match.homeScore} - {match.awayScore}
         </span>
         <img className="w-[25px] h-[25px]" src={match.awayTeam.logoUrl} />
-        <span className="flex-1 text-center ml-1">{match.awayTeam.name}</span>
+        <span className="text-left w-32 truncate">
+          {match.awayTeam.name}
+        </span>{" "}
       </div>
     </Link>
   );
