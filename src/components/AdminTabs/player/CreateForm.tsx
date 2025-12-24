@@ -112,6 +112,7 @@ export default function CreatePlayerForm({ tournaments, teams }: Props) {
       <input type="hidden" name="photoUrl" value={photoUrl} />
 
       <select
+        name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
         required

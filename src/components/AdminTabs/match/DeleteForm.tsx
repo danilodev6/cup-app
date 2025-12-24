@@ -3,7 +3,7 @@
 import { useState, useTransition } from "react";
 import { deleteMatch } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type { Team, Match } from "@/generated/prisma/client";
+import type { Tournament, Team, Match } from "@/generated/prisma/client";
 
 type MatchWithTeams = Match & {
   homeTeam: Team;
@@ -11,15 +11,23 @@ type MatchWithTeams = Match & {
 };
 
 type Props = {
+  tournaments: Tournament[];
   matches: MatchWithTeams[];
 };
 
-export default function DeleteMatchForm({ matches }: Props) {
+export default function DeleteMatchForm({ tournaments, matches }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedMatch, setSelectedMatch] = useState<MatchWithTeams | null>(
     null,
   );
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+
+  const filteredMatches = selectedTournamentId
+    ? matches.filter((m) => m.tournamentId === selectedTournamentId)
+    : [];
 
   const handleDelete = () => {
     if (!selectedMatch) return;
@@ -45,18 +53,34 @@ export default function DeleteMatchForm({ matches }: Props) {
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         name="MatchId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedMatch?.id || ""}
         onChange={(e) => {
-          const match = matches.find((m) => m.id === Number(e.target.value));
+          const match = filteredMatches.find(
+            (m) => m.id === Number(e.target.value),
+          );
           setSelectedMatch(match || null);
         }}
         disabled={isPending}
         required
       >
         <option value="">Select Group Match to Delete</option>
-        {matches.map((m) => (
+        {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
             {m.homeTeam.name} vs {m.awayTeam.name}
           </option>

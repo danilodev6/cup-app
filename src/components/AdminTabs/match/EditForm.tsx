@@ -17,6 +17,9 @@ type Props = {
 };
 
 export default function EditMatchForm({ tournaments, teams, matches }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedMatch, setSelectedMatch] = useState<Match | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
@@ -25,6 +28,10 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
   const sortedMatches = [...matches].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
+
+  const filteredMatches = selectedTournamentId
+    ? sortedMatches.filter((m) => m.tournamentId === selectedTournamentId)
+    : [];
 
   const handleSelectMatch = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
@@ -61,16 +68,30 @@ export default function EditMatchForm({ tournaments, teams, matches }: Props) {
       <input type="hidden" name="id" value={selectedMatch?.id || ""} />
 
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectMatch}
         value={selectedMatch?.id || ""}
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="" disabled>
           Select Match to Edit
         </option>
-        {sortedMatches.map((m) => (
+        {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
             {formatArgentinianDate(m.date)} : {m.homeTeam?.name || "Home"} vs{" "}
             {m.awayTeam?.name || "Away"}

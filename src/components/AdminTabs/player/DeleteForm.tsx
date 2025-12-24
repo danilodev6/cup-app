@@ -56,6 +56,7 @@ export default function DeletePlayerForm({
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
         required
@@ -69,6 +70,7 @@ export default function DeletePlayerForm({
       </select>
 
       <select
+        name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTeamId(Number(e.target.value))}
         required
