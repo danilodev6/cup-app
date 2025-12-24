@@ -179,7 +179,10 @@ function MatchCard({
     : null;
 
   return (
-    <Link href="/komatches" className="ko-card flex flex-col">
+    <Link
+      href={`/komatches/${displayMatch.id}`}
+      className="ko-card flex flex-col"
+    >
       {label && <div className="ko-label">{label}</div>}
       {displayMatch?.date && (
         <div className="text-xs">
