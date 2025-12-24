@@ -12,6 +12,7 @@ const NavBar = () => {
             width={30}
             height={30}
           />
+          Don Balon
         </Link>
 
         <ul>

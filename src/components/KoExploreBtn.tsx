@@ -14,7 +14,7 @@ const KoExploreBtn = ({ match }: { match: KnockoutMatchWithTeams }) => {
           {formatArgentinianDate(match.date)}
         </span>
       </div>
-      <div className="flex items-center mx-auto">
+      <div className="flex items-center mx-auto mt-2">
         <span className="flex-1 text-center mr-1">{match.homeTeam.name}</span>
         <img className="w-[25px] h-[25px]" src={match.homeTeam.logoUrl} />
         <span className="px-3 whitespace-nowrap">
