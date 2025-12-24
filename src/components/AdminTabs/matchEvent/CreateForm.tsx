@@ -144,7 +144,7 @@ export default function CreateMatchEventForm({
           setSelectedTeamId("");
           if (e.target.value) setSelectedMatchId("");
         }}
-        disabled={!!selectedMatchId || isPending}
+        disabled={!!selectedMatchId || isPending || !selectedTournamentId}
       >
         <option value="">Select Knockout Match (optional)</option>
         {filteredKnockoutMatches.map((km) => (
@@ -175,7 +175,7 @@ export default function CreateMatchEventForm({
       <select
         name="playerId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId || !selectedTeamId}
         required
       >
         <option value="">Select Player</option>
@@ -189,7 +189,7 @@ export default function CreateMatchEventForm({
       <select
         name="eventType"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="">Select Event Type</option>
