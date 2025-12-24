@@ -10,9 +10,16 @@ type Props = {
 };
 
 export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const filteredTeams = selectedTournamentId
+    ? teams.filter((t) => t.tournamentId === selectedTournamentId)
+    : [];
 
   const handleSubmit = async (fd: FormData) => {
     startTransition(async () => {
@@ -48,7 +55,7 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         <select
           name="tournamentId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={isPending}
+          onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
           required
         >
           <option value="">Select Tournament</option>
@@ -86,11 +93,11 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         <select
           name="homeTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={isPending}
+          disabled={isPending || !selectedTournamentId}
           required
         >
           <option value="">Select Home Team</option>
-          {teams.map((t) => (
+          {filteredTeams.map((t) => (
             <option key={t.id} value={t.id}>
               {t.name}
             </option>
@@ -101,11 +108,11 @@ export default function CreateKnockoutMatchForm({ tournaments, teams }: Props) {
         <select
           name="awayTeamId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={isPending}
+          disabled={isPending || !selectedTournamentId}
           required
         >
           <option value="">Select Away Team</option>
-          {teams.map((t) => (
+          {filteredTeams.map((t) => (
             <option key={t.id} value={t.id}>
               {t.name}
             </option>

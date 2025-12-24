@@ -25,6 +25,9 @@ export default function EditKnockoutMatchForm({
   teams,
   knockoutMatches,
 }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
     useState<KnockoutMatchWithTeams | null>(null);
   const [isPending, startTransition] = useTransition();
@@ -34,6 +37,12 @@ export default function EditKnockoutMatchForm({
   const sortedKnockoutMatches = [...knockoutMatches].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
+
+  const filteredKnockoutMatches = selectedTournamentId
+    ? sortedKnockoutMatches.filter(
+        (km) => km.tournamentId === selectedTournamentId,
+      )
+    : [];
 
   const handleSelectKnockoutMatch = (
     e: React.ChangeEvent<HTMLSelectElement>,
@@ -77,16 +86,30 @@ export default function EditKnockoutMatchForm({
         />
 
         <select
+          name="tournamentId"
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+          required
+        >
+          <option value="">Select Tournament</option>
+          {tournaments.map((t) => (
+            <option key={t.id} value={t.id}>
+              {t.name}
+            </option>
+          ))}
+        </select>
+
+        <select
           className="bg-gray-600 text-white rounded-md px-4 py-2"
           onChange={handleSelectKnockoutMatch}
           value={selectedKnockoutMatch?.id || ""}
-          disabled={isPending}
+          disabled={isPending || !selectedTournamentId}
           required
         >
           <option value="" disabled>
             Select Knockout Match to Edit
           </option>
-          {sortedKnockoutMatches.map((km) => (
+          {filteredKnockoutMatches.map((km) => (
             <option key={km.id} value={km.id}>
               {formatArgentinianDate(km.date)}: KO {km.koPosition} {km.leg}:{" "}
               {km.homeTeam?.name || "Home"} vs {km.awayTeam?.name || "Away"}

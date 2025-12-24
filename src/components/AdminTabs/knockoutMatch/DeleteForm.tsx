@@ -3,7 +3,11 @@
 import { useState, useTransition } from "react";
 import { deleteKnockoutMatch } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type { KnockoutMatch, Team } from "@/generated/prisma/client";
+import type {
+  Tournament,
+  KnockoutMatch,
+  Team,
+} from "@/generated/prisma/client";
 
 type KnockoutMatchWithTeams = KnockoutMatch & {
   homeTeam: Team;
@@ -11,14 +15,25 @@ type KnockoutMatchWithTeams = KnockoutMatch & {
 };
 
 type Props = {
+  tournaments: Tournament[];
   knockoutMatches: KnockoutMatchWithTeams[];
 };
 
-export default function DeleteKnockoutMatchForm({ knockoutMatches }: Props) {
+export default function DeleteKnockoutMatchForm({
+  tournaments,
+  knockoutMatches,
+}: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
     useState<KnockoutMatchWithTeams | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+
+  const filteredKnockoutMatches = selectedTournamentId
+    ? knockoutMatches.filter((km) => km.tournamentId === selectedTournamentId)
+    : [];
 
   const handleDelete = () => {
     if (!selectedKnockoutMatch) return;
@@ -44,6 +59,20 @@ export default function DeleteKnockoutMatchForm({ knockoutMatches }: Props) {
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         name="KnockoutMatchId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedKnockoutMatch?.id || ""}
@@ -53,11 +82,11 @@ export default function DeleteKnockoutMatchForm({ knockoutMatches }: Props) {
           );
           setSelectedKnockoutMatch(match || null);
         }}
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="">Select Knockout Match to Delete</option>
-        {knockoutMatches.map((km) => (
+        {filteredKnockoutMatches.map((km) => (
           <option key={km.id} value={km.id}>
             KO {km.koPosition} {km.leg}: {km.homeTeam?.name || "Home"} vs{" "}
             {km.awayTeam?.name || "Away"}
