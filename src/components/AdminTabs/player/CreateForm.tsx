@@ -3,18 +3,26 @@
 import { useState, useRef, useTransition } from "react";
 import { createPlayer } from "./actions";
 import { supabase } from "@/lib/supabase";
-import type { Team } from "@/generated/prisma/client";
+import type { Tournament, Team } from "@/generated/prisma/client";
 
 type Props = {
+  tournaments: Tournament[];
   teams: Team[];
 };
 
-export default function CreatePlayerForm({ teams }: Props) {
+export default function CreatePlayerForm({ tournaments, teams }: Props) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [photoUrl, setPhotoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const filteredTeams = selectedTournamentId
+    ? teams.filter((t) => t.tournamentId === selectedTournamentId)
+    : [];
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     try {
@@ -104,15 +112,28 @@ export default function CreatePlayerForm({ teams }: Props) {
       <input type="hidden" name="photoUrl" value={photoUrl} />
 
       <select
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="">Select Team</option>
-        {teams.map((t) => (
-          <option key={t.id} value={t.id}>
-            {t.name}
+        {filteredTeams.map((team) => (
+          <option key={team.id} value={team.id}>
+            {team.name}
           </option>
         ))}
       </select>
