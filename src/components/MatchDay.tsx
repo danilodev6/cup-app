@@ -1,6 +1,6 @@
 "use client";
 
-import ExploreBtn from "./ExploreBtn";
+import ExploreBtnMatch from "./ExploreBtnMatch";
 import type { MatchWithTeams } from "@/lib/types";
 
 export default function MatchDay({ matches }: { matches: MatchWithTeams[] }) {
@@ -8,7 +8,7 @@ export default function MatchDay({ matches }: { matches: MatchWithTeams[] }) {
     <ul className="list-none p-0 m-0 mx-auto">
       {matches.map((match) => (
         <li key={match.id}>
-          <ExploreBtn match={match} />
+          <ExploreBtnMatch match={match} />
         </li>
       ))}
     </ul>

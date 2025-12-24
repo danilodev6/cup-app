@@ -47,7 +47,7 @@ export default async function StatsView({
 
   return (
     <>
-      <div className="space-y-8 w-[500px] mx-auto">
+      <div className="space-y-8 md:w-[500px] mx-auto">
         {/* Goals */}
         <div>
           <div className="flex items-center mb-4">

@@ -1,11 +1,11 @@
 import Link from "next/link";
-import type { KnockoutMatchWithTeams } from "@/lib/types";
+import type { MatchWithTeams } from "@/lib/types";
 import { formatArgentinianDate } from "../lib/date-utils";
 
-const KoExploreBtn = ({ match }: { match: KnockoutMatchWithTeams }) => {
+const ExploreBtnMatch = ({ match }: { match: MatchWithTeams }) => {
   return (
     <Link
-      href={`/komatches/${match.id}`}
+      href={`/matches/${match.id}`}
       id="explore-btn"
       className="flex flex-col items-center mt-7 mx-auto"
     >
@@ -27,4 +27,4 @@ const KoExploreBtn = ({ match }: { match: KnockoutMatchWithTeams }) => {
   );
 };
 
-export default KoExploreBtn;
+export default ExploreBtnMatch;

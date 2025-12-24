@@ -66,25 +66,25 @@ export default async function MatchPage({
           <ul>
             {match.homeTeam.players.map((player: PlayerWithEvents) => (
               <li
-                className="flex flex-col gap-4 items-center mt-4 text-xl"
+                className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}
               >
                 {" "}
                 <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
                 <div className="text-sm flex gap-1 items-center">
-                  <img className="w-10 h-10" src="/icons/goals.png" />
+                  <img className="w-7 h-7" src="/icons/goals.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "goal",
                     ).length
                   }
-                  <img className="w-10 h-10" src="/icons/yellow-card.png" />
+                  <img className="w-7 h-7" src="/icons/yellow-card.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "yellow_card",
                     ).length
                   }
-                  <img className="w-10 h-10" src="/icons/red-card.png" />
+                  <img className="w-7 h-7" src="/icons/red-card.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "red_card",
@@ -100,25 +100,25 @@ export default async function MatchPage({
           <ul>
             {match.awayTeam.players.map((player: PlayerWithEvents) => (
               <li
-                className="flex flex-col gap-4 items-center mt-4 text-xl"
+                className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}
               >
                 {" "}
                 <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
                 <div className="text-sm flex gap-1 items-center">
-                  <img className="w-10 h-10" src="/icons/goals.png" />
+                  <img className="w-7 h-7" src="/icons/goals.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "goal",
                     ).length
                   }
-                  <img className="w-10 h-10" src="/icons/yellow-card.png" />
+                  <img className="w-7 h-7" src="/icons/yellow-card.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "yellow_card",
                     ).length
                   }
-                  <img className="w-10 h-10" src="/icons/red-card.png" />
+                  <img className="w-7 h-7" src="/icons/red-card.png" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "red_card",
