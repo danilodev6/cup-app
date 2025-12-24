@@ -8,7 +8,7 @@ import type {
   KnockoutMatch,
   Player,
 } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "../../../lib/date-utils";
+import { formatArgentinianDate } from "@/lib/date-utils";
 
 type MatchWithTeams = Match & {
   homeTeam: { id: number; name: string };
@@ -33,6 +33,9 @@ export default function CreateMatchEventForm({
   knockoutMatches,
   players,
 }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
   const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState("");
@@ -49,9 +52,21 @@ export default function CreateMatchEventForm({
     (a, b) => b.koPosition - a.koPosition,
   );
 
+  const filteredMatches = selectedTournamentId
+    ? sortedMatches.filter((m) => m.tournamentId === selectedTournamentId)
+    : [];
+
+  const filteredKnockoutMatches = selectedTournamentId
+    ? sortedKnockoutMatches.filter(
+        (km) => km.tournamentId === selectedTournamentId,
+      )
+    : [];
+
   // getting teams from selected match
-  const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
-  const selectedKoMatch = knockoutMatches.find(
+  const selectedMatch = filteredMatches.find(
+    (m) => m.id === Number(selectedMatchId),
+  );
+  const selectedKoMatch = filteredKnockoutMatches.find(
     (km) => km.id === Number(selectedKoMatchId),
   );
 
@@ -88,6 +103,7 @@ export default function CreateMatchEventForm({
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
         disabled={isPending}
         required
       >
@@ -108,10 +124,10 @@ export default function CreateMatchEventForm({
           setSelectedTeamId("");
           if (e.target.value) setSelectedKoMatchId("");
         }}
-        disabled={!!selectedKoMatchId || isPending}
+        disabled={!!selectedKoMatchId || isPending || !selectedTournamentId}
       >
         <option value="">Select Group Match (optional)</option>
-        {sortedMatches.map((m) => (
+        {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
             {formatArgentinianDate(m.date)}: {m.homeTeam.name} vs{" "}
             {m.awayTeam.name}
@@ -131,7 +147,7 @@ export default function CreateMatchEventForm({
         disabled={!!selectedMatchId || isPending}
       >
         <option value="">Select Knockout Match (optional)</option>
-        {sortedKnockoutMatches.map((km) => (
+        {filteredKnockoutMatches.map((km) => (
           <option key={km.id} value={km.id}>
             {formatArgentinianDate(km.date)}: KO {km.koPosition} - {km.leg} :{" "}
             {km.homeTeam.name} vs {km.awayTeam.name}

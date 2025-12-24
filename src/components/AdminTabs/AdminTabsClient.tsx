@@ -201,7 +201,10 @@ export default function AdminTabsClient({
           />
         )}
         {tab === "delete" && entity === "matchevent" && (
-          <DeleteMatchEventForm matchEvents={matchEvents} />
+          <DeleteMatchEventForm
+            tournaments={tournaments}
+            matchEvents={matchEvents}
+          />
         )}
       </div>
     </>

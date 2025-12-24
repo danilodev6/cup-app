@@ -43,6 +43,9 @@ export default function EditMatchEventForm({
   players,
   matchEvents,
 }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedMatchEvent, setSelectedMatchEvent] =
     useState<MatchEventWithRelations | null>(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
@@ -54,6 +57,9 @@ export default function EditMatchEventForm({
   const formRef = useRef<HTMLFormElement>(null);
 
   const sortedMatchEvents = [...matchEvents].sort((a, b) => a.id - b.id);
+  const filteredMatchEvents = selectedTournamentId
+    ? sortedMatchEvents.filter((me) => me.tournamentId === selectedTournamentId)
+    : [];
 
   // getting teams from selected match
   const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
@@ -109,16 +115,31 @@ export default function EditMatchEventForm({
       <input type="hidden" name="id" value={selectedMatchEvent?.id || ""} />
 
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        disabled={isPending}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={handleSelectMatchEvent}
         value={selectedMatchEvent?.id || ""}
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="" disabled>
           Select Match Event to Edit
         </option>
-        {sortedMatchEvents.map((me) => {
+        {filteredMatchEvents.map((me) => {
           const matchInfo = me.match
             ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
             : me.knockoutMatch

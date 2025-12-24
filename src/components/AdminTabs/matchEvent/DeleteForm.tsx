@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { deleteMatchEvent } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import type {
+  Tournament,
   MatchEvent,
   Player,
   Match,
@@ -28,14 +29,25 @@ type MatchEventWithRelations = MatchEvent & {
 };
 
 type Props = {
+  tournaments: Tournament[];
   matchEvents: MatchEventWithRelations[];
 };
 
-export default function DeleteMatchEventForm({ matchEvents }: Props) {
+export default function DeleteMatchEventForm({
+  tournaments,
+  matchEvents,
+}: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedMatchEvent, setSelectedMatchEvent] =
     useState<MatchEventWithRelations | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+
+  const filteredMatchEvents = selectedTournamentId
+    ? matchEvents.filter((me) => me.tournamentId === selectedTournamentId)
+    : [];
 
   const handleDelete = () => {
     if (!selectedMatchEvent) return;
@@ -69,6 +81,20 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        required
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      <select
         name="MatchEventId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedMatchEvent?.id || ""}
@@ -78,11 +104,11 @@ export default function DeleteMatchEventForm({ matchEvents }: Props) {
           );
           setSelectedMatchEvent(matchEvent || null);
         }}
-        disabled={isPending}
+        disabled={isPending || !selectedTournamentId}
         required
       >
         <option value="">Select Match Event to Delete</option>
-        {matchEvents.map((me) => {
+        {filteredMatchEvents.map((me) => {
           const matchInfo = me.match
             ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
             : me.knockoutMatch
