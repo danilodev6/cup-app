@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import KoExploreBtn from "@/components/KoExploreBtn";
+import ExploreBtnKoMatch from "@/components/ExploreBtnKoMatch";
 import Link from "next/link";
 
 export default async function KoMatchesPage({
@@ -9,7 +9,7 @@ export default async function KoMatchesPage({
 }) {
   const { tournamentId } = await searchParams;
 
-  const koMatches = await prisma.knockoutMatch.findMany({
+  const koMatches = await prisma.knockoutTie.findMany({
     where: tournamentId ? { tournamentId: Number(tournamentId) } : {},
     include: { homeTeam: true, awayTeam: true },
     orderBy: { koPosition: "asc" },
@@ -59,9 +59,9 @@ export default async function KoMatchesPage({
                 {round.title}
               </h3>
               <ul className="list-none p-0 m-0 mx-auto">
-                {roundMatches.map((match) => (
-                  <li key={match.id}>
-                    <KoExploreBtn match={match} />
+                {roundMatches.map((koMatch) => (
+                  <li key={koMatch.id}>
+                    <ExploreBtnKoMatch koMatch={koMatch} />
                   </li>
                 ))}
               </ul>

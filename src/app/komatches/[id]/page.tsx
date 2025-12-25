@@ -13,7 +13,7 @@ export default async function KoMatchPage({
 }) {
   const { id } = await params;
 
-  const koMatch = await prisma.knockoutMatch.findUnique({
+  const koMatch = await prisma.knockoutTie.findUnique({
     where: {
       id: Number(id),
     },
@@ -22,7 +22,7 @@ export default async function KoMatchPage({
         include: {
           players: {
             include: {
-              matchEvents: { where: { knockoutMatchId: Number(id) } },
+              matchEvents: { where: { knockoutLegId: Number(id) } },
             },
           },
         },
@@ -31,7 +31,7 @@ export default async function KoMatchPage({
         include: {
           players: {
             include: {
-              matchEvents: { where: { knockoutMatchId: Number(id) } },
+              matchEvents: { where: { knockoutLegId: Number(id) } },
             },
           },
         },

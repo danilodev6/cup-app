@@ -22,7 +22,7 @@ import DeleteMatchEventForm from "@/components/AdminTabs/matchEvent/DeleteForm";
 
 import type { Tournament, Team, Player } from "@/generated/prisma/client";
 
-import type { MatchWithTeams, KnockoutMatchWithTeams } from "@/lib/types";
+import type { GroupMatchWithTeams, KnockoutTieWithLegs } from "@/lib/types";
 
 type Props = {
   initialTab: "create" | "edit" | "delete";
@@ -30,14 +30,14 @@ type Props = {
     | "tournament"
     | "team"
     | "player"
-    | "match"
+    | "groupmatch"
     | "komatch"
     | "matchevent";
   tournaments: Tournament[];
   teams: Team[];
   players: Player[];
-  matches: MatchWithTeams[];
-  knockoutMatches: KnockoutMatchWithTeams[];
+  groupMatches: GroupMatchWithTeams[];
+  knockoutMatches: KnockoutTieWithLegs[];
   matchEvents: any[];
 };
 
@@ -47,7 +47,7 @@ export default function AdminTabsClient({
   tournaments,
   teams,
   players,
-  matches,
+  groupMatches,
   knockoutMatches,
   matchEvents,
 }: Props) {
@@ -99,8 +99,8 @@ export default function AdminTabsClient({
           Player
         </button>
         <button
-          onClick={() => setEntity("match")}
-          className={entity === "match" ? "active" : ""}
+          onClick={() => setEntity("groupmatch")}
+          className={entity === "groupmatch" ? "active" : ""}
         >
           Group Match
         </button>
@@ -154,18 +154,21 @@ export default function AdminTabsClient({
             players={players}
           />
         )}
-        {tab === "create" && entity === "match" && (
+        {tab === "create" && entity === "groupmatch" && (
           <CreateMatchForm teams={teams} tournaments={tournaments} />
         )}
-        {tab === "edit" && entity === "match" && (
+        {tab === "edit" && entity === "groupmatch" && (
           <EditMatchForm
             tournaments={tournaments}
             teams={teams}
-            matches={matches}
+            groupMatches={groupMatches}
           />
         )}
-        {tab === "delete" && entity === "match" && (
-          <DeleteMatchForm tournaments={tournaments} matches={matches} />
+        {tab === "delete" && entity === "groupmatch" && (
+          <DeleteMatchForm
+            tournaments={tournaments}
+            groupMatches={groupMatches}
+          />
         )}
         {tab === "create" && entity === "komatch" && (
           <CreateKnockoutMatchForm tournaments={tournaments} teams={teams} />
@@ -186,7 +189,7 @@ export default function AdminTabsClient({
         {tab === "create" && entity === "matchevent" && (
           <CreateMatchEventForm
             tournaments={tournaments}
-            matches={matches}
+            groupMatches={groupMatches}
             knockoutMatches={knockoutMatches}
             players={players}
           />
@@ -194,7 +197,7 @@ export default function AdminTabsClient({
         {tab === "edit" && entity === "matchevent" && (
           <EditMatchEventForm
             tournaments={tournaments}
-            matches={matches}
+            groupMatches={groupMatches}
             knockoutMatches={knockoutMatches}
             players={players}
             matchEvents={matchEvents}

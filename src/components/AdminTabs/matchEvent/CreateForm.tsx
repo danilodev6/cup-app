@@ -4,32 +4,32 @@ import { useState, useRef, useTransition } from "react";
 import { createMatchEvent } from "./actions";
 import type {
   Tournament,
-  Match,
-  KnockoutMatch,
+  GroupMatch,
+  KnockoutTie,
   Player,
 } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
 
-type MatchWithTeams = Match & {
+type MatchWithTeams = GroupMatch & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
-type KnockoutMatchWithTeams = KnockoutMatch & {
+type KnockoutMatchWithTeams = KnockoutTie & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
 type Props = {
   tournaments: Tournament[];
-  matches: MatchWithTeams[];
+  groupMatches: MatchWithTeams[];
   knockoutMatches: KnockoutMatchWithTeams[];
   players: Player[];
 };
 
 export default function CreateMatchEventForm({
   tournaments,
-  matches,
+  groupMatches,
   knockoutMatches,
   players,
 }: Props) {
@@ -44,7 +44,7 @@ export default function CreateMatchEventForm({
 
   const formRef = useRef<HTMLFormElement>(null);
 
-  const sortedMatches = [...matches].sort(
+  const sortedMatches = [...groupMatches].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 

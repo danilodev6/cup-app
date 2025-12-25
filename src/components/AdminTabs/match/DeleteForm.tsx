@@ -3,19 +3,19 @@
 import { useState, useTransition } from "react";
 import { deleteMatch } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type { Tournament, Team, Match } from "@/generated/prisma/client";
+import type { Tournament, Team, GroupMatch } from "@/generated/prisma/client";
 
-type MatchWithTeams = Match & {
+type MatchWithTeams = GroupMatch & {
   homeTeam: Team;
   awayTeam: Team;
 };
 
 type Props = {
   tournaments: Tournament[];
-  matches: MatchWithTeams[];
+  groupMatches: MatchWithTeams[];
 };
 
-export default function DeleteMatchForm({ tournaments, matches }: Props) {
+export default function DeleteMatchForm({ tournaments, groupMatches }: Props) {
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
@@ -26,7 +26,7 @@ export default function DeleteMatchForm({ tournaments, matches }: Props) {
   const [message, setMessage] = useState("");
 
   const filteredMatches = selectedTournamentId
-    ? matches.filter((m) => m.tournamentId === selectedTournamentId)
+    ? groupMatches.filter((m) => m.tournamentId === selectedTournamentId)
     : [];
 
   const handleDelete = () => {
@@ -46,7 +46,7 @@ export default function DeleteMatchForm({ tournaments, matches }: Props) {
     });
   };
 
-  if (!matches || matches.length === 0) {
+  if (!groupMatches || groupMatches.length === 0) {
     return <p>No matches available</p>;
   }
 

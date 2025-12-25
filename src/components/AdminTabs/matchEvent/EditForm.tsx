@@ -4,33 +4,33 @@ import { useState, useRef, useTransition } from "react";
 import { editMatchEvent } from "./actions";
 import type {
   Tournament,
-  Match,
-  KnockoutMatch,
+  GroupMatch,
+  KnockoutTie,
   Player,
   MatchEvent,
 } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
 
-type MatchWithTeams = Match & {
+type MatchWithTeams = GroupMatch & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
-type KnockoutMatchWithTeams = KnockoutMatch & {
+type KnockoutMatchWithTeams = KnockoutTie & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
 type MatchEventWithRelations = MatchEvent & {
   player: Player;
-  match?: MatchWithTeams;
+  groupMatch?: MatchWithTeams;
   knockoutMatch?: KnockoutMatchWithTeams;
   tournament: Tournament;
 };
 
 type Props = {
   tournaments: Tournament[];
-  matches: MatchWithTeams[];
+  groupMatches: MatchWithTeams[];
   knockoutMatches: KnockoutMatchWithTeams[];
   players: Player[];
   matchEvents: MatchEventWithRelations[];
@@ -38,7 +38,7 @@ type Props = {
 
 export default function EditMatchEventForm({
   tournaments,
-  matches,
+  groupMatches,
   knockoutMatches,
   players,
   matchEvents,
@@ -62,7 +62,9 @@ export default function EditMatchEventForm({
     : [];
 
   // getting teams from selected match
-  const selectedMatch = matches.find((m) => m.id === Number(selectedMatchId));
+  const selectedMatch = groupMatches.find(
+    (m) => m.id === Number(selectedMatchId),
+  );
   const selectedKoMatch = knockoutMatches.find(
     (km) => km.id === Number(selectedKoMatchId),
   );
@@ -82,8 +84,8 @@ export default function EditMatchEventForm({
     const selectedId = Number(e.target.value);
     const matchEvent = matchEvents.find((me) => me.id === selectedId) || null;
     setSelectedMatchEvent(matchEvent);
-    setSelectedMatchId(matchEvent?.matchId?.toString() || "");
-    setSelectedKoMatchId(matchEvent?.knockoutMatchId?.toString() || "");
+    setSelectedMatchId(matchEvent?.groupMatchId?.toString() || "");
+    setSelectedKoMatchId(matchEvent?.knockoutLegId?.toString() || "");
     setSelectedTeamId(matchEvent?.player.teamId.toString() || "");
   };
 
@@ -139,8 +141,8 @@ export default function EditMatchEventForm({
           Select Match Event to Edit
         </option>
         {filteredMatchEvents.map((me) => {
-          const matchInfo = me.match
-            ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
+          const matchInfo = me.groupMatch
+            ? `[${formatArgentinianDate(me.groupMatch.date)}] GroupMatch: ${me.groupMatch.homeTeam.name} vs ${me.groupMatch.awayTeam.name}`
             : me.knockoutMatch
               ? `[${formatArgentinianDate(me.knockoutMatch.date)}] KO ${me.knockoutMatch.koPosition} ${me.knockoutMatch.leg} - ${me.knockoutMatch.homeTeam.name} vs ${me.knockoutMatch.awayTeam.name}`
               : "No match";
