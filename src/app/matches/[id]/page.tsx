@@ -45,11 +45,11 @@ export default async function MatchPage({
         <span className="flex-1 text-right mr-1 text-xl">
           {match.homeTeam.name}
         </span>
-        <img className="w-[30px] h-[30px]" src={match.homeTeam.logoUrl} />
+        <img className="w-[30px]" src={match.homeTeam.logoUrl} />
         <span className="px-3 whitespace-nowrap text-xl">
           {match.homeScore} - {match.awayScore}
         </span>
-        <img className="w-[30px] h-[30px]" src={match.awayTeam.logoUrl} />
+        <img className="w-[30px]" src={match.awayTeam.logoUrl} />
         <span className="flex-1 text-left ml-1 text-xl">
           {match.awayTeam.name}
         </span>

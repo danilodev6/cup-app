@@ -12,7 +12,7 @@ const NavBar = () => {
             width={30}
             height={30}
           />
-          Tournament App
+          MyName
         </Link>
 
         <ul>
