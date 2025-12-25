@@ -135,7 +135,7 @@ export default function AdminTabsClient({
           <EditTeamForm teams={teams} tournaments={tournaments} />
         )}
         {tab === "delete" && entity === "team" && (
-          <DeleteTeamForm teams={teams} />
+          <DeleteTeamForm tournaments={tournaments} teams={teams} />
         )}
         {tab === "create" && entity === "player" && (
           <CreatePlayerForm teams={teams} tournaments={tournaments} />

@@ -56,7 +56,6 @@ export default function DeleteMatchForm({ tournaments, matches }: Props) {
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
-        required
       >
         <option value="">Select Tournament</option>
         {tournaments.map((t) => (

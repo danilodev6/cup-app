@@ -3,16 +3,24 @@
 import { useState, useTransition } from "react";
 import { deleteTeam } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type { Team } from "@/generated/prisma/client";
+import type { Tournament, Team } from "@/generated/prisma/client";
 
 type Props = {
+  tournaments: Tournament[];
   teams: Team[];
 };
 
-export default function DeleteTeamForm({ teams }: Props) {
+export default function DeleteTeamForm({ tournaments, teams }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
+
+  const filteredTeams = selectedTournamentId
+    ? teams.filter((t) => t.tournamentId === selectedTournamentId)
+    : [];
 
   const handleDelete = () => {
     if (!selectedTeam) return;
@@ -38,6 +46,20 @@ export default function DeleteTeamForm({ teams }: Props) {
   return (
     <div className="flex flex-col gap-4 form-container-small">
       <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
+      {/* SELECT TEAM */}
+      <select
         name="TeamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedTeam?.id || ""}
@@ -48,7 +70,7 @@ export default function DeleteTeamForm({ teams }: Props) {
         required
       >
         <option value="">Select Team to Delete</option>
-        {teams.map((t) => (
+        {filteredTeams.map((t) => (
           <option key={t.id} value={t.id}>
             {t.name}
           </option>

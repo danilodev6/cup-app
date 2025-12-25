@@ -25,34 +25,37 @@ export default async function TournamentPage({
     <div>
       <h2 className="text-center">{tournament?.name}</h2>
       {/* Tabs navigation */}
-      <div className="flex gap-6 mb-6 mt-6" id="explore-btn">
+      <div
+        className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 mt-6"
+        id="explore-btn"
+      >
         <Link
           href={`/tournaments/${id}?tab=groups`}
-          className={activeTab === "groups" ? "active" : ""}
+          className={`text-center ${activeTab === "groups" ? "active" : ""}`}
         >
           Groups
         </Link>
         <Link
           href={`/tournaments/${id}?tab=knockout`}
-          className={activeTab === "knockout" ? "active" : ""}
+          className={`text-center ${activeTab === "knockout" ? "active" : ""}`}
         >
           Knockout
         </Link>
         <Link
           href={`/tournaments/${id}?tab=fixture`}
-          className={activeTab === "fixture" ? "active" : ""}
+          className={`text-center ${activeTab === "fixture" ? "active" : ""}`}
         >
           Fixture
         </Link>
         <Link
           href={`/tournaments/${id}?tab=teams`}
-          className={activeTab === "teams" ? "active" : ""}
+          className={`text-center ${activeTab === "teams" ? "active" : ""}`}
         >
           Teams
         </Link>
         <Link
           href={`/tournaments/${id}?tab=stats`}
-          className={activeTab === "stats" ? "active" : ""}
+          className={`text-center ${activeTab === "stats" ? "active" : ""}`}
         >
           Stats
         </Link>

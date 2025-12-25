@@ -109,50 +109,115 @@ export default async function KnockoutView({
 
       {/* Row 1 */}
       <div className="bracket-flex justify-between">
-        <MatchCard matches={getMatches(1)} label="8vos" />
-        <MatchCard matches={getMatches(2)} label="8vos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(1)}
+          label="8vos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(2)}
+          label="8vos"
+        />
         <div className="spacer-2" />
-        <MatchCard matches={getMatches(3)} label="8vos" />
-        <MatchCard matches={getMatches(4)} label="8vos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(3)}
+          label="8vos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(4)}
+          label="8vos"
+        />
       </div>
       {/* Row 2 */}
       <div className="bracket-flex justify-around">
-        <MatchCard matches={getMatches(9)} label="4tos" />
-        <MatchCard matches={getMatches(10)} label="4tos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(9)}
+          label="4tos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(10)}
+          label="4tos"
+        />
       </div>
       {/* Row 3 */}
       <div className="bracket-flex justify-center">
-        <MatchCard matches={getMatches(13)} label="Semi" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(13)}
+          label="Semi"
+        />
       </div>
       {/* Row 4 */}
       <div className="bracket-flex justify-around">
         <div className="w-[97px]" />
-        <MatchCard matches={getMatches(16)} label="FINAL" />
-        <MatchCard matches={getMatches(15)} label="3ER POS" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(16)}
+          label="FINAL"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(15)}
+          label="3ER POS"
+        />
       </div>
       {/* Row 5 */}
       <div className="bracket-flex justify-around">
-        <MatchCard matches={getMatches(14)} label="Semi" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(14)}
+          label="Semi"
+        />
       </div>
       {/* Row 6 */}
       <div className="bracket-flex justify-around">
-        <MatchCard matches={getMatches(11)} label="4tos" />
-        <MatchCard matches={getMatches(12)} label="4tos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(11)}
+          label="4tos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(12)}
+          label="4tos"
+        />
       </div>
 
       {/* Row 7 */}
       <div className="bracket-flex justify-between">
-        <MatchCard matches={getMatches(5)} label="8vos" />
-        <MatchCard matches={getMatches(6)} label="8vos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(5)}
+          label="8vos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(6)}
+          label="8vos"
+        />
         <div />
-        <MatchCard matches={getMatches(7)} label="8vos" />
-        <MatchCard matches={getMatches(8)} label="8vos" />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(7)}
+          label="8vos"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          matches={getMatches(8)}
+          label="8vos"
+        />
       </div>
     </div>
   );
 }
 
 function MatchCard({
+  tournament,
   matches,
   label,
 }: {
@@ -161,6 +226,7 @@ function MatchCard({
     second: KnockoutMatchWithTeams | null;
   };
   label?: string;
+  tournament: string;
 }) {
   const { first, second } = matches;
 
@@ -180,7 +246,7 @@ function MatchCard({
 
   return (
     <Link
-      href={`/komatches/${displayMatch.id}`}
+      href={`/komatches?tournamentId=${tournament}`}
       className="ko-card flex flex-col"
     >
       {label && <div className="ko-label">{label}</div>}

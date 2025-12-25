@@ -11,12 +11,19 @@ type Props = {
 };
 
 export default function EditTeamForm({ teams, tournaments }: Props) {
+  const [selectedTournamentId, setSelectedTournamentId] = useState<
+    number | null
+  >(null);
   const [selectedTeam, setSelectedTeam] = useState<Team | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const [uploading, setUploading] = useState(false);
   const [logoUrl, setLogoUrl] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
+
+  const filteredTeams = selectedTournamentId
+    ? teams.filter((t) => t.tournamentId === selectedTournamentId)
+    : [];
 
   const handleSelectTeam = (e: React.ChangeEvent<HTMLSelectElement>) => {
     const selectedId = Number(e.target.value);
@@ -81,6 +88,20 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
     >
       <input type="hidden" name="id" value={selectedTeam?.id || ""} />
 
+      {/* SELECT TOURNAMENT FILTER */}
+      <select
+        name="tournamentId"
+        className="bg-gray-600 text-white rounded-md px-4 py-2"
+        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+      >
+        <option value="">Select Tournament</option>
+        {tournaments.map((t) => (
+          <option key={t.id} value={t.id}>
+            {t.name}
+          </option>
+        ))}
+      </select>
+
       {/* SELECT TEAM */}
       <select
         className="bg-gray-600 text-white rounded-md px-4 py-2"
@@ -92,7 +113,7 @@ export default function EditTeamForm({ teams, tournaments }: Props) {
         <option value="" disabled>
           Select Team to Edit
         </option>
-        {teams.map((t) => (
+        {filteredTeams.map((t) => (
           <option key={t.id} value={t.id}>
             {t.name}
           </option>

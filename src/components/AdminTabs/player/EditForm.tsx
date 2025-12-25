@@ -98,7 +98,6 @@ export default function EditPlayerForm({ tournaments, teams, players }: Props) {
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
-        required
       >
         <option value="">Select Tournament</option>
         {tournaments.map((t) => (
@@ -112,7 +111,6 @@ export default function EditPlayerForm({ tournaments, teams, players }: Props) {
         name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTeamId(Number(e.target.value))}
-        required
       >
         <option value="">Select Team</option>
         {filteredTeams.map((team) => (

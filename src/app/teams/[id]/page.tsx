@@ -37,7 +37,7 @@ export default async function TeamPage({
 
   return (
     <div className="flex flex-col items-center">
-      <img className="w-24 h-24 mt-4" src={team.logoUrl} alt={team.name} />
+      <img className="w-24 mt-4" src={team.logoUrl} alt={team.name} />
       <h2 className="text-3xl mt-4">{team.name}</h2>
       <ul className="mt-6 flex gap-8 flex-wrap justify-center">
         {team.players.map((player) => {
