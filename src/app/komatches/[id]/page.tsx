@@ -13,7 +13,7 @@ export default async function KoMatchPage({
 }) {
   const { id } = await params;
 
-  const match = await prisma.knockoutMatch.findUnique({
+  const koMatch = await prisma.knockoutMatch.findUnique({
     where: {
       id: Number(id),
     },
@@ -39,7 +39,7 @@ export default async function KoMatchPage({
     },
   });
 
-  if (!match) {
+  if (!koMatch) {
     return <div>Match not found</div>;
   }
 
@@ -47,21 +47,21 @@ export default async function KoMatchPage({
     <>
       <div className="flex" id="explore-btn">
         <span className="flex-1 text-right mr-1 text-xl">
-          {match.homeTeam.name}
+          {koMatch.homeTeam.name}
         </span>
-        <img className="w-[30px]" src={match.homeTeam.logoUrl} />
+        <img className="w-[30px]" src={koMatch.homeTeam.logoUrl} />
         <span className="px-3 whitespace-nowrap text-xl">
-          {match.homeScore} - {match.awayScore}
+          {koMatch.homeScore} - {koMatch.awayScore}
         </span>
-        <img className="w-[30px]" src={match.awayTeam.logoUrl} />
+        <img className="w-[30px]" src={koMatch.awayTeam.logoUrl} />
         <span className="flex-1 text-left ml-1 text-xl">
-          {match.awayTeam.name}
+          {koMatch.awayTeam.name}
         </span>
       </div>
 
       <span className="mt-4 text-center text-xl">
         {" "}
-        {formatArgentinianDate(match.date)}{" "}
+        {formatArgentinianDate(koMatch.date)}{" "}
       </span>
 
       <h3 className="text-center mt-4">Lineup</h3>
@@ -69,7 +69,7 @@ export default async function KoMatchPage({
       <div className="flex justify-between w-[90%] md:w-[60%] mx-auto mt-4">
         <div>
           <ul>
-            {match.homeTeam.players.map((player: PlayerWithEvents) => (
+            {koMatch.homeTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}
@@ -103,7 +103,7 @@ export default async function KoMatchPage({
         </div>
         <div className="ml-4">
           <ul>
-            {match.awayTeam.players.map((player: PlayerWithEvents) => (
+            {koMatch.awayTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}

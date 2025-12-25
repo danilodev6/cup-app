@@ -1,9 +1,9 @@
 import type { Prisma } from "@/generated/prisma/client";
 
-export type MatchWithTeams = Prisma.MatchGetPayload<{
+export type GroupMatchWithTeams = Prisma.GroupMatchGetPayload<{
   include: { homeTeam: true; awayTeam: true };
 }>;
 
-export type KnockoutMatchWithTeams = Prisma.KnockoutMatchGetPayload<{
+export type KnockoutTieWithTeams = Prisma.KnockoutTieGetPayload<{
   include: { homeTeam: true; awayTeam: true };
 }>;

@@ -1,12 +1,12 @@
 "use client";
 
 import ExploreBtnMatch from "./ExploreBtnGroupMatch";
-import type { MatchWithTeams } from "@/lib/types";
+import type { GroupMatchWithTeams } from "@/lib/types";
 
 export default function MatchDay({
   groupMatches,
 }: {
-  groupMatches: MatchWithTeams[];
+  groupMatches: GroupMatchWithTeams[];
 }) {
   return (
     <ul className="list-none p-0 m-0 mx-auto">

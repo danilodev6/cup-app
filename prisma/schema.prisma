@@ -22,7 +22,7 @@ model Tournament {
   date         DateTime
   teamCount    Int
   teams        Team[]
-  groupMatches GroupMatch[]   // Renombrado de 'matches'
+  groupMatches GroupMatch[]
   koTies       KnockoutTie[]
   matchEvents  MatchEvent[]
   createdAt    DateTime       @default(now())
@@ -32,7 +32,7 @@ model Tournament {
 model Team {
   id            Int           @id @default(autoincrement())
   name          String        @unique
-  shortName     String     
+  shortName     String
   logoUrl       String
   players       Player[]
   group         String?
@@ -40,15 +40,15 @@ model Team {
   tournament    Tournament    @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   teamScore     Int           @default(0)
 
-  // Relaciones para partidos de grupo
+  // relations for group matches
   homeGroupMatches   GroupMatch[]    @relation("HomeTeam")
   awayGroupMatches   GroupMatch[]    @relation("AwayTeam")
 
-  // Relaciones para knockout ties
+  // relations for knockout ties
   homeTies           KnockoutTie[]   @relation("HomeTie")
   awayTies           KnockoutTie[]   @relation("AwayTie")
 
-  // Relaciones para knockout legs individuales
+  // relations for knockout legs individually
   homeKoLegs         KnockoutLeg[]   @relation("HomeTeam")
   awayKoLegs         KnockoutLeg[]   @relation("AwayTeam")
 
@@ -67,7 +67,7 @@ model Player {
   updatedAt   DateTime      @updatedAt @default(now())
 }
 
-// RENOMBRADO: Match → GroupMatch (partidos de fase de grupos)
+// GroupMatch (group matches)
 model GroupMatch {
   id            Int          @id @default(autoincrement())
   date          DateTime
@@ -85,23 +85,23 @@ model GroupMatch {
   updatedAt     DateTime     @updatedAt @default(now())
 }
 
-// Modelo que representa el "tie" completo (enfrentamiento de dos partidos)
+// KnockoutTie (tie completo de un partido de knockout)
 model KnockoutTie {
   id            Int           @id @default(autoincrement())
   tournamentId  Int
   tournament    Tournament    @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   koPosition    Int           // 1-16 (posición en el bracket)
   
-  // Los equipos del tie (no cambian entre legs)
+  // the teams of the tie (don't change between legs)
   homeTeamId    Int
   homeTeam      Team          @relation("HomeTie", fields: [homeTeamId], references: [id], onDelete: Cascade)
   awayTeamId    Int
   awayTeam      Team          @relation("AwayTie", fields: [awayTeamId], references: [id], onDelete: Cascade)
   
-  // Los dos legs de este tie
+  // two legs of this tie
   legs          KnockoutLeg[]
   
-  // Estado agregado del tie
+  // aggregated tie state
   isFinished    Boolean       @default(false)
   winnerId      Int?          // ID del equipo ganador después de ambos legs
   
@@ -111,7 +111,7 @@ model KnockoutTie {
   @@unique([tournamentId, koPosition])
 }
 
-// Modelo que representa cada leg individual
+// KnockoutLeg (leg individual de un tie)
 model KnockoutLeg {
   id            Int           @id @default(autoincrement())
   
@@ -121,8 +121,8 @@ model KnockoutLeg {
   legNumber     Int           // 1 o 2
   date          DateTime
   
-  // En el leg 1: homeTeam del tie juega en casa
-  // En el leg 2: awayTeam del tie juega en casa (se invierten)
+  // In the leg 1: homeTeam of the tie plays at home
+  // In the leg 2: awayTeam of the tie plays at home (reversed)
   homeTeamId    Int
   homeTeam      Team          @relation("HomeTeam", fields: [homeTeamId], references: [id], onDelete: Cascade)
   awayTeamId    Int
@@ -145,11 +145,11 @@ model MatchEvent {
   tournamentId      Int
   tournament        Tournament   @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   
-  // Relación con partido de grupo
+  // relation with group match
   groupMatchId      Int?
   groupMatch        GroupMatch?  @relation(fields: [groupMatchId], references: [id], onDelete: Cascade)
   
-  // Relación con leg de knockout
+  // relation with knockout leg
   knockoutLegId     Int?
   knockoutLeg       KnockoutLeg? @relation(fields: [knockoutLegId], references: [id], onDelete: Cascade)
   

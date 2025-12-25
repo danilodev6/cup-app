@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import ExploreTournament from "../components/ExploreTournament";
+import ExploreBtnTournament from "../components/ExploreBtnTournament";
 
 export default async function Home() {
   const tournaments = await prisma.tournament.findMany();
@@ -12,7 +12,7 @@ export default async function Home() {
       <div className="text-center space-y-4">
         <p>Select your tournament:</p>
         {tournaments.map((tournament) => (
-          <ExploreTournament key={tournament.id} tournament={tournament} />
+          <ExploreBtnTournament key={tournament.id} tournament={tournament} />
         ))}
       </div>
     </section>

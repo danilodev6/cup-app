@@ -9,7 +9,7 @@ export default async function KoMatchesPage({
 }) {
   const { tournamentId } = await searchParams;
 
-  const matches = await prisma.knockoutMatch.findMany({
+  const koMatches = await prisma.knockoutMatch.findMany({
     where: tournamentId ? { tournamentId: Number(tournamentId) } : {},
     include: { homeTeam: true, awayTeam: true },
     orderBy: { koPosition: "asc" },
@@ -49,7 +49,7 @@ export default async function KoMatchesPage({
       <h2 className="text-center mt-5 mb-3">Knockout Matches</h2>
       <div className="mt-4 flex flex-col gap-4 mx-auto">
         {rounds.map((round) => {
-          const roundMatches = matches.filter((m) =>
+          const roundMatches = koMatches.filter((m) =>
             round.positions.includes(m.koPosition),
           );
           if (roundMatches.length === 0) return null;

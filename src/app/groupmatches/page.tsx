@@ -2,14 +2,14 @@ import prisma from "@/lib/prisma";
 import MatchDay from "@/components/MatchDay";
 import Link from "next/link";
 
-export default async function MatchesPage({
+export default async function GroupMatchesPage({
   searchParams,
 }: {
   searchParams: Promise<{ tournamentId?: string }>;
 }) {
   const { tournamentId } = await searchParams;
 
-  const matches = await prisma.match.findMany({
+  const groupMatches = await prisma.groupMatch.findMany({
     where: tournamentId ? { tournamentId: Number(tournamentId) } : {},
     include: { homeTeam: true, awayTeam: true },
   });
@@ -39,7 +39,7 @@ export default async function MatchesPage({
       )}
       <h2 className="text-center mt-5 space-y-7">Group Matches</h2>
       <div className="flex mx-auto">
-        <MatchDay matches={matches} />
+        <MatchDay groupMatches={groupMatches} />
       </div>
     </>
   );
