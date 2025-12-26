@@ -15,7 +15,7 @@ export async function createTournament(formData: FormData) {
     throw new Error("Missing required fields");
   }
 
-  const date = parseDateTimeLocal(dateRaw);
+  const date = new Date(dateRaw);
   const teamCount = Number(teamCountRaw);
 
   await prisma.tournament.create({
@@ -44,7 +44,7 @@ export async function editTournament(formData: FormData) {
     throw new Error("Missing required fields");
   }
 
-  const date = parseDateTimeLocal(dateRaw);
+  const date = new Date(dateRaw);
   const teamCount = Number(teamCountRaw);
 
   await prisma.tournament.update({

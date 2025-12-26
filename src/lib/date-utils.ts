@@ -22,13 +22,10 @@ export function parseDateTimeLocal(value: string): Date {
 export function toDateTimeLocalValue(date: Date | string): string {
   const d = typeof date === "string" ? new Date(date) : date;
 
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  const hours = String(d.getHours()).padStart(2, "0");
-  const minutes = String(d.getMinutes()).padStart(2, "0");
+  // convertir UTC → hora local del navegador
+  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
 
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
+  return local.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
 }
 
 /**
