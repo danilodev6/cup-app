@@ -1,6 +1,7 @@
 import prisma from "@/lib/prisma";
 import type { Player, MatchEvent } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
+import Link from "next/link";
 
 type PlayerWithEvents = Player & {
   matchEvents: MatchEvent[];
@@ -13,7 +14,8 @@ export default async function KoMatchPage({
 }) {
   const { id } = await params;
 
-  const koMatch = await prisma.knockoutTie.findUnique({
+  // Obtener el tie completo con sus legs
+  const koTie = await prisma.knockoutTie.findUnique({
     where: {
       id: Number(id),
     },
@@ -22,7 +24,13 @@ export default async function KoMatchPage({
         include: {
           players: {
             include: {
-              matchEvents: { where: { knockoutLegId: Number(id) } },
+              matchEvents: {
+                where: {
+                  knockoutLeg: {
+                    tieId: Number(id),
+                  },
+                },
+              },
             },
           },
         },
@@ -31,105 +39,255 @@ export default async function KoMatchPage({
         include: {
           players: {
             include: {
-              matchEvents: { where: { knockoutLegId: Number(id) } },
+              matchEvents: {
+                where: {
+                  knockoutLeg: {
+                    tieId: Number(id),
+                  },
+                },
+              },
             },
           },
         },
       },
+      legs: {
+        orderBy: { legNumber: "asc" },
+      },
     },
   });
 
-  if (!koMatch) {
+  if (!koTie) {
     return <div>Match not found</div>;
+  }
+
+  const leg1 = koTie.legs.find((leg) => leg.legNumber === 1);
+  const leg2 = koTie.legs.find((leg) => leg.legNumber === 2);
+
+  // Calcular marcador agregado
+  let homeAggregate = 0;
+  let awayAggregate = 0;
+
+  if (leg1 && leg2) {
+    homeAggregate = leg1.homeScore + leg2.awayScore;
+    awayAggregate = leg1.awayScore + leg2.homeScore;
+  } else if (leg1) {
+    homeAggregate = leg1.homeScore;
+    awayAggregate = leg1.awayScore;
+  } else if (leg2) {
+    homeAggregate = leg2.awayScore;
+    awayAggregate = leg2.homeScore;
   }
 
   return (
     <>
-      <div className="flex" id="explore-btn">
-        <span className="flex-1 text-right mr-1 text-xl">
-          {koMatch.homeTeam.name}
-        </span>
-        <img className="w-[30px]" src={koMatch.homeTeam.logoUrl} />
-        <span className="px-3 whitespace-nowrap text-xl">
-          {koMatch.homeScore} - {koMatch.awayScore}
-        </span>
-        <img className="w-[30px]" src={koMatch.awayTeam.logoUrl} />
-        <span className="flex-1 text-left ml-1 text-xl">
-          {koMatch.awayTeam.name}
-        </span>
+      <Link
+        href="/komatches"
+        className="flex items-center gap-2 mb-4 text-gray-400 hover:text-white transition-colors"
+      >
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+        Back to Knockout Matches
+      </Link>
+
+      {/* Header principal con marcador agregado */}
+      <div className="flex flex-col items-center gap-4 mb-6">
+        <div className="flex items-center" id="explore-btn">
+          <span className="flex-1 text-right mr-1 text-xl">
+            {koTie.homeTeam.name}
+          </span>
+          <img
+            className="w-[30px] mx-2"
+            src={koTie.homeTeam.logoUrl}
+            alt={koTie.homeTeam.name}
+          />
+          <span className="px-3 whitespace-nowrap text-2xl font-bold">
+            {homeAggregate} - {awayAggregate}
+          </span>
+          <img
+            className="w-[30px] mx-2"
+            src={koTie.awayTeam.logoUrl}
+            alt={koTie.awayTeam.name}
+          />
+          <span className="flex-1 text-left ml-1 text-xl">
+            {koTie.awayTeam.name}
+          </span>
+        </div>
+
+        <div className="text-sm text-gray-400">Marcador Agregado</div>
       </div>
 
-      <span className="mt-4 text-center text-xl">
-        {" "}
-        {formatArgentinianDate(koMatch.date)}{" "}
-      </span>
+      {/* Detalles de cada leg */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto">
+        {/* Leg 1 */}
+        {leg1 && (
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-center font-bold text-lg mb-3">Primer Leg</h3>
+            <div className="text-center mb-2">
+              <span className="text-gray-400 text-sm">
+                {formatArgentinianDate(leg1.date)}
+              </span>
+            </div>
+            <div className="flex justify-center items-center gap-4">
+              <div className="text-right flex-1">
+                <div className="font-medium">{koTie.homeTeam.shortName}</div>
+                <div className="text-xs text-gray-400">Local</div>
+              </div>
+              <div className="text-2xl font-bold">
+                {leg1.homeScore} - {leg1.awayScore}
+              </div>
+              <div className="text-left flex-1">
+                <div className="font-medium">{koTie.awayTeam.shortName}</div>
+                <div className="text-xs text-gray-400">Visitante</div>
+              </div>
+            </div>
+          </div>
+        )}
 
-      <h3 className="text-center mt-4">Lineup</h3>
+        {/* Leg 2 */}
+        {leg2 && (
+          <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
+            <h3 className="text-center font-bold text-lg mb-3">Segundo Leg</h3>
+            <div className="text-center mb-2">
+              <span className="text-gray-400 text-sm">
+                {formatArgentinianDate(leg2.date)}
+              </span>
+            </div>
+            <div className="flex justify-center items-center gap-4">
+              <div className="text-right flex-1">
+                <div className="font-medium">{koTie.awayTeam.shortName}</div>
+                <div className="text-xs text-gray-400">Local</div>
+              </div>
+              <div className="text-2xl font-bold">
+                {leg2.homeScore} - {leg2.awayScore}
+              </div>
+              <div className="text-left flex-1">
+                <div className="font-medium">{koTie.homeTeam.shortName}</div>
+                <div className="text-xs text-gray-400">Visitante</div>
+              </div>
+            </div>
+          </div>
+        )}
+      </div>
+
+      {/* Ganador del tie si está definido */}
+      {koTie.isFinished && koTie.winnerId && (
+        <div className="text-center mb-6">
+          <div className="inline-block bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-6 py-3">
+            <div className="text-sm text-yellow-500 font-semibold mb-1">
+              GANADOR DEL TIE
+            </div>
+            <div className="text-xl font-bold">
+              {koTie.winnerId === koTie.homeTeamId
+                ? koTie.homeTeam.name
+                : koTie.awayTeam.name}
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Lineup y estadísticas */}
+      <h3 className="text-center mt-8 mb-4 text-xl font-bold">
+        Lineup & Estadísticas
+      </h3>
 
       <div className="flex justify-between w-[90%] md:w-[60%] mx-auto mt-4">
+        {/* Equipo Local */}
         <div>
+          <h4 className="text-center font-semibold mb-4">
+            {koTie.homeTeam.name}
+          </h4>
           <ul>
-            {koMatch.homeTeam.players.map((player: PlayerWithEvents) => (
+            {koTie.homeTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}
               >
-                {" "}
-                <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
+                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
+                {player.name}
                 <div className="text-sm flex gap-1 items-center">
-                  <img className="w-7 h-7" src="/icons/goals.png" />
+                  <img className="w-7 h-7" src="/icons/goals.png" alt="Goals" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "goal",
                     ).length
                   }
-                  <img className="w-7 h-7" src="/icons/yellow-card.png" />
+                  <img
+                    className="w-7 h-7"
+                    src="/icons/yellow-card.png"
+                    alt="Yellow cards"
+                  />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "yellow_card",
                     ).length
                   }
-                  <img className="w-7 h-7" src="/icons/red-card.png" />
+                  <img
+                    className="w-7 h-7"
+                    src="/icons/red-card.png"
+                    alt="Red cards"
+                  />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "red_card",
                     ).length
                   }
-                  <span className="text-sm"></span>
                 </div>
               </li>
             ))}
           </ul>
         </div>
+
+        {/* Equipo Visitante */}
         <div className="ml-4">
+          <h4 className="text-center font-semibold mb-4">
+            {koTie.awayTeam.name}
+          </h4>
           <ul>
-            {koMatch.awayTeam.players.map((player: PlayerWithEvents) => (
+            {koTie.awayTeam.players.map((player: PlayerWithEvents) => (
               <li
                 className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
                 key={player.id}
               >
-                {" "}
-                <img id="playerPhoto" src={player.photoUrl} /> {player.name}{" "}
+                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
+                {player.name}
                 <div className="text-sm flex gap-1 items-center">
-                  <img className="w-7 h-7" src="/icons/goals.png" />
+                  <img className="w-7 h-7" src="/icons/goals.png" alt="Goals" />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "goal",
                     ).length
                   }
-                  <img className="w-7 h-7" src="/icons/yellow-card.png" />
+                  <img
+                    className="w-7 h-7"
+                    src="/icons/yellow-card.png"
+                    alt="Yellow cards"
+                  />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "yellow_card",
                     ).length
                   }
-                  <img className="w-7 h-7" src="/icons/red-card.png" />
+                  <img
+                    className="w-7 h-7"
+                    src="/icons/red-card.png"
+                    alt="Red cards"
+                  />
                   {
                     player.matchEvents.filter(
                       (e: MatchEvent) => e.eventType === "red_card",
                     ).length
                   }
-                  <span className="text-sm"></span>
                 </div>
               </li>
             ))}

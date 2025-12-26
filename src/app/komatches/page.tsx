@@ -9,9 +9,14 @@ export default async function KoMatchesPage({
 }) {
   const { tournamentId } = await searchParams;
 
+  // CORREGIDO: Incluir legs en la query
   const koMatches = await prisma.knockoutTie.findMany({
     where: tournamentId ? { tournamentId: Number(tournamentId) } : {},
-    include: { homeTeam: true, awayTeam: true },
+    include: {
+      homeTeam: true,
+      awayTeam: true,
+      legs: true,
+    },
     orderBy: { koPosition: "asc" },
   });
 
