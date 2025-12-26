@@ -4,7 +4,7 @@ import { useState, useRef, useTransition } from "react";
 import { editKnockoutLeg } from "./actions";
 import type { Tournament, Team } from "@/generated/prisma/client";
 import type { KnockoutTieWithLegs } from "@/lib/types";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtAR, formatArgentinianDate, toLocalInput } from "@/lib/date-utils";
 
 type Props = {
   tournaments: Tournament[];
@@ -111,8 +111,8 @@ export default function EditKnockoutLegForm({
             <option value="">Select Leg to Edit</option>
             {selectedTie.legs.map((leg) => (
               <option key={leg.id} value={leg.legNumber}>
-                Leg {leg.legNumber} - {formatArgentinianDate(leg.date)} (
-                {leg.homeScore}-{leg.awayScore})
+                Leg {leg.legNumber} - {fmtAR(leg.date)} ({leg.homeScore}-
+                {leg.awayScore})
               </option>
             ))}
           </select>
@@ -123,11 +123,7 @@ export default function EditKnockoutLegForm({
           name="date"
           required
           disabled={!selectedLeg || isPending}
-          defaultValue={
-            selectedLeg
-              ? new Date(selectedLeg.date).toISOString().slice(0, 16)
-              : ""
-          }
+          defaultValue={selectedLeg ? toLocalInput(selectedLeg.date) : ""}
         />
 
         <div className="grid grid-cols-2 gap-4">
