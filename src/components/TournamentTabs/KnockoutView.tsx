@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { formatArgentinianDateKo } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 import Link from "next/link";
 
 type TieWithLegs = {
@@ -54,11 +54,11 @@ export default async function KnockoutView({
       {finalTie?.isFinished && finalTie.winnerId && (
         <div className="mb-8 p-6 bg-gradient-to-b from-dark-100 to-dark-200 rounded-3xl border border-dark-200">
           <h2 className="text-2xl font-bold text-center mb-6 text-gradient">
-            Resultados del Torneo
+            Tournament Results
           </h2>
 
           <div className="flex flex-col gap-4">
-            {/* Campeón */}
+            {/* Champ */}
             <div className="flex items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
               <div className="text-4xl">🏆</div>
               <img
@@ -72,7 +72,7 @@ export default async function KnockoutView({
               />
               <div>
                 <div className="text-xs text-yellow-500 font-semibold">
-                  CAMPEÓN
+                  CHAMPION
                 </div>
                 <div className="text-lg font-bold">
                   {finalTie.winnerId === finalTie.homeTeamId
@@ -82,7 +82,7 @@ export default async function KnockoutView({
               </div>
             </div>
 
-            {/* Subcampeón */}
+            {/* Runner-up */}
             <div className="flex items-center gap-4 p-4 bg-gray-500/10 border border-gray-500/30 rounded-xl">
               <div className="text-3xl">🥈</div>
               <img
@@ -96,7 +96,7 @@ export default async function KnockoutView({
               />
               <div>
                 <div className="text-xs text-gray-400 font-semibold">
-                  SUBCAMPEÓN
+                  RUNNER-UP
                 </div>
                 <div className="text-base font-bold">
                   {finalTie.winnerId !== finalTie.homeTeamId
@@ -106,7 +106,7 @@ export default async function KnockoutView({
               </div>
             </div>
 
-            {/* Tercer lugar */}
+            {/* THiRD PLACE */}
             {thirdPlaceTie?.isFinished && thirdPlaceTie.winnerId && (
               <div className="flex items-center gap-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl">
                 <div className="text-2xl">🥉</div>
@@ -121,7 +121,7 @@ export default async function KnockoutView({
                 />
                 <div>
                   <div className="text-xs text-orange-400 font-semibold">
-                    TERCER LUGAR
+                    THIRD PLACE
                   </div>
                   <div className="text-base font-bold">
                     {thirdPlaceTie.winnerId === thirdPlaceTie.homeTeamId
@@ -217,16 +217,15 @@ function MatchCard({
     >
       {label && <div className="ko-label">{label}</div>}
 
-      {/* Fecha del primer leg disponible */}
+      {/* Dates */}
       {(leg1?.date || leg2?.date) && (
         <div className="text-xs text-gray-400">
-          {formatArgentinianDateKo(
-            ((leg1?.date || leg2?.date) as Date).toString(),
-          )}
+          {fmtAR((leg1?.date as Date).toString())}
+          {fmtAR((leg2?.date as Date).toString())}
         </div>
       )}
 
-      {/* Escudos */}
+      {/* Logos */}
       <div className="flex justify-center gap-3 mb-1 mt-1">
         <img
           className="ko-team-logo"
@@ -240,7 +239,7 @@ function MatchCard({
         />
       </div>
 
-      {/* Nombres de equipos */}
+      {/* Team names */}
       <div className="ko-teams flex gap-1 items-center">
         <span className={homeIsLoser ? "line-through text-gray-500" : ""}>
           {tie.homeTeam.shortName}
@@ -250,7 +249,7 @@ function MatchCard({
         </span>
       </div>
 
-      {/* Marcadores de cada leg */}
+      {/* Scores */}
       <div className="flex gap-1 flex-col items-center text-sm">
         {leg1 && (
           <div className="text-gray-400">
@@ -262,7 +261,7 @@ function MatchCard({
         {leg2 && (
           <div className="text-gray-400">
             <span className="ko-scores">
-              2°: {leg2.homeScore}-{leg2.awayScore}
+              2°: {leg2.awayScore}-{leg2.homeScore}
             </span>
           </div>
         )}
@@ -273,7 +272,7 @@ function MatchCard({
         )}
       </div>
 
-      {/* Indicador de tie pendiente */}
+      {/* Pending indicator */}
       {!leg1 && !leg2 && (
         <div className="text-xs text-yellow-400 mt-1">Por definir</div>
       )}

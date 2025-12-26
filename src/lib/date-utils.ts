@@ -7,12 +7,16 @@ export const toLocalInput = (d: Date | string) =>
 
 export const fromLocalInput = (iso: string) => new Date(iso).toISOString();
 
-export const fmtAR = (d: Date | string) =>
-  new Intl.DateTimeFormat("es-AR", {
-    timeZone: "America/Argentina/Buenos_Aires",
-    dateStyle: "short",
-    timeStyle: "short",
-  }).format(new Date(d));
+export function fmtAR(date: Date | string): string {
+  const d = new Date(date);
+  const day = String(d.getDate()).padStart(2, "0");
+  const month = String(d.getMonth() + 1).padStart(2, "0");
+  const year = String(d.getFullYear()).slice(-2);
+  const hour = String(d.getHours()).padStart(2, "0");
+  const min = String(d.getMinutes()).padStart(2, "0");
+
+  return `${day}/${month}/${year}, ${hour}:${min}`;
+}
 
 /**
  * Mostrar fecha y hora en Argentina (solo display)
