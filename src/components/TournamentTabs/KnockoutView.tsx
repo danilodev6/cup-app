@@ -219,7 +219,7 @@ function MatchCard({
 
       {/* Dates */}
       {(leg1?.date || leg2?.date) && (
-        <div className="text-xs text-gray-400">
+        <div className="flex flex-col items-center text-xs text-gray-400">
           {leg1?.date && fmtAR(leg1.date)}
           {leg2?.date && fmtAR(leg2.date)}
         </div>

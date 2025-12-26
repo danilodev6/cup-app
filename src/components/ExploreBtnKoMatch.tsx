@@ -1,13 +1,11 @@
 import Link from "next/link";
 import type { KnockoutTieWithLegs } from "@/lib/types";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 
 const ExploreBtnKoMatch = ({ koMatch }: { koMatch: KnockoutTieWithLegs }) => {
   // Get the first and second legs
   const firstLeg = koMatch.legs.find((leg) => leg.legNumber === 1);
   const secondLeg = koMatch.legs.find((leg) => leg.legNumber === 2);
-
-  const displayDate = firstLeg?.date || secondLeg?.date;
 
   let homeAggregate = 0;
   let awayAggregate = 0;
@@ -31,8 +29,9 @@ const ExploreBtnKoMatch = ({ koMatch }: { koMatch: KnockoutTieWithLegs }) => {
       className="flex flex-col items-center mt-7 mx-auto"
     >
       <div>
-        <span className="text-center mr-3">
-          {displayDate ? formatArgentinianDate(displayDate) : "Por definir"}
+        <span className="flex flex-col items-center text-center mr-3">
+          {firstLeg ? fmtAR(firstLeg.date) : "No date"}
+          {secondLeg ? fmtAR(secondLeg.date) : ""}
         </span>
       </div>
       <div className="flex items-center justify-center gap-2 mx-auto mt-2">
@@ -65,7 +64,7 @@ const ExploreBtnKoMatch = ({ koMatch }: { koMatch: KnockoutTieWithLegs }) => {
           )}
           {secondLeg && (
             <span>
-              2°: {secondLeg.homeScore}-{secondLeg.awayScore}
+              2°: {secondLeg.awayScore}-{secondLeg.homeScore}
             </span>
           )}
         </div>
