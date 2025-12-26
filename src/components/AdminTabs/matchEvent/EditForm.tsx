@@ -117,7 +117,6 @@ export default function EditMatchEventForm({
       <input type="hidden" name="id" value={selectedMatchEvent?.id || ""} />
 
       <select
-        name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
         disabled={isPending}
