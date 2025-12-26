@@ -1,67 +1,110 @@
 "use client";
 
 import { useState, useTransition } from "react";
-import { deleteKnockoutMatch } from "./actions";
+import { deleteKnockoutTie, deleteKnockoutLeg } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
-import type {
-  Tournament,
-  KnockoutMatch,
-  Team,
-} from "@/generated/prisma/client";
-
-type KnockoutMatchWithTeams = KnockoutMatch & {
-  homeTeam: Team;
-  awayTeam: Team;
-};
+import type { Tournament } from "@/generated/prisma/client";
+import type { KnockoutTieWithLegs } from "@/lib/types";
 
 type Props = {
   tournaments: Tournament[];
-  knockoutMatches: KnockoutMatchWithTeams[];
+  knockoutTies: KnockoutTieWithLegs[];
 };
 
 export default function DeleteKnockoutMatchForm({
   tournaments,
-  knockoutMatches,
+  knockoutTies,
 }: Props) {
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
-  const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
-    useState<KnockoutMatchWithTeams | null>(null);
+  const [selectedTieId, setSelectedTieId] = useState<number | null>(null);
+  const [deleteMode, setDeleteMode] = useState<"tie" | "leg">("tie");
+  const [selectedLegId, setSelectedLegId] = useState<number | null>(null);
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
 
-  const filteredKnockoutMatches = selectedTournamentId
-    ? knockoutMatches.filter((km) => km.tournamentId === selectedTournamentId)
+  const filteredKnockoutTies = selectedTournamentId
+    ? knockoutTies.filter((tie) => tie.tournamentId === selectedTournamentId)
     : [];
 
-  const handleDelete = () => {
-    if (!selectedKnockoutMatch) return;
+  const selectedTie = knockoutTies.find((tie) => tie.id === selectedTieId);
+  const selectedLeg = selectedTie?.legs.find((leg) => leg.id === selectedLegId);
+
+  const handleDeleteTie = () => {
+    if (!selectedTieId) return;
 
     startTransition(async () => {
       try {
         const formData = new FormData();
-        formData.append("KnockoutMatchId", selectedKnockoutMatch.id.toString());
-        await deleteKnockoutMatch(formData);
-        setMessage("✅ Knockout Match deleted successfully!");
-        setSelectedKnockoutMatch(null);
+        formData.append("tieId", selectedTieId.toString());
+        await deleteKnockoutTie(formData);
+        setMessage("✅ Knockout Tie deleted successfully!");
+        setSelectedTieId(null);
         setTimeout(() => setMessage(""), 1500);
       } catch (error) {
-        setMessage("❌ Error deleting knockout match");
+        setMessage("❌ Error deleting knockout tie");
       }
     });
   };
 
-  if (!knockoutMatches || knockoutMatches.length === 0) {
-    return <p>No knockout matches available</p>;
+  const handleDeleteLeg = () => {
+    if (!selectedLegId) return;
+
+    startTransition(async () => {
+      try {
+        const formData = new FormData();
+        formData.append("legId", selectedLegId.toString());
+        await deleteKnockoutLeg(formData);
+        setMessage("✅ Knockout Leg deleted successfully!");
+        setSelectedLegId(null);
+        setTimeout(() => setMessage(""), 1500);
+      } catch (error) {
+        setMessage("❌ Error deleting knockout leg");
+      }
+    });
+  };
+
+  if (!knockoutTies || knockoutTies.length === 0) {
+    return <p>No knockout ties available</p>;
   }
 
   return (
     <div className="flex flex-col gap-4 form-container-small">
+      {/* Selector de modo */}
+      <div className="flex gap-4 justify-center">
+        <button
+          type="button"
+          onClick={() => setDeleteMode("tie")}
+          className={`px-4 py-2 rounded-lg ${
+            deleteMode === "tie"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Delete Entire Tie
+        </button>
+        <button
+          type="button"
+          onClick={() => setDeleteMode("leg")}
+          className={`px-4 py-2 rounded-lg ${
+            deleteMode === "leg"
+              ? "bg-red-600 text-white"
+              : "bg-gray-700 text-gray-300"
+          }`}
+        >
+          Delete Single Leg
+        </button>
+      </div>
+
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        onChange={(e) => {
+          setSelectedTournamentId(Number(e.target.value));
+          setSelectedTieId(null);
+          setSelectedLegId(null);
+        }}
       >
         <option value="">Select Tournament</option>
         {tournaments.map((t) => (
@@ -72,36 +115,63 @@ export default function DeleteKnockoutMatchForm({
       </select>
 
       <select
-        name="KnockoutMatchId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        value={selectedKnockoutMatch?.id || ""}
+        value={selectedTieId || ""}
         onChange={(e) => {
-          const match = knockoutMatches.find(
-            (km) => km.id === Number(e.target.value),
-          );
-          setSelectedKnockoutMatch(match || null);
+          setSelectedTieId(Number(e.target.value));
+          setSelectedLegId(null);
         }}
         disabled={isPending || !selectedTournamentId}
         required
       >
-        <option value="">Select Knockout Match to Delete</option>
-        {filteredKnockoutMatches.map((km) => (
-          <option key={km.id} value={km.id}>
-            KO {km.koPosition} {km.leg}: {km.homeTeam?.name || "Home"} vs{" "}
-            {km.awayTeam?.name || "Away"}
+        <option value="">Select Knockout Tie</option>
+        {filteredKnockoutTies.map((tie) => (
+          <option key={tie.id} value={tie.id}>
+            Pos {tie.koPosition}: {tie.homeTeam.name} vs {tie.awayTeam.name}
           </option>
         ))}
       </select>
 
-      <ConfirmDeleteModal
-        entityName="Knockout Match"
-        itemName={
-          `KO ${selectedKnockoutMatch?.koPosition} ${selectedKnockoutMatch?.leg} - ${selectedKnockoutMatch?.homeTeam.name} vs ${selectedKnockoutMatch?.awayTeam.name}` ||
-          ""
-        }
-        onConfirm={handleDelete}
-        disabled={!selectedKnockoutMatch || isPending}
-      />
+      {deleteMode === "leg" && selectedTie && (
+        <select
+          className="bg-gray-600 text-white rounded-md px-4 py-2"
+          value={selectedLegId || ""}
+          onChange={(e) => setSelectedLegId(Number(e.target.value))}
+          disabled={isPending || !selectedTieId}
+          required
+        >
+          <option value="">Select Leg to Delete</option>
+          {selectedTie.legs.map((leg) => (
+            <option key={leg.id} value={leg.id}>
+              Leg {leg.legNumber} ({leg.homeScore}-{leg.awayScore})
+            </option>
+          ))}
+        </select>
+      )}
+
+      {deleteMode === "tie" ? (
+        <ConfirmDeleteModal
+          entityName="Knockout Tie"
+          itemName={
+            selectedTie
+              ? `Pos ${selectedTie.koPosition} - ${selectedTie.homeTeam.name} vs ${selectedTie.awayTeam.name}`
+              : ""
+          }
+          onConfirm={handleDeleteTie}
+          disabled={!selectedTieId || isPending}
+        />
+      ) : (
+        <ConfirmDeleteModal
+          entityName="Knockout Leg"
+          itemName={
+            selectedLeg
+              ? `Leg ${selectedLeg.legNumber} (${selectedLeg.homeScore}-${selectedLeg.awayScore})`
+              : ""
+          }
+          onConfirm={handleDeleteLeg}
+          disabled={!selectedLegId || isPending}
+        />
+      )}
 
       {message && (
         <p

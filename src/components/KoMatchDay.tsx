@@ -1,18 +1,18 @@
 "use client";
 
-import KoExploreBtn from "./KoExploreBtn";
-import type { KnockoutMatchWithTeams } from "@/lib/types";
+import ExploreBtnKoMatch from "./ExploreBtnKoMatch";
+import type { KnockoutTieWithLegs } from "@/lib/types";
 
 export default function KoMatchDay({
-  matches,
+  koMatches,
 }: {
-  matches: KnockoutMatchWithTeams[];
+  koMatches: KnockoutTieWithLegs[];
 }) {
   return (
     <ul className="list-none p-0 m-0 mx-auto">
-      {matches.map((match) => (
-        <li key={match.id}>
-          <KoExploreBtn match={match} />
+      {koMatches.map((koMatch) => (
+        <li key={koMatch.id}>
+          <ExploreBtnKoMatch koMatch={koMatch} />
         </li>
       ))}
     </ul>

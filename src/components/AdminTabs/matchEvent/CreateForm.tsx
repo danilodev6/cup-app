@@ -5,7 +5,7 @@ import { createMatchEvent } from "./actions";
 import type {
   Tournament,
   GroupMatch,
-  KnockoutTie,
+  KnockoutLeg,
   Player,
 } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
@@ -15,7 +15,7 @@ type MatchWithTeams = GroupMatch & {
   awayTeam: { id: number; name: string };
 };
 
-type KnockoutMatchWithTeams = KnockoutTie & {
+type KnockoutLegWithTeams = KnockoutLeg & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
@@ -23,21 +23,21 @@ type KnockoutMatchWithTeams = KnockoutTie & {
 type Props = {
   tournaments: Tournament[];
   groupMatches: MatchWithTeams[];
-  knockoutMatches: KnockoutMatchWithTeams[];
+  knockoutLegs: KnockoutLegWithTeams[];
   players: Player[];
 };
 
 export default function CreateMatchEventForm({
   tournaments,
   groupMatches,
-  knockoutMatches,
+  knockoutLegs,
   players,
 }: Props) {
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
   const [selectedMatchId, setSelectedMatchId] = useState("");
-  const [selectedKoMatchId, setSelectedKoMatchId] = useState("");
+  const [selectedKoLegId, setSelectedKoLegId] = useState("");
   const [selectedTeamId, setSelectedTeamId] = useState("");
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
@@ -48,32 +48,32 @@ export default function CreateMatchEventForm({
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
-  const sortedKnockoutMatches = [...knockoutMatches].sort(
-    (a, b) => b.koPosition - a.koPosition,
+  const sortedKnockoutLegs = [...knockoutLegs].sort(
+    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 
   const filteredMatches = selectedTournamentId
     ? sortedMatches.filter((m) => m.tournamentId === selectedTournamentId)
     : [];
 
-  const filteredKnockoutMatches = selectedTournamentId
-    ? sortedKnockoutMatches.filter(
-        (km) => km.tournamentId === selectedTournamentId,
-      )
+  const filteredKnockoutLegs = selectedTournamentId
+    ? sortedKnockoutLegs.filter((leg) => {
+        return true;
+      })
     : [];
 
   // getting teams from selected match
   const selectedMatch = filteredMatches.find(
     (m) => m.id === Number(selectedMatchId),
   );
-  const selectedKoMatch = filteredKnockoutMatches.find(
-    (km) => km.id === Number(selectedKoMatchId),
+  const selectedKoLeg = filteredKnockoutLegs.find(
+    (leg) => leg.id === Number(selectedKoLegId),
   );
 
   const availableTeams = selectedMatch
     ? [selectedMatch.homeTeam, selectedMatch.awayTeam]
-    : selectedKoMatch
-      ? [selectedKoMatch.homeTeam, selectedKoMatch.awayTeam]
+    : selectedKoLeg
+      ? [selectedKoLeg.homeTeam, selectedKoLeg.awayTeam]
       : [];
 
   // getting players from selected team
@@ -116,15 +116,15 @@ export default function CreateMatchEventForm({
       </select>
 
       <select
-        name="matchId"
+        name="groupMatchId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         value={selectedMatchId}
         onChange={(e) => {
           setSelectedMatchId(e.target.value);
           setSelectedTeamId("");
-          if (e.target.value) setSelectedKoMatchId("");
+          if (e.target.value) setSelectedKoLegId("");
         }}
-        disabled={!!selectedKoMatchId || isPending || !selectedTournamentId}
+        disabled={!!selectedKoLegId || isPending || !selectedTournamentId}
       >
         <option value="">Select Group Match (optional)</option>
         {filteredMatches.map((m) => (
@@ -136,21 +136,21 @@ export default function CreateMatchEventForm({
       </select>
 
       <select
-        name="knockoutMatchId"
+        name="knockoutLegId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        value={selectedKoMatchId}
+        value={selectedKoLegId}
         onChange={(e) => {
-          setSelectedKoMatchId(e.target.value);
+          setSelectedKoLegId(e.target.value);
           setSelectedTeamId("");
           if (e.target.value) setSelectedMatchId("");
         }}
         disabled={!!selectedMatchId || isPending || !selectedTournamentId}
       >
-        <option value="">Select Knockout Match (optional)</option>
-        {filteredKnockoutMatches.map((km) => (
-          <option key={km.id} value={km.id}>
-            {formatArgentinianDate(km.date)}: KO {km.koPosition} - {km.leg} :{" "}
-            {km.homeTeam.name} vs {km.awayTeam.name}
+        <option value="">Select Knockout Leg (optional)</option>
+        {filteredKnockoutLegs.map((leg) => (
+          <option key={leg.id} value={leg.id}>
+            {formatArgentinianDate(leg.date)}: Leg {leg.legNumber} :{" "}
+            {leg.homeTeam.name} vs {leg.awayTeam.name}
           </option>
         ))}
       </select>

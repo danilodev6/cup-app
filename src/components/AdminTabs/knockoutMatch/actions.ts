@@ -3,59 +3,143 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 
-export async function createKnockoutMatch(
+// ============================================
+// KNOCKOUT TIE ACTIONS
+// ============================================
+
+/**
+ * Crear un nuevo Knockout Tie (enfrentamiento completo)
+ */
+export async function createKnockoutTie(
   formData: FormData,
-): Promise<{ ok: boolean; error?: string }> {
-  const dateRaw = formData.get("date");
-  const date = new Date(dateRaw as string);
+): Promise<{ ok: boolean; error?: string; tieId?: number }> {
   const tournamentId = Number(formData.get("tournamentId"));
   const koPosition = Number(formData.get("koPosition"));
-  const leg = formData.get("leg") as string;
   const homeTeamId = Number(formData.get("homeTeamId"));
   const awayTeamId = Number(formData.get("awayTeamId"));
-  const homeScore = Number(formData.get("homeScore") || 0);
-  const awayScore = Number(formData.get("awayScore") || 0);
-  const isFinished = formData.get("isFinished") === "on";
 
-  // Validations
-  if (homeScore < 0 || awayScore < 0) {
-    return {
-      ok: false,
-      error: "Error: Scores cannot be negative.",
-    };
-  }
-
+  // Validaciones
   if (homeTeamId === awayTeamId) {
     return {
       ok: false,
-      error: "Error: Home and away teams cannot be the same.",
+      error: "Error: Los equipos local y visitante no pueden ser iguales.",
     };
   }
 
   if (koPosition < 1 || koPosition > 16) {
     return {
       ok: false,
-      error: "Error: KO position must be between 1 and 16.",
+      error: "Error: La posición KO debe estar entre 1 y 16.",
     };
   }
 
-  const exists = await prisma.knockoutMatch.findUnique({
-    where: { tournamentId_koPosition_leg: { tournamentId, koPosition, leg } },
+  // Verificar si ya existe un tie en esta posición
+  const existingTie = await prisma.knockoutTie.findUnique({
+    where: { tournamentId_koPosition: { tournamentId, koPosition } },
   });
 
-  if (exists) {
+  if (existingTie) {
     return {
       ok: false,
-      error: "Error:Position already used for this tournament.",
+      error: "Error: Ya existe un tie en esta posición para este torneo.",
     };
   }
 
-  await prisma.knockoutMatch.create({
+  // Crear el tie
+  const tie = await prisma.knockoutTie.create({
     data: {
-      date,
       tournamentId,
       koPosition,
-      leg,
+      homeTeamId,
+      awayTeamId,
+    },
+  });
+
+  revalidatePath("/admin");
+  return { ok: true, tieId: tie.id };
+}
+
+/**
+ * Eliminar un Knockout Tie completo (y todos sus legs)
+ */
+export async function deleteKnockoutTie(formData: FormData) {
+  const tieId = Number(formData.get("tieId"));
+
+  await prisma.knockoutTie.delete({
+    where: { id: tieId },
+  });
+
+  revalidatePath("/admin");
+  return { ok: true };
+}
+
+// ============================================
+// KNOCKOUT LEG ACTIONS
+// ============================================
+
+/**
+ * Crear un nuevo Knockout Leg para un tie existente
+ */
+export async function createKnockoutLeg(
+  formData: FormData,
+): Promise<{ ok: boolean; error?: string }> {
+  const tieId = Number(formData.get("tieId"));
+  const legNumber = Number(formData.get("legNumber"));
+  const dateRaw = formData.get("date");
+  const date = new Date(dateRaw as string);
+  const homeScore = Number(formData.get("homeScore") || 0);
+  const awayScore = Number(formData.get("awayScore") || 0);
+  const isFinished = formData.get("isFinished") === "on";
+
+  // Validaciones
+  if (homeScore < 0 || awayScore < 0) {
+    return {
+      ok: false,
+      error: "Error: Los marcadores no pueden ser negativos.",
+    };
+  }
+
+  if (legNumber !== 1 && legNumber !== 2) {
+    return {
+      ok: false,
+      error: "Error: El número de leg debe ser 1 o 2.",
+    };
+  }
+
+  // Obtener el tie
+  const tie = await prisma.knockoutTie.findUnique({
+    where: { id: tieId },
+    include: { legs: true },
+  });
+
+  if (!tie) {
+    return {
+      ok: false,
+      error: "Error: No se encontró el tie.",
+    };
+  }
+
+  // Verificar que el leg no exista
+  const existingLeg = tie.legs.find((leg) => leg.legNumber === legNumber);
+  if (existingLeg) {
+    return {
+      ok: false,
+      error: `Error: El leg ${legNumber} ya existe para este tie.`,
+    };
+  }
+
+  // Determinar los equipos según el leg
+  // Leg 1: homeTeam del tie juega en casa
+  // Leg 2: awayTeam del tie juega en casa (se invierten)
+  const homeTeamId = legNumber === 1 ? tie.homeTeamId : tie.awayTeamId;
+  const awayTeamId = legNumber === 1 ? tie.awayTeamId : tie.homeTeamId;
+
+  // Crear el leg
+  await prisma.knockoutLeg.create({
+    data: {
+      tieId,
+      legNumber,
+      date,
       homeTeamId,
       awayTeamId,
       homeScore,
@@ -64,96 +148,152 @@ export async function createKnockoutMatch(
     },
   });
 
+  // Si ambos legs están terminados, calcular el ganador del tie
+  if (isFinished) {
+    await updateTieWinner(tieId);
+  }
+
   revalidatePath("/admin");
   return { ok: true };
 }
 
-export async function editKnockoutMatch(
+/**
+ * Editar un Knockout Leg existente
+ */
+export async function editKnockoutLeg(
   formData: FormData,
 ): Promise<{ ok: boolean; error?: string }> {
-  const rawId = formData.get("id") as string;
-  const id = Number(rawId);
+  const id = Number(formData.get("id"));
   const dateRaw = formData.get("date");
-  const tournamentId = Number(formData.get("tournamentId"));
-  const koPosition = Number(formData.get("koPosition"));
-  const leg = formData.get("leg") as string;
-  const homeTeamId = Number(formData.get("homeTeamId"));
-  const awayTeamId = Number(formData.get("awayTeamId"));
+  const date = new Date(dateRaw as string);
   const homeScore = Number(formData.get("homeScore") || 0);
   const awayScore = Number(formData.get("awayScore") || 0);
   const isFinished = formData.get("isFinished") === "on";
 
-  const date = new Date(dateRaw as string);
-
-  // Validations
+  // Validaciones
   if (homeScore < 0 || awayScore < 0) {
     return {
       ok: false,
-      error: "Error: Scores cannot be negative.",
+      error: "Error: Los marcadores no pueden ser negativos.",
     };
   }
 
-  if (homeTeamId === awayTeamId) {
-    return {
-      ok: false,
-      error: "Error: Home and away teams cannot be the same.",
-    };
-  }
-
-  if (koPosition < 1 || koPosition > 16) {
-    return {
-      ok: false,
-      error: "Error: KO position must be between 1 and 16.",
-    };
-  }
-
-  const existing = await prisma.knockoutMatch.findFirst({
-    where: {
-      tournamentId,
-      koPosition,
-      leg,
-      id: { not: id },
-    },
+  const leg = await prisma.knockoutLeg.findUnique({
+    where: { id },
   });
 
-  if (existing) {
+  if (!leg) {
     return {
       ok: false,
-      error: "Error: Position already used for this tournament.",
+      error: "Error: No se encontró el leg.",
     };
   }
 
-  await prisma.knockoutMatch.update({
-    where: {
-      id,
-    },
+  // Actualizar el leg
+  await prisma.knockoutLeg.update({
+    where: { id },
     data: {
       date,
-      tournamentId,
-      koPosition,
-      leg,
-      homeTeamId,
-      awayTeamId,
       homeScore,
       awayScore,
       isFinished,
     },
   });
 
+  // Recalcular el ganador si es necesario
+  if (isFinished) {
+    await updateTieWinner(leg.tieId);
+  }
+
   revalidatePath("/admin");
   return { ok: true };
 }
 
-export async function deleteKnockoutMatch(formData: FormData) {
-  const rawId = formData.get("KnockoutMatchId") as string;
-  const id = Number(rawId);
+/**
+ * Eliminar un Knockout Leg específico
+ */
+export async function deleteKnockoutLeg(formData: FormData) {
+  const legId = Number(formData.get("legId"));
 
-  await prisma.knockoutMatch.delete({
-    where: {
-      id,
+  const leg = await prisma.knockoutLeg.findUnique({
+    where: { id: legId },
+  });
+
+  if (!leg) {
+    return { ok: false, error: "Leg no encontrado" };
+  }
+
+  await prisma.knockoutLeg.delete({
+    where: { id: legId },
+  });
+
+  // Resetear el estado del tie si se elimina un leg
+  await prisma.knockoutTie.update({
+    where: { id: leg.tieId },
+    data: {
+      isFinished: false,
+      winnerId: null,
     },
   });
 
   revalidatePath("/admin");
   return { ok: true };
+}
+
+// ============================================
+// HELPER FUNCTIONS
+// ============================================
+
+/**
+ * Calcular y actualizar el ganador del tie
+ * Considera: marcador agregado y regla de gol de visitante
+ */
+async function updateTieWinner(tieId: number) {
+  const tie = await prisma.knockoutTie.findUnique({
+    where: { id: tieId },
+    include: {
+      legs: true,
+      homeTeam: true,
+      awayTeam: true,
+    },
+  });
+
+  if (!tie || tie.legs.length !== 2) return;
+
+  const leg1 = tie.legs.find((l) => l.legNumber === 1);
+  const leg2 = tie.legs.find((l) => l.legNumber === 2);
+
+  if (!leg1?.isFinished || !leg2?.isFinished) return;
+
+  // Calcular marcador agregado
+  // En leg1: homeTeam del tie juega en casa
+  // En leg2: awayTeam del tie juega en casa (invertido)
+  const homeTeamAggregate = leg1.homeScore + leg2.awayScore;
+  const awayTeamAggregate = leg1.awayScore + leg2.homeScore;
+
+  let winnerId: number | null = null;
+
+  if (homeTeamAggregate > awayTeamAggregate) {
+    winnerId = tie.homeTeamId;
+  } else if (awayTeamAggregate > homeTeamAggregate) {
+    winnerId = tie.awayTeamId;
+  } else {
+    // Empate en agregado - aplicar regla de gol de visitante
+    // Goles de visitante del homeTeam: leg2.awayScore
+    // Goles de visitante del awayTeam: leg1.awayScore
+    if (leg2.awayScore > leg1.awayScore) {
+      winnerId = tie.homeTeamId;
+    } else if (leg1.awayScore > leg2.awayScore) {
+      winnerId = tie.awayTeamId;
+    }
+    // Si empatan en gol de visitante, quedaría en null (penales)
+  }
+
+  await prisma.knockoutTie.update({
+    where: { id: tieId },
+    data: {
+      isFinished: true,
+      winnerId,
+    },
+  });
 }

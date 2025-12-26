@@ -1,8 +1,8 @@
-import type { KnockoutMatchWithTeams } from "@/lib/types";
+import type { KnockoutLegWithTeams } from "@/lib/types";
 
 export type KnockoutPair = {
-  first: KnockoutMatchWithTeams | null;
-  second: KnockoutMatchWithTeams | null;
+  first: KnockoutLegWithTeams | null;
+  second: KnockoutLegWithTeams | null;
 };
 
 export function calculateWinner(matches: KnockoutPair) {
@@ -27,6 +27,6 @@ export function calculateWinner(matches: KnockoutPair) {
     return { winner: first.awayTeam, loser: first.homeTeam };
   }
 
-  // empate
+  // tie
   return { winner: first.homeTeam, loser: first.awayTeam };
 }

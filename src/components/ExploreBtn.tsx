@@ -1,24 +1,28 @@
 import Link from "next/link";
-import type { MatchWithTeams } from "@/lib/types";
+import type { GroupMatchWithTeams } from "@/lib/types";
 import { formatArgentinianDate } from "../lib/date-utils";
 
-const ExploreBtn = ({ match }: { match: MatchWithTeams }) => {
+const ExploreBtn = ({ groupMatch }: { groupMatch: GroupMatchWithTeams }) => {
   return (
     <Link
-      href={`/matches/${match.id}`}
+      href={`/groupmatches/${groupMatch.id}`}
       id="explore-btn"
       className="mt-7 mx-auto"
     >
       <span className="text-center mr-3">
-        {formatArgentinianDate(match.date)}
+        {formatArgentinianDate(groupMatch.date)}
       </span>
-      <span className="flex-1 text-center mr-1">{match.homeTeam.name}</span>
-      <img className="w-[25px] h-[25px]" src={match.homeTeam.logoUrl} />
+      <span className="flex-1 text-center mr-1">
+        {groupMatch.homeTeam.name}
+      </span>
+      <img className="w-[25px] h-[25px]" src={groupMatch.homeTeam.logoUrl} />
       <span className="px-3 whitespace-nowrap">
-        {match.homeScore} - {match.awayScore}
+        {groupMatch.homeScore} - {groupMatch.awayScore}
       </span>
-      <img className="w-[25px] h-[25px]" src={match.awayTeam.logoUrl} />
-      <span className="flex-1 text-center ml-1">{match.awayTeam.name}</span>
+      <img className="w-[25px] h-[25px]" src={groupMatch.awayTeam.logoUrl} />
+      <span className="flex-1 text-center ml-1">
+        {groupMatch.awayTeam.name}
+      </span>
     </Link>
   );
 };

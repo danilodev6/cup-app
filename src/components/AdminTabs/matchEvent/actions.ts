@@ -5,20 +5,18 @@ import { revalidatePath } from "next/cache";
 
 export async function createMatchEvent(formData: FormData) {
   const tournamentId = Number(formData.get("tournamentId"));
-  const matchIdRaw = formData.get("matchId");
-  const matchId = matchIdRaw ? Number(matchIdRaw) : null;
-  const knockoutMatchIdRaw = formData.get("knockoutMatchId");
-  const knockoutMatchId = knockoutMatchIdRaw
-    ? Number(knockoutMatchIdRaw)
-    : null;
+  const groupMatchIdRaw = formData.get("groupMatchId");
+  const groupMatchId = groupMatchIdRaw ? Number(groupMatchIdRaw) : null;
+  const knockoutLegIdRaw = formData.get("knockoutLegId");
+  const knockoutLegId = knockoutLegIdRaw ? Number(knockoutLegIdRaw) : null;
   const playerId = Number(formData.get("playerId"));
   const eventType = formData.get("eventType") as string;
 
   await prisma.matchEvent.create({
     data: {
       tournamentId,
-      matchId,
-      knockoutMatchId,
+      groupMatchId,
+      knockoutLegId,
       playerId,
       eventType,
     },
@@ -31,12 +29,10 @@ export async function editMatchEvent(formData: FormData) {
   const rawId = formData.get("id") as string;
   const id = Number(rawId);
   const tournamentId = Number(formData.get("tournamentId"));
-  const matchIdRaw = formData.get("matchId");
-  const matchId = matchIdRaw ? Number(matchIdRaw) : null;
-  const knockoutMatchIdRaw = formData.get("knockoutMatchId");
-  const knockoutMatchId = knockoutMatchIdRaw
-    ? Number(knockoutMatchIdRaw)
-    : null;
+  const groupMatchIdRaw = formData.get("groupMatchId");
+  const groupMatchId = groupMatchIdRaw ? Number(groupMatchIdRaw) : null;
+  const knockoutLegIdRaw = formData.get("knockoutLegId");
+  const knockoutLegId = knockoutLegIdRaw ? Number(knockoutLegIdRaw) : null;
   const playerId = Number(formData.get("playerId"));
   const eventType = formData.get("eventType") as string;
 
@@ -46,8 +42,8 @@ export async function editMatchEvent(formData: FormData) {
     },
     data: {
       tournamentId,
-      matchId,
-      knockoutMatchId,
+      groupMatchId,
+      knockoutLegId,
       playerId,
       eventType,
     },

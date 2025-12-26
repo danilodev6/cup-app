@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import MatchDay from "@/components/MatchDay";
+import MatchDay from "@/components/GroupMatchDay";
 import Link from "next/link";
 
 export default async function GroupMatchesPage({

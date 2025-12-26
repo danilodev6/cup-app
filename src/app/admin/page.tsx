@@ -46,22 +46,32 @@ export default async function AdminPage({
       awayTeam: true,
     },
   });
-  const knockoutMatches = await prisma.knockoutTie.findMany({
+
+  // Obtener ties con legs
+  const knockoutTies = await prisma.knockoutTie.findMany({
     include: {
       homeTeam: true,
       awayTeam: true,
-    },
-  });
-  const matchEvents = await prisma.matchEvent.findMany({
-    include: {
-      player: true,
-      match: {
+      legs: {
         include: {
           homeTeam: true,
           awayTeam: true,
         },
       },
-      knockoutMatch: {
+    },
+  });
+
+  const matchEvents = await prisma.matchEvent.findMany({
+    include: {
+      player: true,
+      tournament: true,
+      groupMatch: {
+        include: {
+          homeTeam: true,
+          awayTeam: true,
+        },
+      },
+      knockoutLeg: {
         include: {
           homeTeam: true,
           awayTeam: true,
@@ -91,7 +101,7 @@ export default async function AdminPage({
         teams={teams}
         players={players}
         groupMatches={groupMatches}
-        knockoutMatches={knockoutMatches}
+        knockoutTies={knockoutTies}
         matchEvents={matchEvents}
       />
     </div>

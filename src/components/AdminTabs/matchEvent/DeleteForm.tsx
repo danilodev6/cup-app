@@ -7,25 +7,25 @@ import type {
   Tournament,
   MatchEvent,
   Player,
-  Match,
-  KnockoutMatch,
+  GroupMatch,
+  KnockoutLeg,
 } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
 
-type MatchWithTeams = Match & {
+type MatchWithTeams = GroupMatch & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
-type KnockoutMatchWithTeams = KnockoutMatch & {
+type KnockoutLegWithTeams = KnockoutLeg & {
   homeTeam: { id: number; name: string };
   awayTeam: { id: number; name: string };
 };
 
 type MatchEventWithRelations = MatchEvent & {
   player: Player;
-  match?: MatchWithTeams;
-  knockoutMatch?: KnockoutMatchWithTeams;
+  groupMatch?: MatchWithTeams;
+  knockoutLeg?: KnockoutLegWithTeams;
 };
 
 type Props = {
@@ -71,10 +71,10 @@ export default function DeleteMatchEventForm({
   }
 
   const itemName = selectedMatchEvent
-    ? selectedMatchEvent.match
-      ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - group match: (${selectedMatchEvent.match.homeTeam.name} vs ${selectedMatchEvent.match.awayTeam.name})`
-      : selectedMatchEvent.knockoutMatch
-        ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - ko match: (${selectedMatchEvent.knockoutMatch.homeTeam.name} vs ${selectedMatchEvent.knockoutMatch.awayTeam.name})`
+    ? selectedMatchEvent.groupMatch
+      ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - group match: (${selectedMatchEvent.groupMatch.homeTeam.name} vs ${selectedMatchEvent.groupMatch.awayTeam.name})`
+      : selectedMatchEvent.knockoutLeg
+        ? `${selectedMatchEvent.player.name} - ${selectedMatchEvent.eventType} - ko leg ${selectedMatchEvent.knockoutLeg.legNumber}: (${selectedMatchEvent.knockoutLeg.homeTeam.name} vs ${selectedMatchEvent.knockoutLeg.awayTeam.name})`
         : ""
     : "";
 
@@ -108,10 +108,10 @@ export default function DeleteMatchEventForm({
       >
         <option value="">Select Match Event to Delete</option>
         {filteredMatchEvents.map((me) => {
-          const matchInfo = me.match
-            ? `[${formatArgentinianDate(me.match.date)}] GroupMatch: ${me.match.homeTeam.name} vs ${me.match.awayTeam.name}`
-            : me.knockoutMatch
-              ? `[${formatArgentinianDate(me.knockoutMatch.date)}] KO ${me.knockoutMatch.koPosition} ${me.knockoutMatch.leg} - ${me.knockoutMatch.homeTeam.name} vs ${me.knockoutMatch.awayTeam.name}`
+          const matchInfo = me.groupMatch
+            ? `[${formatArgentinianDate(me.groupMatch.date)}] GroupMatch: ${me.groupMatch.homeTeam.name} vs ${me.groupMatch.awayTeam.name}`
+            : me.knockoutLeg
+              ? `[${formatArgentinianDate(me.knockoutLeg.date)}] KO Leg ${me.knockoutLeg.legNumber} - ${me.knockoutLeg.homeTeam.name} vs ${me.knockoutLeg.awayTeam.name}`
               : "No match";
           return (
             <option key={me.id} value={me.id}>

@@ -9,7 +9,7 @@ const ExploreBtnGourpMatch = ({
 }) => {
   return (
     <Link
-      href={`/matches/${groupMatch.id}`}
+      href={`/groupmatches/${groupMatch.id}`}
       id="explore-btn"
       className="flex flex-col items-center mt-7 mx-auto"
     >

@@ -2,14 +2,10 @@
 
 import { useState, useRef, useTransition } from "react";
 import { editKnockoutMatch } from "./actions";
-import type {
-  Tournament,
-  Team,
-  KnockoutMatch,
-} from "@/generated/prisma/client";
+import type { Tournament, Team, KnockoutTie } from "@/generated/prisma/client";
 import { formatArgentinianDate } from "@/lib/date-utils";
 
-type KnockoutMatchWithTeams = KnockoutMatch & {
+type KnockoutMatchWithTeams = KnockoutTie & {
   homeTeam: Team;
   awayTeam: Team;
 };
@@ -17,13 +13,13 @@ type KnockoutMatchWithTeams = KnockoutMatch & {
 type Props = {
   tournaments: Tournament[];
   teams: Team[];
-  knockoutMatches: KnockoutMatchWithTeams[];
+  knockoutTies: KnockoutMatchWithTeams[];
 };
 
 export default function EditKnockoutMatchForm({
   tournaments,
   teams,
-  knockoutMatches,
+  knockoutTies,
 }: Props) {
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
@@ -34,7 +30,7 @@ export default function EditKnockoutMatchForm({
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
-  const sortedKnockoutMatches = [...knockoutMatches].sort(
+  const sortedKnockoutTies = [...knockoutTies].sort(
     (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
   );
 

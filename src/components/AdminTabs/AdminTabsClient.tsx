@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import CreateKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/CreateForm";
-import CreateMatchForm from "@/components/AdminTabs/match/CreateForm";
+import CreateMatchForm from "@/components/AdminTabs/groupMatch/CreateForm";
 import CreateMatchEventForm from "@/components/AdminTabs/matchEvent/CreateForm";
 import CreatePlayerForm from "@/components/AdminTabs/player/CreateForm";
 import CreateTeamForm from "@/components/AdminTabs/team/CreateForm";
@@ -13,8 +13,8 @@ import EditTeamForm from "@/components/AdminTabs/team/EditForm";
 import DeleteTeamForm from "@/components/AdminTabs/team/DeleteForm";
 import EditPlayerForm from "@/components/AdminTabs/player/EditForm";
 import DeletePlayerForm from "@/components/AdminTabs/player/DeleteForm";
-import EditMatchForm from "@/components/AdminTabs/match/EditForm";
-import DeleteMatchForm from "@/components/AdminTabs/match/DeleteForm";
+import EditMatchForm from "@/components/AdminTabs/groupMatch/EditForm";
+import DeleteMatchForm from "@/components/AdminTabs/groupMatch/DeleteForm";
 import EditKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/EditForm";
 import DeleteKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/DeleteForm";
 import EditMatchEventForm from "@/components/AdminTabs/matchEvent/EditForm";
@@ -37,7 +37,7 @@ type Props = {
   teams: Team[];
   players: Player[];
   groupMatches: GroupMatchWithTeams[];
-  knockoutMatches: KnockoutTieWithLegs[];
+  knockoutTies: KnockoutTieWithLegs[];
   matchEvents: any[];
 };
 
@@ -48,11 +48,19 @@ export default function AdminTabsClient({
   teams,
   players,
   groupMatches,
-  knockoutMatches,
+  knockoutTies,
   matchEvents,
 }: Props) {
   const [tab, setTab] = useState(initialTab);
   const [entity, setEntity] = useState(initialEntity);
+
+  const knockoutLegs = knockoutTies.flatMap((tie) =>
+    tie.legs.map((leg) => ({
+      ...leg,
+      homeTeam: tie.homeTeam,
+      awayTeam: tie.awayTeam,
+    })),
+  );
 
   return (
     <>
@@ -171,26 +179,30 @@ export default function AdminTabsClient({
           />
         )}
         {tab === "create" && entity === "komatch" && (
-          <CreateKnockoutMatchForm tournaments={tournaments} teams={teams} />
+          <CreateKnockoutMatchForm
+            tournaments={tournaments}
+            teams={teams}
+            existingTies={knockoutTies}
+          />
         )}
         {tab === "edit" && entity === "komatch" && (
           <EditKnockoutMatchForm
             tournaments={tournaments}
             teams={teams}
-            knockoutMatches={knockoutMatches}
+            knockoutTies={knockoutTies}
           />
         )}
         {tab === "delete" && entity === "komatch" && (
           <DeleteKnockoutMatchForm
             tournaments={tournaments}
-            knockoutMatches={knockoutMatches}
+            knockoutTies={knockoutTies}
           />
         )}
         {tab === "create" && entity === "matchevent" && (
           <CreateMatchEventForm
             tournaments={tournaments}
             groupMatches={groupMatches}
-            knockoutMatches={knockoutMatches}
+            knockoutLegs={knockoutLegs}
             players={players}
           />
         )}
@@ -198,7 +210,7 @@ export default function AdminTabsClient({
           <EditMatchEventForm
             tournaments={tournaments}
             groupMatches={groupMatches}
-            knockoutMatches={knockoutMatches}
+            knockoutLegs={knockoutLegs}
             players={players}
             matchEvents={matchEvents}
           />
