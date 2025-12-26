@@ -11,7 +11,7 @@ type Props = {
   knockoutTies: KnockoutTieWithLegs[];
 };
 
-export default function DeleteKnockoutMatchForm({
+export default function DeleteKnockoutLegForm({
   tournaments,
   knockoutTies,
 }: Props) {

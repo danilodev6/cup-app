@@ -1,70 +1,58 @@
 "use client";
 
 import { useState, useRef, useTransition } from "react";
-import { editKnockoutMatch } from "./actions";
-import type { Tournament, Team, KnockoutTie } from "@/generated/prisma/client";
+import { editKnockoutLeg } from "./actions";
+import type { Tournament, Team } from "@/generated/prisma/client";
+import type { KnockoutTieWithLegs } from "@/lib/types";
 import { formatArgentinianDate } from "@/lib/date-utils";
-
-type KnockoutMatchWithTeams = KnockoutTie & {
-  homeTeam: Team;
-  awayTeam: Team;
-};
 
 type Props = {
   tournaments: Tournament[];
   teams: Team[];
-  knockoutTies: KnockoutMatchWithTeams[];
+  knockoutTies: KnockoutTieWithLegs[];
 };
 
-export default function EditKnockoutMatchForm({
+export default function EditKnockoutLegForm({
   tournaments,
-  teams,
   knockoutTies,
 }: Props) {
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
-  const [selectedKnockoutMatch, setSelectedKnockoutMatch] =
-    useState<KnockoutMatchWithTeams | null>(null);
+  const [selectedTieId, setSelectedTieId] = useState<number | null>(null);
+  const [selectedLegNumber, setSelectedLegNumber] = useState<number | null>(
+    null,
+  );
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
 
-  const sortedKnockoutTies = [...knockoutTies].sort(
-    (a, b) => new Date(b.date).getTime() - new Date(a.date).getTime(),
-  );
-
-  const filteredKnockoutMatches = selectedTournamentId
-    ? sortedKnockoutMatches.filter(
-        (km) => km.tournamentId === selectedTournamentId,
-      )
+  const filteredKnockoutTies = selectedTournamentId
+    ? knockoutTies.filter((tie) => tie.tournamentId === selectedTournamentId)
     : [];
 
-  const handleSelectKnockoutMatch = (
-    e: React.ChangeEvent<HTMLSelectElement>,
-  ) => {
-    const selectedId = Number(e.target.value);
-    const knockoutMatch =
-      knockoutMatches.find((km) => km.id === selectedId) || null;
-    setSelectedKnockoutMatch(knockoutMatch);
-  };
+  const selectedTie = knockoutTies.find((tie) => tie.id === selectedTieId);
+  const selectedLeg = selectedTie?.legs.find(
+    (leg) => leg.legNumber === selectedLegNumber,
+  );
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
       try {
-        await editKnockoutMatch(formData);
-        setMessage("✅ Knockout Match updated successfully!");
-        setSelectedKnockoutMatch(null);
+        await editKnockoutLeg(formData);
+        setMessage("✅ Knockout Leg updated successfully!");
+        setSelectedTieId(null);
+        setSelectedLegNumber(null);
         formRef.current?.reset();
         setTimeout(() => setMessage(""), 1500);
       } catch (error) {
-        setMessage("❌ Error updating knockout match");
+        setMessage("❌ Error updating knockout leg");
       }
     });
   };
 
-  if (!knockoutMatches || knockoutMatches.length === 0) {
-    return <p>No knockout matches available</p>;
+  if (!knockoutTies || knockoutTies.length === 0) {
+    return <p>No knockout ties available</p>;
   }
 
   return (
@@ -73,18 +61,18 @@ export default function EditKnockoutMatchForm({
         action={handleSubmit}
         ref={formRef}
         className="flex flex-col gap-4 form-container-small"
-        key={selectedKnockoutMatch?.id || "no-selection"}
+        key={`${selectedTieId}-${selectedLegNumber}` || "no-selection"}
       >
-        <input
-          type="hidden"
-          name="id"
-          value={selectedKnockoutMatch?.id || ""}
-        />
+        <input type="hidden" name="id" value={selectedLeg?.id || ""} />
 
         <select
           name="tournamentId"
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+          onChange={(e) => {
+            setSelectedTournamentId(Number(e.target.value));
+            setSelectedTieId(null);
+            setSelectedLegNumber(null);
+          }}
         >
           <option value="">Select Tournament</option>
           {tournaments.map((t) => (
@@ -96,127 +84,79 @@ export default function EditKnockoutMatchForm({
 
         <select
           className="bg-gray-600 text-white rounded-md px-4 py-2"
-          onChange={handleSelectKnockoutMatch}
-          value={selectedKnockoutMatch?.id || ""}
+          onChange={(e) => {
+            setSelectedTieId(Number(e.target.value));
+            setSelectedLegNumber(null);
+          }}
+          value={selectedTieId || ""}
           disabled={isPending || !selectedTournamentId}
           required
         >
-          <option value="" disabled>
-            Select Knockout Match to Edit
-          </option>
-          {filteredKnockoutMatches.map((km) => (
-            <option key={km.id} value={km.id}>
-              {formatArgentinianDate(km.date)}: KO {km.koPosition} {km.leg}:{" "}
-              {km.homeTeam?.name || "Home"} vs {km.awayTeam?.name || "Away"}
+          <option value="">Select Knockout Tie</option>
+          {filteredKnockoutTies.map((tie) => (
+            <option key={tie.id} value={tie.id}>
+              Pos {tie.koPosition}: {tie.homeTeam.name} vs {tie.awayTeam.name}
             </option>
           ))}
         </select>
+
+        {selectedTie && (
+          <select
+            className="bg-gray-600 text-white rounded-md px-4 py-2"
+            onChange={(e) => setSelectedLegNumber(Number(e.target.value))}
+            value={selectedLegNumber || ""}
+            disabled={isPending || !selectedTieId}
+            required
+          >
+            <option value="">Select Leg to Edit</option>
+            {selectedTie.legs.map((leg) => (
+              <option key={leg.id} value={leg.legNumber}>
+                Leg {leg.legNumber} - {formatArgentinianDate(leg.date)} (
+                {leg.homeScore}-{leg.awayScore})
+              </option>
+            ))}
+          </select>
+        )}
 
         <input
           type="datetime-local"
           name="date"
           required
-          disabled={!selectedKnockoutMatch || isPending}
+          disabled={!selectedLeg || isPending}
           defaultValue={
-            selectedKnockoutMatch
-              ? new Date(selectedKnockoutMatch.date).toISOString().slice(0, 16)
+            selectedLeg
+              ? new Date(selectedLeg.date).toISOString().slice(0, 16)
               : ""
           }
         />
 
-        <select
-          name="tournamentId"
-          className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.tournamentId || ""}
-          required
-        >
-          <option value="">Select Tournament</option>
-          {tournaments.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-
-        <input
-          type="number"
-          name="koPosition"
-          placeholder="KO Position (1-16)"
-          min={1}
-          max={16}
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.koPosition || ""}
-          required
-        />
-
-        <select
-          name="leg"
-          className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.leg || ""}
-          required
-        >
-          <option value="" disabled>
-            Select Leg
-          </option>
-          <option value="first">First Leg</option>
-          <option value="second">Second Leg</option>
-        </select>
-
-        <label className="block text-sm">Home Team</label>
-        <select
-          name="homeTeamId"
-          className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.homeTeamId || ""}
-          required
-        >
-          <option value="">Select Home Team</option>
-          {teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-
-        <label className="block text-sm">Away Team</label>
-        <select
-          name="awayTeamId"
-          className="bg-gray-600 text-white rounded-md px-4 py-2"
-          disabled={!selectedKnockoutMatch || isPending}
-          defaultValue={selectedKnockoutMatch?.awayTeamId || ""}
-          required
-        >
-          <option value="">Select Away Team</option>
-          {teams.map((t) => (
-            <option key={t.id} value={t.id}>
-              {t.name}
-            </option>
-          ))}
-        </select>
-
         <div className="grid grid-cols-2 gap-4">
           <div>
-            <label className="block text-sm mb-1">Home Team Score</label>
+            <label className="block text-sm mb-1">
+              Home Team Score (
+              {selectedLeg ? selectedTie?.homeTeam.name : "..."})
+            </label>
             <input
               type="number"
               name="homeScore"
               placeholder="0"
-              disabled={!selectedKnockoutMatch || isPending}
-              defaultValue={selectedKnockoutMatch?.homeScore || 0}
+              disabled={!selectedLeg || isPending}
+              defaultValue={selectedLeg?.homeScore || 0}
               className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
             />
           </div>
 
           <div>
-            <label className="block text-sm mb-1">Away Team Score</label>
+            <label className="block text-sm mb-1">
+              Away Team Score (
+              {selectedLeg ? selectedTie?.awayTeam.name : "..."})
+            </label>
             <input
               type="number"
               name="awayScore"
               placeholder="0"
-              disabled={!selectedKnockoutMatch || isPending}
-              defaultValue={selectedKnockoutMatch?.awayScore || 0}
+              disabled={!selectedLeg || isPending}
+              defaultValue={selectedLeg?.awayScore || 0}
               className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
             />
           </div>
@@ -226,18 +166,18 @@ export default function EditKnockoutMatchForm({
           <input
             type="checkbox"
             name="isFinished"
-            disabled={!selectedKnockoutMatch || isPending}
-            defaultChecked={selectedKnockoutMatch?.isFinished || false}
+            disabled={!selectedLeg || isPending}
+            defaultChecked={selectedLeg?.isFinished || false}
           />{" "}
           Finished?
         </label>
 
         <button
-          className={`text-white px-4 py-2 rounded-md ${selectedKnockoutMatch && !isPending ? "bg-blue-600" : "bg-gray-400"}`}
+          className={`text-white px-4 py-2 rounded-md ${selectedLeg && !isPending ? "bg-blue-600" : "bg-gray-400"}`}
           type="submit"
-          disabled={!selectedKnockoutMatch || isPending}
+          disabled={!selectedLeg || isPending}
         >
-          {isPending ? "Updating..." : "Edit Knockout Match"}
+          {isPending ? "Updating..." : "Edit Knockout Leg"}
         </button>
 
         {message && (

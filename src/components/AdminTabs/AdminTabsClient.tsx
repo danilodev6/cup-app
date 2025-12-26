@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import CreateKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/CreateForm";
+import CreateKnockoutLegForm from "@/components/AdminTabs/knockoutMatch/CreateForm";
 import CreateMatchForm from "@/components/AdminTabs/groupMatch/CreateForm";
 import CreateMatchEventForm from "@/components/AdminTabs/matchEvent/CreateForm";
 import CreatePlayerForm from "@/components/AdminTabs/player/CreateForm";
@@ -15,8 +15,8 @@ import EditPlayerForm from "@/components/AdminTabs/player/EditForm";
 import DeletePlayerForm from "@/components/AdminTabs/player/DeleteForm";
 import EditMatchForm from "@/components/AdminTabs/groupMatch/EditForm";
 import DeleteMatchForm from "@/components/AdminTabs/groupMatch/DeleteForm";
-import EditKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/EditForm";
-import DeleteKnockoutMatchForm from "@/components/AdminTabs/knockoutMatch/DeleteForm";
+import EditKnockoutLegForm from "@/components/AdminTabs/knockoutMatch/EditForm";
+import DeleteKnockoutLegForm from "@/components/AdminTabs/knockoutMatch/DeleteForm";
 import EditMatchEventForm from "@/components/AdminTabs/matchEvent/EditForm";
 import DeleteMatchEventForm from "@/components/AdminTabs/matchEvent/DeleteForm";
 
@@ -179,21 +179,21 @@ export default function AdminTabsClient({
           />
         )}
         {tab === "create" && entity === "komatch" && (
-          <CreateKnockoutMatchForm
+          <CreateKnockoutLegForm
             tournaments={tournaments}
             teams={teams}
             existingTies={knockoutTies}
           />
         )}
         {tab === "edit" && entity === "komatch" && (
-          <EditKnockoutMatchForm
+          <EditKnockoutLegForm
             tournaments={tournaments}
             teams={teams}
             knockoutTies={knockoutTies}
           />
         )}
         {tab === "delete" && entity === "komatch" && (
-          <DeleteKnockoutMatchForm
+          <DeleteKnockoutLegForm
             tournaments={tournaments}
             knockoutTies={knockoutTies}
           />

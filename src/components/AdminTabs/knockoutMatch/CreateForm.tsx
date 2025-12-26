@@ -11,7 +11,7 @@ type Props = {
   existingTies?: KnockoutTieWithLegs[];
 };
 
-export default function CreateKnockoutForm({
+export default function CreateKnockoutLegForm({
   tournaments,
   teams,
   existingTies = [],
