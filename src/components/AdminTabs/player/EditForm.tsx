@@ -107,7 +107,6 @@ export default function EditPlayerForm({ tournaments, teams, players }: Props) {
       </select>
 
       <select
-        name="teamId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
         onChange={(e) => setSelectedTeamId(Number(e.target.value))}
       >
