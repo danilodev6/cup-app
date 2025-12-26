@@ -10,23 +10,10 @@ export function getTodayString(): string {
   return formatDate(new Date());
 }
 
-export function parseDateTimeLocal(value: string): Date {
-  // value: "2024-12-26T20:00"
-  return new Date(value);
-}
+export const toLocalInput = (d: Date | string) =>
+  new Date(d).toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm  (local)
 
-/**
- * Convierte una fecha de la DB (UTC)
- * a value válido para datetime-local
- */
-export function toDateTimeLocalValue(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : date;
-
-  // convertir UTC → hora local del navegador
-  const local = new Date(d.getTime() - d.getTimezoneOffset() * 60000);
-
-  return local.toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm
-}
+export const fromLocalInput = (iso: string) => new Date(iso).toISOString();
 
 /**
  * Mostrar fecha y hora en Argentina (solo display)

@@ -3,19 +3,19 @@
 import prisma from "@/lib/prisma";
 import { revalidatePath } from "next/cache";
 import { supabaseAdmin } from "@/lib/supabase-admin";
-import { parseDateTimeLocal } from "@/lib/date-utils";
+import { fromLocalInput } from "@/lib/date-utils";
 
 export async function createTournament(formData: FormData) {
   const name = formData.get("name") as string;
   const location = formData.get("location") as string;
   const dateRaw = formData.get("date");
   const teamCountRaw = formData.get("teamCount");
+  const date = fromLocalInput(formData.get("date") as string);
 
   if (!dateRaw || typeof dateRaw !== "string" || !teamCountRaw) {
     throw new Error("Missing required fields");
   }
 
-  const date = new Date(dateRaw);
   const teamCount = Number(teamCountRaw);
 
   await prisma.tournament.create({
@@ -39,12 +39,12 @@ export async function editTournament(formData: FormData) {
   const location = formData.get("location") as string;
   const dateRaw = formData.get("date");
   const teamCountRaw = formData.get("teamCount");
+  const date = fromLocalInput(formData.get("date") as string);
 
   if (!dateRaw || typeof dateRaw !== "string" || !teamCountRaw) {
     throw new Error("Missing required fields");
   }
 
-  const date = new Date(dateRaw);
   const teamCount = Number(teamCountRaw);
 
   await prisma.tournament.update({

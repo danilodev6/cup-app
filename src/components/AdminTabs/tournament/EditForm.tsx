@@ -3,7 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { editTournament } from "./actions";
 import type { Tournament } from "@/generated/prisma/client";
-import { toDateTimeLocalValue } from "@/lib/date-utils";
+import { toLocalInput } from "@/lib/date-utils";
 
 type Props = {
   tournaments: Tournament[];
@@ -93,9 +93,7 @@ export default function EditTournamentForm({ tournaments }: Props) {
         required
         disabled={!selectedTournament || isPending}
         defaultValue={
-          selectedTournament
-            ? toDateTimeLocalValue(selectedTournament.date)
-            : ""
+          selectedTournament ? toLocalInput(selectedTournament.date) : ""
         }
       />
 
