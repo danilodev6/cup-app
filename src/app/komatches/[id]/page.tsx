@@ -122,9 +122,8 @@ export default async function KoMatchPage({
           <span className="flex-1 text-left ml-1 text-xl">
             {koTie.awayTeam.name}
           </span>
+          <div className="text-sm text-gray-400">Aggregate Score</div>
         </div>
-
-        <div className="text-sm text-gray-400">Marcador Agregado</div>
       </div>
 
       {/* Detalles de cada leg */}
