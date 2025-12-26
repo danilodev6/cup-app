@@ -255,6 +255,16 @@ ul {
   opacity: 1;
 }
 
+#explore-tab .active {
+  opacity: 1;
+  font-weight: 600;
+  border-bottom: 2px solid #59deca;
+}
+
+#explore-tab :hover {
+  opacity: 1;
+}
+
 .form-container {
   @apply md:w-[800px] mx-auto;
 }

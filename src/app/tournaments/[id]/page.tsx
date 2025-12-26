@@ -31,30 +31,35 @@ export default async function TournamentPage({
       >
         <Link
           href={`/tournaments/${id}?tab=groups`}
+          id="explore-tab"
           className={`text-center ${activeTab === "groups" ? "active" : ""}`}
         >
           Groups
         </Link>
         <Link
           href={`/tournaments/${id}?tab=knockout`}
+          id="explore-tab"
           className={`text-center ${activeTab === "knockout" ? "active" : ""}`}
         >
           Knockout
         </Link>
         <Link
           href={`/tournaments/${id}?tab=fixture`}
+          id="explore-tab"
           className={`text-center ${activeTab === "fixture" ? "active" : ""}`}
         >
           Fixture
         </Link>
         <Link
           href={`/tournaments/${id}?tab=teams`}
+          id="explore-tab"
           className={`text-center ${activeTab === "teams" ? "active" : ""}`}
         >
           Teams
         </Link>
         <Link
           href={`/tournaments/${id}?tab=stats`}
+          id="explore-tab"
           className={`text-center ${activeTab === "stats" ? "active" : ""}`}
         >
           Stats
