@@ -48,7 +48,7 @@ export async function createMatch(formData: FormData) {
     }
   }
 
-  await prisma.match.create({
+  await prisma.groupMatch.create({
     data: {
       date,
       tournamentId,
@@ -87,7 +87,7 @@ export async function editMatch(formData: FormData) {
   }
 
   // Fetch previous match to check if it was finished
-  const oldMatch = await prisma.match.findUnique({
+  const oldMatch = await prisma.groupMatch.findUnique({
     where: { id },
     select: {
       isFinished: true,
@@ -124,7 +124,7 @@ export async function editMatch(formData: FormData) {
   }
 
   // Update match
-  await prisma.match.update({
+  await prisma.groupMatch.update({
     where: { id },
     data: {
       date,
@@ -165,42 +165,11 @@ export async function editMatch(formData: FormData) {
   revalidatePath("/admin");
 }
 
-// export async function editMatch(formData: FormData) {
-//   const rawId = formData.get("id") as string;
-//   const id = Number(rawId);
-//   const dateRaw = formData.get("date");
-//   const tournamentId = Number(formData.get("tournamentId"));
-//   const homeTeamId = Number(formData.get("homeTeamId"));
-//   const awayTeamId = Number(formData.get("awayTeamId"));
-//   const homeScore = Number(formData.get("homeScore") || 0);
-//   const awayScore = Number(formData.get("awayScore") || 0);
-//   const isFinished = formData.get("isFinished") === "on";
-//
-//   const date = new Date(dateRaw as string);
-//
-//   await prisma.match.update({
-//     where: {
-//       id,
-//     },
-//     data: {
-//       date,
-//       tournamentId,
-//       homeTeamId,
-//       awayTeamId,
-//       homeScore,
-//       awayScore,
-//       isFinished,
-//     },
-//   });
-//
-//   revalidatePath("/admin");
-// }
-
 export async function deleteMatch(formData: FormData) {
   const rawId = formData.get("MatchId") as string;
   const id = Number(rawId);
 
-  await prisma.match.delete({
+  await prisma.groupMatch.delete({
     where: {
       id,
     },
