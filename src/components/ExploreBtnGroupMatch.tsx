@@ -1,6 +1,6 @@
 import Link from "next/link";
 import type { GroupMatchWithTeams } from "@/lib/types";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 
 const ExploreBtnGourpMatch = ({
   groupMatch,
@@ -14,9 +14,7 @@ const ExploreBtnGourpMatch = ({
       className="flex flex-col items-center mt-7 mx-auto"
     >
       <div>
-        <span className="text-center mr-3">
-          {formatArgentinianDate(groupMatch.date)}
-        </span>
+        <span className="text-center mr-3">{fmtAR(groupMatch.date)}</span>
       </div>
       <div className="flex items-center justify-center gap-2 mx-auto mt-2">
         {" "}
