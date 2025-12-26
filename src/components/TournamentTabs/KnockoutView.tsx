@@ -220,8 +220,8 @@ function MatchCard({
       {/* Dates */}
       {(leg1?.date || leg2?.date) && (
         <div className="text-xs text-gray-400">
-          {fmtAR((leg1?.date as Date).toString())}
-          {fmtAR((leg2?.date as Date).toString())}
+          {leg1?.date && fmtAR(leg1.date)}
+          {leg2?.date && fmtAR(leg2.date)}
         </div>
       )}
 
