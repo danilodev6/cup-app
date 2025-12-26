@@ -3,6 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { editTournament } from "./actions";
 import type { Tournament } from "@/generated/prisma/client";
+import { toDateTimeLocalValue } from "@/lib/date-utils";
 
 type Props = {
   tournaments: Tournament[];
@@ -14,15 +15,6 @@ export default function EditTournamentForm({ tournaments }: Props) {
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
-
-  const formatDateTimeLocal = (date: Date) => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, "0");
-    const day = String(date.getDate()).padStart(2, "0");
-    const hours = String(date.getHours()).padStart(2, "0");
-    const minutes = String(date.getMinutes()).padStart(2, "0");
-    return `${year}-${month}-${day}T${hours}:${minutes}`;
-  };
 
   const handleSubmit = async (formData: FormData) => {
     startTransition(async () => {
@@ -101,7 +93,9 @@ export default function EditTournamentForm({ tournaments }: Props) {
         required
         disabled={!selectedTournament || isPending}
         defaultValue={
-          selectedTournament ? formatDateTimeLocal(selectedTournament.date) : ""
+          selectedTournament
+            ? toDateTimeLocalValue(selectedTournament.date)
+            : ""
         }
       />
 

@@ -99,22 +99,22 @@ export default function CreateKnockoutLegForm({
           onClick={() => setMode("tie")}
           className={`px-6 py-2 rounded-lg font-medium transition-colors ${
             mode === "tie"
-              ? "bg-blue-600 text-white"
+              ? "bg-purple-700 text-white"
               : "bg-gray-700 text-gray-300 hover:bg-gray-600"
           }`}
         >
-          Crear Nuevo Tie
+          Create New Tie
         </button>
         <button
           type="button"
           onClick={() => setMode("leg")}
           className={`px-6 py-2 rounded-lg font-medium transition-colors ${
             mode === "leg"
-              ? "bg-blue-600 text-white"
+              ? "bg-purple-700 text-white"
               : "bg-gray-700 text-gray-300 hover:bg-gray-600"
           }`}
         >
-          Agregar Leg a Tie Existente
+          Add Leg to Existing Tie
         </button>
       </div>
 
@@ -130,9 +130,9 @@ export default function CreateKnockoutLegForm({
               handleSubmitTie(new FormData(e.currentTarget));
             }}
           >
-            <h3 className="text-xl font-bold text-center">Crear Nuevo Tie</h3>
+            <h3 className="text-xl font-bold text-center">Create New Tie</h3>
             <p className="text-sm text-gray-400 text-center">
-              Primero crea el tie, luego agrega los legs
+              First create the tie, then add the legs
             </p>
 
             <select
@@ -161,7 +161,7 @@ export default function CreateKnockoutLegForm({
             />
 
             <label className="block text-sm font-medium">
-              Equipo Local (del Tie)
+              Home Team (from Tie)
             </label>
             <select
               name="homeTeamId"
@@ -169,7 +169,7 @@ export default function CreateKnockoutLegForm({
               disabled={isPending || !selectedTournamentId}
               required
             >
-              <option value="">Seleccionar Equipo Local</option>
+              <option value="">Select Home Team</option>
               {filteredTeams.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name}
@@ -178,7 +178,7 @@ export default function CreateKnockoutLegForm({
             </select>
 
             <label className="block text-sm font-medium">
-              Equipo Visitante (del Tie)
+              Away Team (from Tie)
             </label>
             <select
               name="awayTeamId"
@@ -186,7 +186,7 @@ export default function CreateKnockoutLegForm({
               disabled={isPending || !selectedTournamentId}
               required
             >
-              <option value="">Seleccionar Equipo Visitante</option>
+              <option value="">Select Away Team</option>
               {filteredTeams.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name}
@@ -199,7 +199,7 @@ export default function CreateKnockoutLegForm({
               type="submit"
               disabled={isPending}
             >
-              {isPending ? "Creando..." : "Crear Tie"}
+              {isPending ? "Creating..." : "Create Tie"}
             </button>
           </form>
         )}
@@ -215,7 +215,7 @@ export default function CreateKnockoutLegForm({
               handleSubmitLeg(new FormData(e.currentTarget));
             }}
           >
-            <h3 className="text-xl font-bold text-center">Agregar Leg</h3>
+            <h3 className="text-xl font-bold text-center">Add Leg</h3>
 
             <select
               name="tournamentId"
@@ -227,7 +227,7 @@ export default function CreateKnockoutLegForm({
               }}
               required
             >
-              <option value="">Seleccionar Torneo</option>
+              <option value="">Select Tournament</option>
               {tournaments.map((t) => (
                 <option key={t.id} value={t.id}>
                   {t.name}
@@ -242,7 +242,7 @@ export default function CreateKnockoutLegForm({
               disabled={!selectedTournamentId}
               required
             >
-              <option value="">Seleccionar Tie</option>
+              <option value="">Select Tie</option>
               {filteredTies.map((tie) => (
                 <option key={tie.id} value={tie.id}>
                   Pos {tie.koPosition}: {tie.homeTeam.shortName} vs{" "}
@@ -253,23 +253,23 @@ export default function CreateKnockoutLegForm({
 
             {selectedTie && (
               <div className="bg-gray-700 p-3 rounded-md text-sm">
-                <p className="font-medium mb-2">Información del Tie:</p>
+                <p className="font-medium mb-2">Tie Information:</p>
                 <p>
-                  <span className="text-gray-400">Equipos:</span>{" "}
+                  <span className="text-gray-400">Teams:</span>{" "}
                   {selectedTie.homeTeam.name} vs {selectedTie.awayTeam.name}
                 </p>
                 <p>
-                  <span className="text-gray-400">Legs existentes:</span>{" "}
+                  <span className="text-gray-400">Legs existing:</span>{" "}
                   {selectedTie.legs
                     .map((l) => `Leg ${l.legNumber}`)
-                    .join(", ") || "Ninguno"}
+                    .join(", ") || "None"}
                 </p>
-                <p className="mt-2 text-yellow-400">
-                  {canCreateLeg1 && "✓ Puede crear Leg 1"}
-                  {canCreateLeg2 && " ✓ Puede crear Leg 2"}
+                <p className="mt-2 text-yellow-500">
+                  {canCreateLeg1 && "✓ can create Leg 1"}
+                  {canCreateLeg2 && " ✓ can create Leg 2"}
                   {!canCreateLeg1 &&
                     !canCreateLeg2 &&
-                    "! Ambos legs ya existen"}
+                    "! both legs already exist"}
                 </p>
               </div>
             )}
@@ -280,17 +280,17 @@ export default function CreateKnockoutLegForm({
               disabled={isPending || !selectedTieId}
               required
             >
-              <option value="">Seleccionar Leg</option>
+              <option value="">Select Leg</option>
               {canCreateLeg1 && (
                 <option value="1">
-                  Leg 1 - {selectedTie?.homeTeam.shortName} (casa) vs{" "}
-                  {selectedTie?.awayTeam.shortName} (visit)
+                  Leg 1 - {selectedTie?.homeTeam.shortName} (home) vs{" "}
+                  {selectedTie?.awayTeam.shortName} (away)
                 </option>
               )}
               {canCreateLeg2 && (
                 <option value="2">
-                  Leg 2 - {selectedTie?.awayTeam.shortName} (casa) vs{" "}
-                  {selectedTie?.homeTeam.shortName} (visit)
+                  Leg 2 - {selectedTie?.awayTeam.shortName} (home) vs{" "}
+                  {selectedTie?.homeTeam.shortName} (away)
                 </option>
               )}
             </select>
@@ -305,7 +305,7 @@ export default function CreateKnockoutLegForm({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm mb-1">Marcador Local</label>
+                <label className="block text-sm mb-1">Home Team Score</label>
                 <input
                   type="number"
                   name="homeScore"
@@ -317,7 +317,7 @@ export default function CreateKnockoutLegForm({
               </div>
 
               <div>
-                <label className="block text-sm mb-1">Marcador Visitante</label>
+                <label className="block text-sm mb-1">Away Team Score</label>
                 <input
                   type="number"
                   name="awayScore"
@@ -330,7 +330,7 @@ export default function CreateKnockoutLegForm({
             </div>
 
             <label className="text-center">
-              <input type="checkbox" name="isFinished" /> ¿Finalizado?
+              <input type="checkbox" name="isFinished" /> Finished?
             </label>
 
             <button
@@ -342,7 +342,7 @@ export default function CreateKnockoutLegForm({
                 (!canCreateLeg1 && !canCreateLeg2)
               }
             >
-              {isPending ? "Creando..." : "Crear Leg"}
+              {isPending ? "Creating..." : "Create Leg"}
             </button>
           </form>
         )}

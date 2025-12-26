@@ -12,6 +12,7 @@ export default async function GroupMatchesPage({
   const groupMatches = await prisma.groupMatch.findMany({
     where: tournamentId ? { tournamentId: Number(tournamentId) } : {},
     include: { homeTeam: true, awayTeam: true },
+    orderBy: { date: "desc" },
   });
 
   return (
