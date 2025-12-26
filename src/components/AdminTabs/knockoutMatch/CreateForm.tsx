@@ -136,6 +136,7 @@ export default function CreateKnockoutLegForm({
             </p>
 
             <select
+              name="tournamentId"
               className="bg-gray-600 text-white rounded-md px-4 py-2"
               onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
               required
