@@ -2,18 +2,17 @@ export function formatDate(date: Date): string {
   return date.toISOString().split("T")[0]; // YYYY-MM-DD for internal use
 }
 
-export function parseDate(dateString: string): Date {
-  return new Date(dateString + "T00:00:00");
-}
-
-export function getTodayString(): string {
-  return formatDate(new Date());
-}
-
 export const toLocalInput = (d: Date | string) =>
   new Date(d).toISOString().slice(0, 16); // YYYY-MM-DDTHH:mm  (local)
 
 export const fromLocalInput = (iso: string) => new Date(iso).toISOString();
+
+export const fmtAR = (d: Date | string) =>
+  new Intl.DateTimeFormat("es-AR", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    dateStyle: "short",
+    timeStyle: "short",
+  }).format(new Date(d));
 
 /**
  * Mostrar fecha y hora en Argentina (solo display)
@@ -50,18 +49,4 @@ export function formatArgentinianDateTime(date: Date | string): string {
   const hours = String(d.getHours()).padStart(2, "0");
   const minutes = String(d.getMinutes()).padStart(2, "0");
   return `${hours}:${minutes}`;
-}
-
-export function formatDateTimeLocal(date: Date | string): string {
-  const d = typeof date === "string" ? new Date(date) : date;
-  const year = d.getFullYear();
-  const month = String(d.getMonth() + 1).padStart(2, "0");
-  const day = String(d.getDate()).padStart(2, "0");
-  const hours = String(d.getHours()).padStart(2, "0");
-  const minutes = String(d.getMinutes()).padStart(2, "0");
-  return `${year}-${month}-${day}T${hours}:${minutes}`;
-}
-
-export function isToday(dateString: string): boolean {
-  return dateString === getTodayString();
 }

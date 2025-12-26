@@ -3,7 +3,7 @@
 import { useState, useRef, useTransition } from "react";
 import { editMatch } from "./actions";
 import type { Tournament, Team, GroupMatch } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { toLocalInput } from "@/lib/date-utils";
 
 type MatchWithTeams = GroupMatch & {
   homeTeam: Team;
@@ -95,7 +95,7 @@ export default function EditMatchForm({
         </option>
         {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
-            {formatArgentinianDate(m.date)} : {m.homeTeam?.name || "Home"} vs{" "}
+            {toLocalInput(m.date)} : {m.homeTeam?.name || "Home"} vs{" "}
             {m.awayTeam?.name || "Away"}
           </option>
         ))}
@@ -106,11 +106,7 @@ export default function EditMatchForm({
         name="date"
         required
         disabled={!selectedMatch || isPending}
-        defaultValue={
-          selectedMatch
-            ? new Date(selectedMatch.date).toISOString().slice(0, 16)
-            : ""
-        }
+        defaultValue={selectedMatch ? toLocalInput(selectedMatch.date) : ""}
       />
 
       <select
