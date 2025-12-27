@@ -65,7 +65,7 @@ export default function AdminTabsClient({
   return (
     <>
       {/* TABS PRINCIPALES */}
-      <div className="explore-btn flex gap-6 mb-6 mt-6">
+      <div className="explore-btn flex gap-6 mb-6 mt-6 mx-auto">
         <button
           onClick={() => setTab("create")}
           className={tab === "create" ? "active" : ""}
@@ -87,7 +87,7 @@ export default function AdminTabsClient({
       </div>
 
       {/* ENTIDADES */}
-      <div className="explore-btn flex gap-6 mb-6 md:text-sm text-xs">
+      <div className="explore-btn flex gap-6 mb-6 md:text-sm text-xs mx-auto">
         <button
           onClick={() => setEntity("tournament")}
           className={entity === "tournament" ? "active" : ""}

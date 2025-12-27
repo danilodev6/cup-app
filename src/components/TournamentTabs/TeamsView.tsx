@@ -17,7 +17,7 @@ export default async function TeamsView({
       <ul className="grid grid-cols-1 md:grid-cols-3 gap-4 mx-auto">
         {teams.map((team: Team) => (
           <Link key={team.id} href={`/teams/${team.id}`}>
-            <li key={team.id} className="explore-btn flex gap-4">
+            <li key={team.id} className="explore-btn flex gap-4 text-center">
               <img className="w-[30px]" src={team.logoUrl} />
               <span className="text-2xl">{team.name}</span>
             </li>
