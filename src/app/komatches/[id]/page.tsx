@@ -202,96 +202,138 @@ export default async function KoMatchPage({
         Lineup & Estadísticas
       </h3>
 
-      <div className="flex justify-between w-[90%] md:w-[60%] mx-auto mt-4">
+      <div className="flex flex-col md:flex-row justify-center gap-8 w-[95%] mx-auto mt-4">
         {/* Equipo Local */}
         <div>
           <h4 className="text-center font-semibold mb-4">
             {koTie.homeTeam.name}
           </h4>
-          <ul>
-            {koTie.homeTeam.players.map((player: PlayerWithEvents) => (
-              <li
-                className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
-                key={player.id}
-              >
-                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
-                {player.name}
-                <div className="text-sm flex gap-1 items-center">
-                  <img className="w-7 h-7" src="/icons/goals.png" alt="Goals" />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "goal",
-                    ).length
-                  }
-                  <img
-                    className="w-7 h-7"
-                    src="/icons/yellow-card.png"
-                    alt="Yellow cards"
-                  />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "yellow_card",
-                    ).length
-                  }
-                  <img
-                    className="w-7 h-7"
-                    src="/icons/red-card.png"
-                    alt="Red cards"
-                  />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "red_card",
-                    ).length
-                  }
-                </div>
-              </li>
-            ))}
+          <ul className="flex gap-2 flex-wrap justify-center">
+            {koTie.homeTeam.players.map((player: PlayerWithEvents) => {
+              const goals = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "goal",
+              ).length;
+              const yellowCards = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "yellow_card",
+              ).length;
+              const redCards = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "red_card",
+              ).length;
+
+              return (
+                <li className="explore-player" key={player.id}>
+                  <div className="flex items-center gap-3">
+                    {/* Photo and name */}
+                    <div className="flex flex-col items-center gap-1 min-w-[80px]">
+                      <img
+                        className="w-16 h-16 rounded-full object-cover"
+                        src={player.photoUrl}
+                        alt={player.name}
+                      />
+                      <p className="text-md text-center leading-tight">
+                        {player.name}
+                      </p>
+                    </div>
+                    {/* Stats */}
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/goals.png"
+                          alt="goals"
+                        />
+                        <span className="text-sm min-w-[20px]">{goals}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/yellow-card.png"
+                          alt="yellowCards"
+                        />
+                        <span className="text-sm min-w-[20px]">
+                          {yellowCards}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/red-card.png"
+                          alt="redCards"
+                        />
+                        <span className="text-sm min-w-[20px]">{redCards}</span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
 
         {/* Equipo Visitante */}
-        <div className="ml-4">
+        <div>
           <h4 className="text-center font-semibold mb-4">
             {koTie.awayTeam.name}
           </h4>
-          <ul>
-            {koTie.awayTeam.players.map((player: PlayerWithEvents) => (
-              <li
-                className="flex flex-col text-center gap-4 items-center mt-4 md:text-xl"
-                key={player.id}
-              >
-                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
-                {player.name}
-                <div className="text-sm flex gap-1 items-center">
-                  <img className="w-7 h-7" src="/icons/goals.png" alt="Goals" />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "goal",
-                    ).length
-                  }
-                  <img
-                    className="w-7 h-7"
-                    src="/icons/yellow-card.png"
-                    alt="Yellow cards"
-                  />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "yellow_card",
-                    ).length
-                  }
-                  <img
-                    className="w-7 h-7"
-                    src="/icons/red-card.png"
-                    alt="Red cards"
-                  />
-                  {
-                    player.matchEvents.filter(
-                      (e: MatchEvent) => e.eventType === "red_card",
-                    ).length
-                  }
-                </div>
-              </li>
-            ))}
+          <ul className="flex gap-2 flex-wrap justify-center">
+            {koTie.awayTeam.players.map((player: PlayerWithEvents) => {
+              const goals = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "goal",
+              ).length;
+              const yellowCards = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "yellow_card",
+              ).length;
+              const redCards = player.matchEvents.filter(
+                (e: MatchEvent) => e.eventType === "red_card",
+              ).length;
+
+              return (
+                <li className="explore-player" key={player.id}>
+                  <div className="flex items-center gap-3">
+                    {/* Photo and name */}
+                    <div className="flex flex-col items-center gap-1 min-w-[80px]">
+                      <img
+                        className="w-16 h-16 rounded-full object-cover"
+                        src={player.photoUrl}
+                        alt={player.name}
+                      />
+                      <p className="text-md text-center leading-tight">
+                        {player.name}
+                      </p>
+                    </div>
+                    {/* Stats */}
+                    <div className="flex flex-col gap-1.5">
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/goals.png"
+                          alt="goals"
+                        />
+                        <span className="text-sm min-w-[20px]">{goals}</span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/yellow-card.png"
+                          alt="yellowCards"
+                        />
+                        <span className="text-sm min-w-[20px]">
+                          {yellowCards}
+                        </span>
+                      </div>
+                      <div className="flex items-center gap-2">
+                        <img
+                          className="h-5 w-5"
+                          src="/icons/red-card.png"
+                          alt="redCards"
+                        />
+                        <span className="text-sm min-w-[20px]">{redCards}</span>
+                      </div>
+                    </div>
+                  </div>
+                </li>
+              );
+            })}
           </ul>
         </div>
       </div>

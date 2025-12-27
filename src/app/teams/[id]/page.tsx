@@ -39,7 +39,7 @@ export default async function TeamPage({
     <div className="flex flex-col items-center">
       <img className="w-24 mt-4" src={team.logoUrl} alt={team.name} />
       <h2 className="text-3xl mt-4">{team.name}</h2>
-      <ul className="mt-6 flex gap-8 flex-wrap justify-center">
+      <ul className="mt-6 flex gap-2 flex-wrap justify-center">
         {team.players.map((player) => {
           const goals = player.matchEvents.filter(
             (e) => e.eventType === "goal",
@@ -57,7 +57,7 @@ export default async function TeamPage({
                 {/* Photo and name */}
                 <div className="flex flex-col items-center gap-1 min-w-[80px]">
                   <img
-                    className="w-15 h-15 rounded-full object-cover"
+                    className="w-16 h-16 rounded-full object-cover"
                     src={player.photoUrl}
                     alt={player.name}
                   />
