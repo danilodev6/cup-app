@@ -52,16 +52,24 @@ export default async function TeamPage({
           ).length;
 
           return (
-            <li className="flex flex-col gap-4 items-center" key={player.id}>
-              <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
-              <p>{player.name}</p>
-              <div className="text-sm flex gap-1 items-center">
-                <img className="w-10 h-10" src="/icons/goals.png" />
-                <span>{goals}</span>
-                <img className="w-10 h-10" src="/icons/yellow-card.png" />
-                <span>{yellowCards}</span>
-                <img className="w-10 h-10" src="/icons/red-card.png" />
-                <span>{redCards}</span>
+            <li className="explore-btn flex gap-4 items-center" key={player.id}>
+              <div>
+                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
+                <p>{player.name}</p>
+              </div>
+              <div className="text-sm flex flex-col gap-1 items-center">
+                <div>
+                  <img className="w-9" src="/icons/goals.png" />
+                  <span>{goals}</span>
+                </div>
+                <div>
+                  <img className="w-9" src="/icons/yellow-card.png" />
+                  <span>{yellowCards}</span>
+                </div>
+                <div>
+                  <img className="w-9" src="/icons/red-card.png" />
+                  <span>{redCards}</span>
+                </div>
               </div>
             </li>
           );

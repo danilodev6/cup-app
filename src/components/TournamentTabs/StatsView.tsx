@@ -49,12 +49,9 @@ export default async function StatsView({
     <>
       <div className="space-y-8 md:w-[500px] mx-auto">
         {/* Goals */}
-        <div>
+        <div className="explore-btn">
           <div className="flex items-center mb-4">
-            <img
-              className="w-10 h-10 mr-2"
-              src="https://xtvwxpyhtnmwykecdtad.supabase.co/storage/v1/object/sign/Photos/icons/goals.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNTk1ZDdkNC03ODA5LTQ5MmQtYWRmMy1lYTgzZmU5Yzk1OTAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJQaG90b3MvaWNvbnMvZ29hbHMucG5nIiwiaWF0IjoxNzY0OTY3OTg2LCJleHAiOjMzMjY5NDMxOTg2fQ.lhAciwVd73xxRXWJRg3g7OKLCWbH48DnHId7_KcEU0E"
-            />
+            <img className="w-10 mr-2" src="/icons/goals.png" />
             <h3 className="text-2xl font-bold">Goals</h3>
           </div>
           <div className="space-y-2">
@@ -74,12 +71,9 @@ export default async function StatsView({
         </div>
 
         {/* Yellow Cards */}
-        <div>
+        <div className="explore-btn">
           <div className="flex items-center mb-4">
-            <img
-              className="w-10 h-10 mr-2"
-              src="https://xtvwxpyhtnmwykecdtad.supabase.co/storage/v1/object/sign/Photos/icons/yellow-card.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNTk1ZDdkNC03ODA5LTQ5MmQtYWRmMy1lYTgzZmU5Yzk1OTAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJQaG90b3MvaWNvbnMveWVsbG93LWNhcmQucG5nIiwiaWF0IjoxNzY0OTY4MTc1LCJleHAiOjMzMjY5NDMyMTc1fQ.ydCtGOToqJ3d3-gSbR94hmzVhSVAcaz7W0fZ72biEjI"
-            />
+            <img className="w-10 mr-2" src="/icons/yellow-card.png" />
             <h3 className="text-2xl font-bold">Yellow Cards</h3>
           </div>
           <div className="space-y-2">
@@ -101,12 +95,9 @@ export default async function StatsView({
         </div>
 
         {/* Red Cards */}
-        <div>
+        <div className="explore-btn">
           <div className="flex items-center mb-4">
-            <img
-              className="w-10 h-10 mr-2"
-              src="https://xtvwxpyhtnmwykecdtad.supabase.co/storage/v1/object/sign/Photos/icons/red-card.png?token=eyJraWQiOiJzdG9yYWdlLXVybC1zaWduaW5nLWtleV8yNTk1ZDdkNC03ODA5LTQ5MmQtYWRmMy1lYTgzZmU5Yzk1OTAiLCJhbGciOiJIUzI1NiJ9.eyJ1cmwiOiJQaG90b3MvaWNvbnMvcmVkLWNhcmQucG5nIiwiaWF0IjoxNzY0OTY4MDcxLCJleHAiOjMzMjY5NDMyMDcxfQ.2AS2fE5918-jtTNst3NSIuScoOWZJcIOoHviWvFloIU"
-            />
+            <img className="w-10 mr-2" src="/icons/red-card.png" />
             <h3 className="text-2xl font-bold">Red Cards</h3>
           </div>
           <div className="space-y-2">

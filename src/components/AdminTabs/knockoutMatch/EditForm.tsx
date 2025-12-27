@@ -95,10 +95,39 @@ export default function EditKnockoutLegForm({
           <option value="">Select Knockout Tie</option>
           {filteredKnockoutTies.map((tie) => (
             <option key={tie.id} value={tie.id}>
-              Pos {tie.koPosition}: {tie.homeTeam.name} vs {tie.awayTeam.name}
+              Pos {tie.koPosition}: {tie.homeTeam.name} vs {tie.awayTeam.name}(
+              {tie.format === "single-leg" ? "1 leg" : "2 legs"})
             </option>
           ))}
         </select>
+
+        {/* NUEVO: Mostrar información del tie seleccionado */}
+        {selectedTie && (
+          <div className="bg-gray-700 p-3 rounded-md text-sm">
+            <p className="font-medium mb-2">Tie Information:</p>
+            <p>
+              <span className="text-gray-400">Format:</span>{" "}
+              <span
+                className={
+                  selectedTie.format === "single-leg"
+                    ? "text-blue-400"
+                    : "text-purple-400"
+                }
+              >
+                {selectedTie.format === "single-leg" ? "Single-Leg" : "Two-Leg"}
+              </span>
+            </p>
+            <p>
+              <span className="text-gray-400">Teams:</span>{" "}
+              {selectedTie.homeTeam.name} vs {selectedTie.awayTeam.name}
+            </p>
+            <p>
+              <span className="text-gray-400">Existing legs:</span>{" "}
+              {selectedTie.legs.map((l) => `Leg ${l.legNumber}`).join(", ") ||
+                "None"}
+            </p>
+          </div>
+        )}
 
         {selectedTie && (
           <select
@@ -129,8 +158,13 @@ export default function EditKnockoutLegForm({
         <div className="grid grid-cols-2 gap-4">
           <div>
             <label className="block text-sm mb-1">
-              Home Team Score (
-              {selectedLeg ? selectedTie?.homeTeam.name : "..."})
+              Home Team Score
+              {selectedLeg &&
+                selectedLeg.legNumber === 1 &&
+                ` (${selectedTie?.homeTeam.name})`}
+              {selectedLeg &&
+                selectedLeg.legNumber === 2 &&
+                ` (${selectedTie?.awayTeam.name})`}
             </label>
             <input
               type="number"
@@ -144,8 +178,13 @@ export default function EditKnockoutLegForm({
 
           <div>
             <label className="block text-sm mb-1">
-              Away Team Score (
-              {selectedLeg ? selectedTie?.awayTeam.name : "..."})
+              Away Team Score
+              {selectedLeg &&
+                selectedLeg.legNumber === 1 &&
+                ` (${selectedTie?.awayTeam.name})`}
+              {selectedLeg &&
+                selectedLeg.legNumber === 2 &&
+                ` (${selectedTie?.homeTeam.name})`}
             </label>
             <input
               type="number"
