@@ -6,7 +6,7 @@ export default async function Home() {
 
   return (
     <section>
-      <h1 className="text-center">Welcome to our site! </h1>
+      <h1 className="text-center">Welcome to our stadium! </h1>
       <p className="text-center mt-4"> Good luck! </p>
 
       <div className="text-center space-y-4">

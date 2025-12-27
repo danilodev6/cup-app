@@ -10,8 +10,7 @@ const ExploreBtnGourpMatch = ({
   return (
     <Link
       href={`/groupmatches/${groupMatch.id}`}
-      id="explore-btn"
-      className="flex flex-col items-center mt-7 mx-auto"
+      className="explore-btn flex flex-col items-center mt-7 mx-auto"
     >
       <div>
         <span className="text-center mr-3">{fmtAR(groupMatch.date)}</span>

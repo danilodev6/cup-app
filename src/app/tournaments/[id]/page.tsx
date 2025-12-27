@@ -25,10 +25,7 @@ export default async function TournamentPage({
     <div>
       <h2 className="text-center">{tournament?.name}</h2>
       {/* Tabs navigation */}
-      <div
-        className="grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 mt-6"
-        id="explore-btn"
-      >
+      <div className="explore-btn grid grid-cols-2 md:grid-cols-5 gap-3 mb-6 mt-6">
         <Link
           href={`/tournaments/${id}?tab=groups`}
           className={`explore-tab text-center ${activeTab === "groups" ? "active" : ""}`}

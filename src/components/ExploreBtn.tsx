@@ -6,8 +6,7 @@ const ExploreBtn = ({ groupMatch }: { groupMatch: GroupMatchWithTeams }) => {
   return (
     <Link
       href={`/groupmatches/${groupMatch.id}`}
-      id="explore-btn"
-      className="mt-7 mx-auto"
+      className="explore-btn mt-7 mx-auto"
     >
       <span className="text-center mr-3">
         {formatArgentinianDate(groupMatch.date)}

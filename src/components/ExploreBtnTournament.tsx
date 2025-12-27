@@ -5,8 +5,7 @@ const ExploreBtnTournament = ({ tournament }: { tournament: Tournament }) => {
   return (
     <Link
       href={`/tournaments/${tournament.id}`}
-      id="explore-btn"
-      className="mt-4 mx-auto w-[350px]"
+      className="explore-btn mt-4 mx-auto w-[350px]"
     >
       <span className="px-3 whitespace-nowrap">{tournament.name}</span>
     </Link>

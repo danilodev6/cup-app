@@ -25,8 +25,7 @@ const ExploreBtnKoMatch = ({ koMatch }: { koMatch: KnockoutTieWithLegs }) => {
   return (
     <Link
       href={`/komatches/${koMatch.id}`}
-      id="explore-btn"
-      className="flex flex-col items-center mt-7 mx-auto"
+      className="explore-btn flex flex-col items-center mt-7 mx-auto"
     >
       <div className="flex flex-col items-center">
         <span className="text-center mr-3">

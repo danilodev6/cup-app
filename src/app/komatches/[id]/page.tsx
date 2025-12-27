@@ -102,7 +102,7 @@ export default async function KoMatchPage({
 
       {/* Header principal con marcador agregado */}
       <div className="flex flex-col items-center gap-4 mb-6">
-        <div className="flex flex-col items-center" id="explore-btn">
+        <div className="explore-btn flex flex-col items-center">
           <div>
             <span className="flex-1 text-right mr-1 text-xl">
               {koTie.homeTeam.name}

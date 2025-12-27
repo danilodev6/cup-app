@@ -162,7 +162,7 @@ export default function CreateKnockoutForm({
               className="bg-gray-600 text-white rounded-md px-4 py-2"
             />
 
-            {/* NUEVO: Selector de formato */}
+            {/* Selector de formato */}
             <div className="flex flex-col gap-2">
               <label className="block text-sm font-medium">Tie Format</label>
               <select
@@ -171,8 +171,8 @@ export default function CreateKnockoutForm({
                 disabled={isPending}
                 required
               >
-                <option value="two-leg">Two-Leg (Libertadores style)</option>
-                <option value="single-leg">Single-Leg (World Cup style)</option>
+                <option value="two-leg">Two-Leg</option>
+                <option value="single-leg">Single-Leg</option>
               </select>
               <p className="text-xs text-gray-400">
                 Two-leg: Home and away matches. Single-leg: One match only.

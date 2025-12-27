@@ -2,7 +2,7 @@ const About = () => {
   return (
     <>
       {" "}
-      <h1>About</h1>;
+      <h1>About</h1>
       <p>
         La app de torneos es una plataforma diseñada para la organización y
         gestión de torneos de fútbol 5. La aplicación permite administrar las
