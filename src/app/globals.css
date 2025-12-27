@@ -152,10 +152,6 @@ li {
     }
   }
 
-  #explore-btn {
-    @apply border-dark-200 bg-dark-100 flex w-full cursor-pointer rounded-full border px-8 py-3.5 justify-center items-center;
-  }
-
   .explore-btn {
     @apply border-dark-200 bg-dark-100 flex w-full cursor-pointer rounded-full border px-8 py-3.5 justify-center items-center;
   }
@@ -243,19 +239,19 @@ ul {
   font-weight: bold;
 }
 
-#explore-btn button {
+.explore-btn button {
   flex: 1;
   opacity: 0.6;
   transition: opacity 0.2s;
 }
 
-#explore-btn button.active {
+.explore-btn button.active {
   opacity: 1;
   font-weight: 600;
   border-bottom: 2px solid #59deca;
 }
 
-#explore-btn button:hover {
+.explore-btn button:hover {
   opacity: 1;
 }
 
