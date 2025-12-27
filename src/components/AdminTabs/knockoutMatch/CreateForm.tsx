@@ -11,7 +11,7 @@ type Props = {
   existingTies?: KnockoutTieWithLegs[];
 };
 
-export default function CreateKnockoutLegForm({
+export default function CreateKnockoutForm({
   tournaments,
   teams,
   existingTies = [],
@@ -43,14 +43,16 @@ export default function CreateKnockoutLegForm({
   const canCreateLeg1 =
     selectedTie && !selectedTie.legs.some((l) => l.legNumber === 1);
   const canCreateLeg2 =
-    selectedTie && !selectedTie.legs.some((l) => l.legNumber === 2);
+    selectedTie &&
+    selectedTie.format === "two-leg" && // NUEVO: Solo si es two-leg
+    !selectedTie.legs.some((l) => l.legNumber === 2);
 
   const handleSubmitTie = async (fd: FormData) => {
     startTransition(async () => {
       try {
         const result = await createKnockoutTie(fd);
         if (result.ok) {
-          setMessage("✅ Tie creado exitosamente!");
+          setMessage("✅ Tie created successfully!");
           formRef.current?.reset();
           setTimeout(() => setMessage(""), 2000);
         } else {
@@ -58,7 +60,7 @@ export default function CreateKnockoutLegForm({
           setTimeout(() => setMessage(""), 3000);
         }
       } catch (error) {
-        setMessage("❌ Error al crear tie");
+        setMessage("❌ Error creating tie");
         setTimeout(() => setMessage(""), 3000);
       }
     });
@@ -66,7 +68,7 @@ export default function CreateKnockoutLegForm({
 
   const handleSubmitLeg = async (fd: FormData) => {
     if (!selectedTieId) {
-      setMessage("❌ Debe seleccionar un tie");
+      setMessage("❌ Must select a tie");
       return;
     }
 
@@ -76,7 +78,7 @@ export default function CreateKnockoutLegForm({
       try {
         const result = await createKnockoutLeg(fd);
         if (result.ok) {
-          setMessage("✅ Leg creado exitosamente!");
+          setMessage("✅ Leg created successfully!");
           formRef.current?.reset();
           setTimeout(() => setMessage(""), 2000);
         } else {
@@ -84,7 +86,7 @@ export default function CreateKnockoutLegForm({
           setTimeout(() => setMessage(""), 3000);
         }
       } catch (error) {
-        setMessage("❌ Error al crear leg");
+        setMessage("❌ Error creating leg");
         setTimeout(() => setMessage(""), 3000);
       }
     });
@@ -152,13 +154,30 @@ export default function CreateKnockoutLegForm({
             <input
               type="number"
               name="koPosition"
-              placeholder="Posición KO (1-16)"
+              placeholder="KO Position (1-16)"
               min={1}
               max={16}
               disabled={isPending}
               required
               className="bg-gray-600 text-white rounded-md px-4 py-2"
             />
+
+            {/* NUEVO: Selector de formato */}
+            <div className="flex flex-col gap-2">
+              <label className="block text-sm font-medium">Tie Format</label>
+              <select
+                name="format"
+                className="bg-gray-600 text-white rounded-md px-4 py-2"
+                disabled={isPending}
+                required
+              >
+                <option value="two-leg">Two-Leg (Libertadores style)</option>
+                <option value="single-leg">Single-Leg (World Cup style)</option>
+              </select>
+              <p className="text-xs text-gray-400">
+                Two-leg: Home and away matches. Single-leg: One match only.
+              </p>
+            </div>
 
             <label className="block text-sm font-medium">
               Home Team (from Tie)
@@ -246,7 +265,8 @@ export default function CreateKnockoutLegForm({
               {filteredTies.map((tie) => (
                 <option key={tie.id} value={tie.id}>
                   Pos {tie.koPosition}: {tie.homeTeam.shortName} vs{" "}
-                  {tie.awayTeam.shortName}
+                  {tie.awayTeam.shortName} (
+                  {tie.format === "single-leg" ? "1 leg" : "2 legs"})
                 </option>
               ))}
             </select>
@@ -255,21 +275,27 @@ export default function CreateKnockoutLegForm({
               <div className="bg-gray-700 p-3 rounded-md text-sm">
                 <p className="font-medium mb-2">Tie Information:</p>
                 <p>
+                  <span className="text-gray-400">Format:</span>{" "}
+                  {selectedTie.format === "single-leg"
+                    ? "Single-Leg"
+                    : "Two-Leg"}
+                </p>
+                <p>
                   <span className="text-gray-400">Teams:</span>{" "}
                   {selectedTie.homeTeam.name} vs {selectedTie.awayTeam.name}
                 </p>
                 <p>
-                  <span className="text-gray-400">Legs existing:</span>{" "}
+                  <span className="text-gray-400">Existing legs:</span>{" "}
                   {selectedTie.legs
                     .map((l) => `Leg ${l.legNumber}`)
                     .join(", ") || "None"}
                 </p>
                 <p className="mt-2 text-yellow-500">
-                  {canCreateLeg1 && "✓ can create Leg 1"}
-                  {canCreateLeg2 && " ✓ can create Leg 2"}
+                  {canCreateLeg1 && "✓ Can create Leg 1"}
+                  {canCreateLeg2 && " ✓ Can create Leg 2"}
                   {!canCreateLeg1 &&
                     !canCreateLeg2 &&
-                    "! both legs already exist"}
+                    "! All legs already exist"}
                 </p>
               </div>
             )}

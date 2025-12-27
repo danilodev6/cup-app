@@ -91,6 +91,7 @@ model KnockoutTie {
   tournamentId  Int
   tournament    Tournament    @relation(fields: [tournamentId], references: [id], onDelete: Cascade)
   koPosition    Int           // 1-16 (posición en el bracket)
+  format        String        @default("two-leg") // "single-leg" | "two-leg"
   
   // the teams of the tie (don't change between legs)
   homeTeamId    Int

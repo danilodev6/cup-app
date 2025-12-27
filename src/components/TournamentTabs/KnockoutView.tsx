@@ -7,6 +7,7 @@ type TieWithLegs = {
   koPosition: number;
   homeTeamId: number;
   awayTeamId: number;
+  format: string; // NUEVO
   homeTeam: { id: number; name: string; shortName: string; logoUrl: string };
   awayTeam: { id: number; name: string; shortName: string; logoUrl: string };
   winnerId: number | null;
@@ -58,7 +59,7 @@ export default async function KnockoutView({
           </h2>
 
           <div className="flex flex-col gap-4">
-            {/* Champ */}
+            {/* Champion */}
             <div className="flex items-center gap-4 p-4 bg-yellow-500/10 border border-yellow-500/30 rounded-xl">
               <div className="text-4xl">🏆</div>
               <img
@@ -106,7 +107,7 @@ export default async function KnockoutView({
               </div>
             </div>
 
-            {/* THiRD PLACE */}
+            {/* Third Place */}
             {thirdPlaceTie?.isFinished && thirdPlaceTie.winnerId && (
               <div className="flex items-center gap-4 p-4 bg-orange-500/10 border border-orange-500/30 rounded-xl">
                 <div className="text-2xl">🥉</div>
@@ -193,17 +194,24 @@ function MatchCard({
   const leg1 = tie.legs.find((l) => l.legNumber === 1);
   const leg2 = tie.legs.find((l) => l.legNumber === 2);
 
-  // Calcular marcador agregado si ambos legs existen
-  let homeAggregate = 0;
-  let awayAggregate = 0;
-  let hasAggregateScore = false;
+  // NUEVO: Lógica diferente según el formato
+  const isSingleLeg = tie.format === "single-leg";
 
-  if (leg1 && leg2) {
-    // leg1: homeTeam juega en casa
-    // leg2: awayTeam juega en casa (invertido)
-    homeAggregate = leg1.homeScore + leg2.awayScore;
-    awayAggregate = leg1.awayScore + leg2.homeScore;
-    hasAggregateScore = true;
+  // Calcular marcador (simple para single-leg, agregado para two-leg)
+  let homeScore = 0;
+  let awayScore = 0;
+  let hasScore = false;
+
+  if (isSingleLeg && leg1) {
+    // Single-leg: usar marcador directo
+    homeScore = leg1.homeScore;
+    awayScore = leg1.awayScore;
+    hasScore = true;
+  } else if (!isSingleLeg && leg1 && leg2) {
+    // Two-leg: calcular agregado
+    homeScore = leg1.homeScore + leg2.awayScore;
+    awayScore = leg1.awayScore + leg2.homeScore;
+    hasScore = true;
   }
 
   // Determinar quién perdió (para mostrar con line-through)
@@ -217,15 +225,11 @@ function MatchCard({
     >
       {label && <div className="ko-label">{label}</div>}
 
-      {/* Dates */}
+      {/* Fechas */}
       {(leg1?.date || leg2?.date) && (
         <div className="flex flex-col items-center text-xs text-gray-400">
-          <span className="text-center mr-3">
-            {leg1?.date && fmtAR(leg1.date)}
-          </span>
-          <span className="text-center mr-3">
-            {leg2?.date && fmtAR(leg2.date)}
-          </span>
+          {leg1?.date && <span>{fmtAR(leg1.date)}</span>}
+          {leg2?.date && <span>{fmtAR(leg2.date)}</span>}
         </div>
       )}
 
@@ -255,33 +259,50 @@ function MatchCard({
 
       {/* Scores */}
       <div className="flex gap-1 flex-col items-center text-sm">
-        {leg1 && (
-          <div className="text-gray-400">
-            <span className="ko-scores">
-              1°: {leg1.homeScore}-{leg1.awayScore}
-            </span>
-          </div>
-        )}
-        {leg2 && (
-          <div className="text-gray-400">
-            <span className="ko-scores">
-              2°: {leg2.awayScore}-{leg2.homeScore}
-            </span>
-          </div>
-        )}
-        {hasAggregateScore && (
-          <div className="text-white font-semibold text-xs mt-1">
-            Agr: {homeAggregate}-{awayAggregate}
-          </div>
+        {isSingleLeg ? (
+          // SINGLE-LEG: Mostrar solo el resultado
+          <>
+            {leg1 && (
+              <div className="text-white font-semibold">
+                {leg1.homeScore}-{leg1.awayScore}
+              </div>
+            )}
+          </>
+        ) : (
+          // TWO-LEG: Mostrar ambos legs + agregado
+          <>
+            {leg1 && (
+              <div className="text-gray-400">
+                <span className="ko-scores">
+                  1°: {leg1.homeScore}-{leg1.awayScore}
+                </span>
+              </div>
+            )}
+            {leg2 && (
+              <div className="text-gray-400">
+                <span className="ko-scores">
+                  2°: {leg2.homeScore}-{leg2.awayScore}
+                </span>
+              </div>
+            )}
+            {hasScore && (
+              <div className="text-white font-semibold text-xs mt-1">
+                Agg: {homeScore}-{awayScore}
+              </div>
+            )}
+          </>
         )}
       </div>
 
-      {/* Pending indicator */}
+      {/* Indicadores de estado */}
       {!leg1 && !leg2 && (
-        <div className="text-xs text-yellow-400 mt-1">Por definir</div>
+        <div className="text-xs text-yellow-400 mt-1">TBD</div>
       )}
-      {((leg1 && !leg2) || (!leg1 && leg2)) && (
-        <div className="text-xs text-blue-400 mt-1">Falta 1 leg</div>
+      {isSingleLeg && leg1 && !tie.isFinished && (
+        <div className="text-xs text-blue-400 mt-1">In progress</div>
+      )}
+      {!isSingleLeg && leg1 && !leg2 && (
+        <div className="text-xs text-blue-400 mt-1">1 leg missing</div>
       )}
     </Link>
   );

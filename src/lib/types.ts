@@ -16,6 +16,7 @@ export type KnockoutTieWithLegs = KnockoutTie & {
   homeTeam: Team;
   awayTeam: Team;
   legs: KnockoutLeg[];
+  format: string; // "single-leg" | "two-leg"
 };
 
 // Type for knockout legs with teams
@@ -29,14 +30,5 @@ export type KnockoutTieWithLegsAndTeams = KnockoutTie & {
   homeTeam: Team;
   awayTeam: Team;
   legs: KnockoutLegWithTeams[];
+  format: string; // "single-leg" | "two-leg"
 };
-
-// import type { Prisma } from "@/generated/prisma/client";
-//
-// export type GroupMatchWithTeams = Prisma.GroupMatchGetPayload<{
-//   include: { homeTeam: true; awayTeam: true };
-// }>;
-//
-// export type KnockoutTieWithTeams = Prisma.KnockoutTieGetPayload<{
-//   include: { homeTeam: true; awayTeam: true; legs: true };
-// }>;
