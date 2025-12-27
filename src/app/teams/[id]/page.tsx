@@ -52,26 +52,46 @@ export default async function TeamPage({
           ).length;
 
           return (
-            <li
-              className="explore-player flex gap-2 items-center"
-              key={player.id}
-            >
-              <div>
-                <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
-                <p>{player.name}</p>
-              </div>
-              <div className="text-sm flex flex-col gap-1 items-center">
-                <div className="flex gap-1">
-                  <img className="h-9" src="/icons/goals.png" />
-                  <span>{goals}</span>
+            <li className="explore-player" key={player.id}>
+              <div className="flex items-center gap-3">
+                {/* Photo and name */}
+                <div className="flex flex-col items-center gap-1 min-w-[80px]">
+                  <img
+                    className="w-12 h-12 rounded-full object-cover"
+                    src={player.photoUrl}
+                    alt={player.name}
+                  />
+                  <p className="text-xs text-center leading-tight">
+                    {player.name}
+                  </p>
                 </div>
-                <div className="flex gap-1">
-                  <img className="h-9" src="/icons/yellow-card.png" />
-                  <span>{yellowCards}</span>
-                </div>
-                <div className="flex gap-1">
-                  <img className="h-9" src="/icons/red-card.png" />
-                  <span>{redCards}</span>
+
+                {/* Stats */}
+                <div className="flex flex-col gap-1.5">
+                  <div className="flex items-center gap-2">
+                    <img
+                      className="h-5 w-5"
+                      src="/icons/goals.png"
+                      alt="Goles"
+                    />
+                    <span className="text-sm min-w-[20px]">{goals}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      className="h-5 w-5"
+                      src="/icons/yellow-card.png"
+                      alt="Tarjetas amarillas"
+                    />
+                    <span className="text-sm min-w-[20px]">{yellowCards}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <img
+                      className="h-5 w-5"
+                      src="/icons/red-card.png"
+                      alt="Tarjetas rojas"
+                    />
+                    <span className="text-sm min-w-[20px]">{redCards}</span>
+                  </div>
                 </div>
               </div>
             </li>

@@ -157,7 +157,7 @@ li {
   }
 
   .explore-player {
-    @apply border-dark-200 bg-dark-100 w-full cursor-pointer rounded-xl border px-2 py-1.5 justify-center items-center;
+    @apply border-dark-200 bg-dark-100 w-full cursor-pointer rounded-xl border p-3;
   }
 
   header {
