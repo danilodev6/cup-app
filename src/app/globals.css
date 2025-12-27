@@ -160,6 +160,10 @@ li {
     @apply border-dark-200 bg-dark-100 w-[200px] cursor-pointer rounded-xl border p-3;
   }
 
+  .explore-player>div {
+    @apply justify-center;
+  }
+
   header {
     @apply glass sticky top-0 z-50;
 
