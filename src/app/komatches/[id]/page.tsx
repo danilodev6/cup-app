@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import type { Player, MatchEvent } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtARid } from "@/lib/date-utils";
 import Link from "next/link";
 
 type PlayerWithEvents = Player & {
@@ -136,7 +136,7 @@ export default async function KoMatchPage({
             <h3 className="text-center font-bold text-lg mb-3">Primer Leg</h3>
             <div className="text-center mb-2">
               <span className="text-gray-400 text-sm">
-                {formatArgentinianDate(leg1.date)}
+                {fmtARid(leg1.date)}
               </span>
             </div>
             <div className="flex justify-center items-center gap-4">
@@ -161,7 +161,7 @@ export default async function KoMatchPage({
             <h3 className="text-center font-bold text-lg mb-3">Segundo Leg</h3>
             <div className="text-center mb-2">
               <span className="text-gray-400 text-sm">
-                {formatArgentinianDate(leg2.date)}
+                {fmtARid(leg2.date)}
               </span>
             </div>
             <div className="flex justify-center items-center gap-4">

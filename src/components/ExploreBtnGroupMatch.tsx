@@ -2,7 +2,7 @@ import Link from "next/link";
 import type { GroupMatchWithTeams } from "@/lib/types";
 import { fmtAR } from "@/lib/date-utils";
 
-const ExploreBtnGourpMatch = ({
+const ExploreBtnGroupMatch = ({
   groupMatch,
 }: {
   groupMatch: GroupMatchWithTeams;
@@ -42,4 +42,4 @@ const ExploreBtnGourpMatch = ({
   );
 };
 
-export default ExploreBtnGourpMatch;
+export default ExploreBtnGroupMatch;

@@ -9,7 +9,7 @@ export default async function Home() {
       <h1 className="text-center">Welcome to our stadium! </h1>
       <p className="text-center mt-4"> Good luck! </p>
 
-      <div className="text-center space-y-4">
+      <div className="text-center space-y-4 flex flex-col items-center">
         <p>Select your tournament:</p>
         {tournaments.map((tournament) => (
           <ExploreBtnTournament key={tournament.id} tournament={tournament} />
