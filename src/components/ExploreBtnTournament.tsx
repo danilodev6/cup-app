@@ -5,9 +5,11 @@ const ExploreBtnTournament = ({ tournament }: { tournament: Tournament }) => {
   return (
     <Link
       href={`/tournaments/${tournament.id}`}
-      className="explore-btn mt-4 mx-auto w-[350px]"
+      className="explore-btn mt-4 mx-auto max-w-[350px]"
     >
-      <span className="px-3 whitespace-nowrap">{tournament.name}</span>
+      <span className="px-3 whitespace-nowrap text-sm sm:text-base">
+        {tournament.name}
+      </span>
     </Link>
   );
 };

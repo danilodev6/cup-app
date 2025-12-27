@@ -153,7 +153,7 @@ li {
   }
 
   .explore-btn {
-    @apply border-dark-200 bg-dark-100 flex w-full cursor-pointer rounded-full border px-8 py-3.5 justify-center items-center;
+    @apply border-dark-200 bg-dark-100 flex w-full max-w-[600px] cursor-pointer rounded-full border px-4 sm:px-8 py-3.5 justify-center items-center;
   }
 
   .explore-player {
@@ -162,6 +162,10 @@ li {
 
   .explore-player>div {
     @apply justify-center;
+  }
+
+  .explore-btn.tournament-btn {
+    @apply max-w-[350px] w-full;
   }
 
   header {

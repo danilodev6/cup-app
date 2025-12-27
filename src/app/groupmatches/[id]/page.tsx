@@ -93,7 +93,7 @@ export default async function MatchPage({
                       </p>
                     </div>
                     {/* Stats */}
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col justify-center gap-1.5">
                       <div className="flex items-center gap-2">
                         <img
                           className="h-5 w-5"
@@ -159,7 +159,7 @@ export default async function MatchPage({
                       </p>
                     </div>
                     {/* Stats */}
-                    <div className="flex flex-col gap-1.5">
+                    <div className="flex flex-col justify-center gap-1.5">
                       <div className="flex items-center gap-2">
                         <img
                           className="h-5 w-5"
