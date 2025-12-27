@@ -57,11 +57,11 @@ export default async function TeamPage({
                 {/* Photo and name */}
                 <div className="flex flex-col items-center gap-1 min-w-[80px]">
                   <img
-                    className="w-12 h-12 rounded-full object-cover"
+                    className="w-15 h-15 rounded-full object-cover"
                     src={player.photoUrl}
                     alt={player.name}
                   />
-                  <p className="text-xs text-center leading-tight">
+                  <p className="text-md text-center leading-tight">
                     {player.name}
                   </p>
                 </div>
