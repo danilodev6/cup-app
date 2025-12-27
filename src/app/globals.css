@@ -156,6 +156,10 @@ li {
     @apply border-dark-200 bg-dark-100 flex w-full cursor-pointer rounded-full border px-8 py-3.5 justify-center items-center;
   }
 
+  .explore-player {
+    @apply border-dark-200 bg-dark-100 w-full cursor-pointer rounded-xl border px-2 py-1.5 justify-center items-center;
+  }
+
   header {
     @apply glass sticky top-0 z-50;
 

@@ -52,22 +52,25 @@ export default async function TeamPage({
           ).length;
 
           return (
-            <li className="explore-btn flex gap-4 items-center" key={player.id}>
+            <li
+              className="explore-player flex gap-2 items-center"
+              key={player.id}
+            >
               <div>
                 <img id="playerPhoto" src={player.photoUrl} alt={player.name} />
                 <p>{player.name}</p>
               </div>
               <div className="text-sm flex flex-col gap-1 items-center">
-                <div>
-                  <img className="w-9" src="/icons/goals.png" />
+                <div className="flex gap-1">
+                  <img className="h-9" src="/icons/goals.png" />
                   <span>{goals}</span>
                 </div>
-                <div>
-                  <img className="w-9" src="/icons/yellow-card.png" />
+                <div className="flex gap-1">
+                  <img className="h-9" src="/icons/yellow-card.png" />
                   <span>{yellowCards}</span>
                 </div>
-                <div>
-                  <img className="w-9" src="/icons/red-card.png" />
+                <div className="flex gap-1">
+                  <img className="h-9" src="/icons/red-card.png" />
                   <span>{redCards}</span>
                 </div>
               </div>
