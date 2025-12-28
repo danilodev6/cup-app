@@ -101,8 +101,8 @@ export default async function KoMatchPage({
       </Link>
 
       {/* Header principal con marcador agregado */}
-      <div className="explore-btn flex flex-col items-center gap-4 mb-6">
-        <div className="flex items-center justify-around gap-1">
+      <div className="explore-btn flex flex-col items-center gap-3 mb-2 mx-auto">
+        <div className="flex items-center justify-around">
           <span className="flex-1 text-right mr-1 text-xl">
             {koTie.homeTeam.name}
           </span>
@@ -127,7 +127,7 @@ export default async function KoMatchPage({
       </div>
 
       {/* Detalles de cada leg */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2 max-w-4xl mx-auto">
         {/* Leg 1 */}
         {leg1 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
@@ -196,11 +196,11 @@ export default async function KoMatchPage({
       )}
 
       {/* Lineup y estadísticas */}
-      <h3 className="text-center mt-8 mb-4 text-xl font-bold">
+      <h3 className="text-center mb-2 text-xl font-bold">
         Lineup & Estadísticas
       </h3>
 
-      <div className="flex flex-col md:flex-row justify-center gap-8 w-[95%] mx-auto mt-4">
+      <div className="flex flex-col md:flex-row justify-center gap-8 w-[95%] mx-auto">
         {/* Equipo Local */}
         <div>
           <h4 className="text-center font-semibold mb-4">
