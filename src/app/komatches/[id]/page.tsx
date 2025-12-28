@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import type { Player, MatchEvent } from "@/generated/prisma/client";
-import { fmtARid } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 import Link from "next/link";
 
 type PlayerWithEvents = Player & {
@@ -14,7 +14,7 @@ export default async function KoMatchPage({
 }) {
   const { id } = await params;
 
-  // Obtener el tie completo con sus legs
+  // Get complete tie with its legs
   const koTie = await prisma.knockoutTie.findUnique({
     where: {
       id: Number(id),
@@ -63,7 +63,7 @@ export default async function KoMatchPage({
   const leg1 = koTie.legs.find((leg) => leg.legNumber === 1);
   const leg2 = koTie.legs.find((leg) => leg.legNumber === 2);
 
-  // Calcular marcador agregado
+  // Calculate added marker
   let homeAggregate = 0;
   let awayAggregate = 0;
 
@@ -100,7 +100,7 @@ export default async function KoMatchPage({
         Back to Knockout Matches
       </Link>
 
-      {/* Header principal con marcador agregado */}
+      {/* Header with added marker */}
       <div className="explore-btn flex flex-col items-center gap-3 mb-2 mx-auto">
         <div className="flex items-center justify-around">
           <span className="flex-1 text-right mr-1 text-xl">
@@ -126,16 +126,14 @@ export default async function KoMatchPage({
         <div className="text-sm text-gray-400">Aggregate Score</div>
       </div>
 
-      {/* Detalles de cada leg */}
+      {/* leg details */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2 max-w-4xl mx-auto">
         {/* Leg 1 */}
         {leg1 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <h3 className="text-center font-bold text-lg mb-3">Primer Leg</h3>
-            <div className="text-center mb-2">
-              <span className="text-gray-400 text-sm">
-                {fmtARid(leg1.date)}
-              </span>
+            <h3 className="text-center font-bold text-lg mb-1">Primer Leg</h3>
+            <div className="text-center mb-1">
+              <span className="text-gray-400 text-sm">{fmtAR(leg1.date)}</span>
             </div>
             <div className="flex justify-center items-center gap-4">
               <div className="text-right flex-1">
@@ -158,9 +156,7 @@ export default async function KoMatchPage({
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
             <h3 className="text-center font-bold text-lg mb-3">Segundo Leg</h3>
             <div className="text-center mb-2">
-              <span className="text-gray-400 text-sm">
-                {fmtARid(leg2.date)}
-              </span>
+              <span className="text-gray-400 text-sm">{fmtAR(leg2.date)}</span>
             </div>
             <div className="flex justify-center items-center gap-4">
               <div className="text-right flex-1">
@@ -179,7 +175,7 @@ export default async function KoMatchPage({
         )}
       </div>
 
-      {/* Ganador del tie si está definido */}
+      {/* Tie winner if defined */}
       {koTie.isFinished && koTie.winnerId && (
         <div className="text-center mb-6">
           <div className="inline-block bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-6 py-3">
@@ -195,13 +191,13 @@ export default async function KoMatchPage({
         </div>
       )}
 
-      {/* Lineup y estadísticas */}
+      {/* Lineup and stats */}
       <h3 className="text-center mb-2 text-xl font-bold">
         Lineup & Estadísticas
       </h3>
 
       <div className="flex flex-col md:flex-row justify-center gap-8 w-[95%] mx-auto">
-        {/* Equipo Local */}
+        {/* Home Team */}
         <div>
           <h4 className="text-center font-semibold mb-4">
             {koTie.homeTeam.name}
@@ -268,7 +264,7 @@ export default async function KoMatchPage({
           </ul>
         </div>
 
-        {/* Equipo Visitante */}
+        {/* Away Team */}
         <div>
           <h4 className="text-center font-semibold mb-4">
             {koTie.awayTeam.name}
