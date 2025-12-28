@@ -8,21 +8,21 @@ export const toLocalInput = (d: Date | string) =>
 export const fromLocalInput = (iso: string) => new Date(iso).toISOString();
 
 export function fmtAR(d: Date | string | undefined): string {
-  if (!d) return ""; // ← guard
-  const date = new Date(d);
-  date.setHours(date.getHours()); // Add 3 hours for Argentine timezone
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = String(date.getFullYear()).slice(-2);
-  const hour = String(date.getHours()).padStart(2, "0");
-  const min = String(date.getMinutes()).padStart(2, "0");
-  return `${day}/${month}/${year}, ${hour}:${min}`;
+  if (!d) return ""; // guard
+  return new Intl.DateTimeFormat("es-AR", {
+    timeZone: "America/Argentina/Buenos_Aires",
+    day: "2-digit",
+    month: "2-digit",
+    year: "2-digit",
+    hour: "2-digit",
+    minute: "2-digit",
+  }).format(new Date(d));
 }
 
 export function fmtARid(d: Date | string | undefined): string {
   if (!d) return ""; // ← guard
   const date = new Date(d);
-  date.setHours(date.getHours());
+  date.setHours(date.getHours() + 3);
   const day = String(date.getDate()).padStart(2, "0");
   const month = String(date.getMonth() + 1).padStart(2, "0");
   const year = String(date.getFullYear()).slice(-2);
