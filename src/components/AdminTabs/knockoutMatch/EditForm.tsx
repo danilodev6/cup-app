@@ -64,6 +64,7 @@ export default function EditKnockoutLegForm({
         key={`${selectedTieId}-${selectedLegNumber}` || "no-selection"}
       >
         <input type="hidden" name="id" value={selectedLeg?.id || ""} />
+        <input type="hidden" name="tieId" value={selectedTieId || ""} />
 
         <select
           name="tournamentId"
@@ -126,6 +127,16 @@ export default function EditKnockoutLegForm({
               {selectedTie.legs.map((l) => `Leg ${l.legNumber}`).join(", ") ||
                 "None"}
             </p>
+            {selectedTie.isFinished && selectedTie.winnerId && (
+              <p>
+                <span className="text-gray-400">Winner:</span>{" "}
+                <span className="text-green-400">
+                  {selectedTie.winnerId === selectedTie.homeTeamId
+                    ? selectedTie.homeTeam.name
+                    : selectedTie.awayTeam.name}
+                </span>
+              </p>
+            )}
           </div>
         )}
 
@@ -206,6 +217,87 @@ export default function EditKnockoutLegForm({
           />{" "}
           Finished?
         </label>
+
+        {/* new section for knockout ties */}
+        {selectedTie &&
+          selectedTie.format === "two-leg" &&
+          selectedTie.legs.length === 2 && (
+            <div className="bg-gray-700 p-4 rounded-md border border-gray-600">
+              <p className="font-medium mb-3 text-sm text-gray-300">
+                Mark Tie Winner (for penalties or final result):
+              </p>
+
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  name="markTieAsFinished"
+                  disabled={isPending}
+                  defaultChecked={selectedTie.isFinished || false}
+                />
+                <span className="text-sm">Tie is finished</span>
+              </label>
+
+              <select
+                name="tieWinnerId"
+                className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+                disabled={isPending}
+                defaultValue={selectedTie.winnerId || ""}
+              >
+                <option value="">No winner yet / In progress</option>
+                <option value={selectedTie.homeTeamId}>
+                  {selectedTie.homeTeam.name} wins
+                </option>
+                <option value={selectedTie.awayTeamId}>
+                  {selectedTie.awayTeam.name} wins
+                </option>
+              </select>
+
+              <p className="text-xs text-gray-400 mt-2">
+                💡 Use this to mark winner when decided by penalties or when
+                both legs are complete
+              </p>
+            </div>
+          )}
+
+        {/* Para single-leg también permitir marcar ganador */}
+        {selectedTie &&
+          selectedTie.format === "single-leg" &&
+          selectedTie.legs.length > 0 && (
+            <div className="bg-gray-700 p-4 rounded-md border border-gray-600">
+              <p className="font-medium mb-3 text-sm text-gray-300">
+                Mark Match Winner (for penalties):
+              </p>
+
+              <label className="flex items-center gap-2 mb-2">
+                <input
+                  type="checkbox"
+                  name="markTieAsFinished"
+                  disabled={isPending}
+                  defaultChecked={selectedTie.isFinished || false}
+                />
+                <span className="text-sm">Match is finished</span>
+              </label>
+
+              <select
+                name="tieWinnerId"
+                className="w-full bg-gray-600 text-white rounded-md px-4 py-2"
+                disabled={isPending}
+                defaultValue={selectedTie.winnerId || ""}
+              >
+                <option value="">No winner yet / In progress</option>
+                <option value={selectedTie.homeTeamId}>
+                  {selectedTie.homeTeam.name} wins
+                </option>
+                <option value={selectedTie.awayTeamId}>
+                  {selectedTie.awayTeam.name} wins
+                </option>
+              </select>
+
+              <p className="text-xs text-gray-400 mt-2">
+                💡 Select winner if decided by penalties
+              </p>
+            </div>
+          )}
 
         <button
           className={`text-white px-4 py-2 rounded-md ${selectedLeg && !isPending ? "bg-blue-600" : "bg-gray-400"}`}

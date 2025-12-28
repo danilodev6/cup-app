@@ -78,6 +78,9 @@ export default async function KoMatchPage({
     awayAggregate = leg2.homeScore;
   }
 
+  const isTied = homeAggregate === awayAggregate;
+  const wonByPenalties = isTied && koTie.isFinished && koTie.winnerId;
+
   return (
     <>
       <Link
@@ -124,6 +127,15 @@ export default async function KoMatchPage({
             {koTie.awayTeam.name}
           </span>
         </div>
+        {wonByPenalties && (
+          <div className="text-xs text-yellow-400 font-semibold">
+            (
+            {koTie.winnerId === koTie.homeTeamId
+              ? koTie.homeTeam.shortName
+              : koTie.awayTeam.shortName}{" "}
+            won on PENALTIES)
+          </div>
+        )}
       </div>
 
       {/* leg details */}
@@ -180,7 +192,7 @@ export default async function KoMatchPage({
         <div className="text-center md:mb-4 mb-2">
           <div className="inline-block bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-6 py-3">
             <div className="text-sm text-yellow-500 font-semibold mb-1">
-              TIE WINNER
+              {wonByPenalties ? "WINNER BY PENALTIES" : "TIE WINNER"}
             </div>
             <div className="text-xl font-bold">
               {koTie.winnerId === koTie.homeTeamId

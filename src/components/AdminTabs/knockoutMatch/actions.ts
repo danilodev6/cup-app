@@ -181,13 +181,17 @@ export async function editKnockoutLeg(
   formData: FormData,
 ): Promise<{ ok: boolean; error?: string }> {
   const id = Number(formData.get("id"));
+  const tieId = Number(formData.get("tieId"));
   const dateRaw = formData.get("date");
   const date = new Date(dateRaw as string);
   const homeScore = Number(formData.get("homeScore") || 0);
   const awayScore = Number(formData.get("awayScore") || 0);
   const isFinished = formData.get("isFinished") === "on";
 
-  // Validaciones
+  const markTieAsFinished = formData.get("markTieAsFinished") === "on";
+  const tieWinnerId = Number(formData.get("tieWinnerId"));
+
+  // Validations
   if (homeScore < 0 || awayScore < 0) {
     return {
       ok: false,
@@ -206,7 +210,7 @@ export async function editKnockoutLeg(
     };
   }
 
-  // Actualizar el leg
+  // Update leg
   await prisma.knockoutLeg.update({
     where: { id },
     data: {
@@ -216,6 +220,16 @@ export async function editKnockoutLeg(
       isFinished,
     },
   });
+
+  if ((tieId && markTieAsFinished) || tieWinnerId) {
+    await prisma.knockoutTie.update({
+      where: { id: tieId },
+      data: {
+        isFinished: markTieAsFinished,
+        winnerId: tieWinnerId ? Number(tieWinnerId) : null,
+      },
+    });
+  }
 
   // Recalcular el ganador si es necesario
   if (isFinished) {
@@ -227,7 +241,7 @@ export async function editKnockoutLeg(
 }
 
 /**
- * Eliminar un Knockout Leg específico
+ * Delete a specific knockout leg
  */
 export async function deleteKnockoutLeg(formData: FormData) {
   const legId = Number(formData.get("legId"));
@@ -237,7 +251,7 @@ export async function deleteKnockoutLeg(formData: FormData) {
   });
 
   if (!leg) {
-    return { ok: false, error: "Leg no encontrado" };
+    return { ok: false, error: "No leg found" };
   }
 
   await prisma.knockoutLeg.delete({

@@ -214,7 +214,11 @@ function MatchCard({
     hasScore = true;
   }
 
-  // Determinar quién perdió (para mostrar con line-through)
+  // Check if decided by penalties
+  const isTied = hasScore && homeScore === awayScore;
+  const wonByPenalties = isTied && tie.isFinished && tie.winnerId;
+
+  // Determine loser (line-through)
   const homeIsLoser = tie.isFinished && tie.winnerId === tie.awayTeamId;
   const awayIsLoser = tie.isFinished && tie.winnerId === tie.homeTeamId;
 
@@ -269,6 +273,9 @@ function MatchCard({
                 {leg1.homeScore}-{leg1.awayScore}
               </div>
             )}
+            {wonByPenalties && (
+              <div className="text-xs text-blue-400 mt-1">(penalties)</div>
+            )}
           </>
         ) : (
           // TWO-LEG: Mostrar ambos legs + agregado
@@ -291,6 +298,9 @@ function MatchCard({
               <div className="text-white font-semibold text-xs mt-1">
                 Agg: {homeScore}-{awayScore}
               </div>
+            )}
+            {wonByPenalties && (
+              <div className="text-xs text-blue-400 mt-1">(penalties)</div>
             )}
           </>
         )}
