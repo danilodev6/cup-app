@@ -270,7 +270,6 @@ ul {
 .explore-tabs-container {
   @apply border-dark-200 bg-dark-100 w-full max-w-[600px] cursor-pointer rounded-full border px-4 sm:px-8 py-3.5 mx-auto;
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
   gap: 1rem;
 }
