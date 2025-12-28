@@ -47,48 +47,66 @@ export default async function StatsView({
 
   return (
     <>
-      <div className="space-y-8 md:w-[500px] mx-auto">
+      <div className="space-y-8 w-full max-w-[500px] mx-auto px-4">
         {/* Goals */}
-        <div className="explore-stat flex flex-col w-auto">
+        <div className="explore-stat flex flex-col w-full">
           <div className="flex items-center mb-4">
-            <img className="w-10 h-10 mr-2" src="/icons/goals.png" />
+            <img
+              className="w-10 h-10 mr-2"
+              src="/icons/goals.png"
+              alt="Goals"
+            />
             <h3 className="text-2xl font-bold">Goals</h3>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {topScorers.map((player, index) => (
               <div key={player.id} className="flex items-center gap-3">
-                <span className="ml-4 font-bold">{index + 1}.</span>
+                <span className="font-bold w-6 text-center">{index + 1}.</span>
                 <img
-                  className="w-10 h-10 rounded-full object-contain ml-2"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                   src={player.photoUrl}
+                  alt={player.name}
                 />
-                <span>{player.name}</span>
-                <span className="text-gray-400 mr-auto">
-                  {player.team.name}
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className="font-medium truncate">{player.name}</span>
+                  <span className="text-xs text-gray-400 truncate">
+                    {player.team.name}
+                  </span>
+                </div>
+                <span className="font-bold text-lg flex-shrink-0">
+                  {player.goals}
                 </span>
-                <span className="ml-auto mr-4 font-bold">{player.goals}</span>
               </div>
             ))}
           </div>
         </div>
 
         {/* Yellow Cards */}
-        <div className="explore-stat flex flex-col w-auto">
+        <div className="explore-stat flex flex-col w-full">
           <div className="flex items-center mb-4">
-            <img className="w-10 h-10 mr-2" src="/icons/yellow-card.png" />
+            <img
+              className="w-10 h-10 mr-2"
+              src="/icons/yellow-card.png"
+              alt="Yellow Cards"
+            />
             <h3 className="text-2xl font-bold">Yellow Cards</h3>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {topYellowCards.map((player, index) => (
               <div key={player.id} className="flex items-center gap-3">
-                <span className="ml-4 font-bold">{index + 1}.</span>
+                <span className="font-bold w-6 text-center">{index + 1}.</span>
                 <img
-                  className="w-10 h-10 rounded-full object-contain ml-2"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                   src={player.photoUrl}
+                  alt={player.name}
                 />
-                <span>{player.name}</span>
-                <span className="text-gray-400">{player.team.name}</span>
-                <span className="ml-auto mr-4 font-bold">
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className="font-medium truncate">{player.name}</span>
+                  <span className="text-xs text-gray-400 truncate">
+                    {player.team.name}
+                  </span>
+                </div>
+                <span className="font-bold text-lg flex-shrink-0">
                   {player.yellowCards}
                 </span>
               </div>
@@ -97,22 +115,31 @@ export default async function StatsView({
         </div>
 
         {/* Red Cards */}
-        <div className="explore-stat flex flex-col w-auto">
+        <div className="explore-stat flex flex-col w-full">
           <div className="flex items-center mb-4">
-            <img className="w-10 h-10 mr-2" src="/icons/red-card.png" />
+            <img
+              className="w-10 h-10 mr-2"
+              src="/icons/red-card.png"
+              alt="Red Cards"
+            />
             <h3 className="text-2xl font-bold">Red Cards</h3>
           </div>
-          <div className="space-y-2">
+          <div className="space-y-3">
             {topRedCards.map((player, index) => (
               <div key={player.id} className="flex items-center gap-3">
-                <span className="ml-4 font-bold">{index + 1}.</span>
+                <span className="font-bold w-6 text-center">{index + 1}.</span>
                 <img
-                  className="w-10 h-10 rounded-full object-contain ml-2"
+                  className="w-10 h-10 rounded-full object-cover flex-shrink-0"
                   src={player.photoUrl}
+                  alt={player.name}
                 />
-                <span>{player.name}</span>
-                <span className="text-gray-400">{player.team.name}</span>
-                <span className="ml-auto mr-4 font-bold">
+                <div className="flex flex-col flex-1 min-w-0">
+                  <span className="font-medium truncate">{player.name}</span>
+                  <span className="text-xs text-gray-400 truncate">
+                    {player.team.name}
+                  </span>
+                </div>
+                <span className="font-bold text-lg flex-shrink-0">
                   {player.redCards}
                 </span>
               </div>

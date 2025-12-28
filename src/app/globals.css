@@ -157,7 +157,7 @@ li {
   }
 
   .explore-stat {
-    @apply border-dark-200 bg-dark-100 w-[200px] cursor-pointer rounded-xl border p-3;
+    @apply border-dark-200 bg-dark-100 w-full cursor-pointer rounded-xl border p-4;
   }
 
   .explore-player {
