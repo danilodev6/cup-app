@@ -8,7 +8,7 @@ import type {
   KnockoutLeg,
   Player,
 } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 
 type MatchWithTeams = GroupMatch & {
   homeTeam: { id: number; name: string };
@@ -129,8 +129,7 @@ export default function CreateMatchEventForm({
         <option value="">Select Group Match (optional)</option>
         {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
-            {formatArgentinianDate(m.date)}: {m.homeTeam.name} vs{" "}
-            {m.awayTeam.name}
+            {fmtAR(m.date)}: {m.homeTeam.name} vs {m.awayTeam.name}
           </option>
         ))}
       </select>
@@ -149,8 +148,8 @@ export default function CreateMatchEventForm({
         <option value="">Select Knockout Leg (optional)</option>
         {filteredKnockoutLegs.map((leg) => (
           <option key={leg.id} value={leg.id}>
-            {formatArgentinianDate(leg.date)}: Leg {leg.legNumber} :{" "}
-            {leg.homeTeam.name} vs {leg.awayTeam.name}
+            {fmtAR(leg.date)}: Leg {leg.legNumber} : {leg.homeTeam.name} vs{" "}
+            {leg.awayTeam.name}
           </option>
         ))}
       </select>

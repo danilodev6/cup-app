@@ -49,7 +49,7 @@ export default async function StatsView({
     <>
       <div className="space-y-8 md:w-[500px] mx-auto">
         {/* Goals */}
-        <div className="explore-btn w-auto">
+        <div className="explore-stat flex flex-col w-auto">
           <div className="flex items-center">
             <img className="w-10 h-10" src="/icons/goals.png" />
             <h3 className="text-2xl font-bold">Goals</h3>
@@ -71,7 +71,7 @@ export default async function StatsView({
         </div>
 
         {/* Yellow Cards */}
-        <div className="explore-btn w-auto">
+        <div className="explore-stat flex flex-col w-auto">
           <div className="flex items-center">
             <img className="w-10 h-10" src="/icons/yellow-card.png" />
             <h3 className="text-2xl font-bold">Yellow Cards</h3>
@@ -95,7 +95,7 @@ export default async function StatsView({
         </div>
 
         {/* Red Cards */}
-        <div className="explore-btn w-auto">
+        <div className="explore-stat flex flex-col w-auto">
           <div className="flex items-center">
             <img className="w-10 h-10" src="/icons/red-card.png" />
             <h3 className="text-2xl font-bold">Red Cards</h3>

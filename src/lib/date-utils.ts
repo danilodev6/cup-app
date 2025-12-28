@@ -39,7 +39,7 @@ export function fmtARid(d: Date | string | undefined): string {
   const year = String(date.getFullYear()).slice(-2);
   const hour = String(date.getHours()).padStart(2, "0");
   const min = String(date.getMinutes()).padStart(2, "0");
-  return `${day}/${month}/${year}, ${hour}:${min}`;
+  return `${day}/${month}/${year} - ${hour}:${min}`;
 }
 
 /**

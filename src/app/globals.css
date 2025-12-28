@@ -156,6 +156,10 @@ li {
     @apply border-dark-200 bg-dark-100 flex w-full max-w-[600px] cursor-pointer rounded-full border px-4 sm:px-8 py-3.5 justify-center items-center;
   }
 
+  .explore-stat {
+    @apply border-dark-200 bg-dark-100 w-[200px] cursor-pointer rounded-xl border p-3;
+  }
+
   .explore-player {
     @apply border-dark-200 bg-dark-100 w-[200px] cursor-pointer rounded-xl border p-3;
   }
