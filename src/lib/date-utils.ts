@@ -9,6 +9,17 @@ export const fromLocalInput = (iso: string) => new Date(iso).toISOString();
 
 export function fmtAR(d: Date | string | undefined): string {
   if (!d) return ""; // guard
+  const date = new Date(d);
+  const day = String(date.getUTCDate()).padStart(2, "0");
+  const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+  const year = String(date.getUTCFullYear()).slice(-2);
+  const hour = String(date.getUTCHours()).padStart(2, "0");
+  const min = String(date.getUTCMinutes()).padStart(2, "0");
+  return `${day}/${month}/${year}, ${hour}:${min}`;
+}
+
+export function fmtAR2(d: Date | string | undefined): string {
+  if (!d) return ""; // guard
   return new Intl.DateTimeFormat("es-AR", {
     timeZone: "America/Argentina/Buenos_Aires",
     day: "2-digit",
