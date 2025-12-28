@@ -27,10 +27,10 @@ const ExploreBtnKoMatch = ({ koMatch }: { koMatch: KnockoutTieWithLegs }) => {
     >
       <div className="flex flex-col items-center">
         <span className="text-center text-xs sm:text-base">
-          {leg1 ? fmtAR(leg1.date) : "No date"}
+          1er: {leg1 ? fmtAR(leg1.date) : "No date"}
         </span>
         <span className="text-center text-xs sm:text-base">
-          {leg2 ? fmtAR(leg2.date) : ""}
+          2do: {leg2 ? fmtAR(leg2.date) : ""}
         </span>
       </div>
       <div className="flex items-center justify-center gap-1 sm:gap-2 mx-auto mt-2">

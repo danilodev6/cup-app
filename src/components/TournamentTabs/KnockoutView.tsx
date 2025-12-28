@@ -281,7 +281,7 @@ function MatchCard({
             {leg2 && (
               <div className="text-gray-400">
                 <span className="ko-scores">
-                  2°: {leg2.homeScore}-{leg2.awayScore}
+                  2°: {leg2.awayScore}-{leg2.homeScore}
                 </span>
               </div>
             )}
