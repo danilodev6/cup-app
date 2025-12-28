@@ -131,7 +131,7 @@ export default async function KoMatchPage({
         {/* Leg 1 */}
         {leg1 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <h3 className="text-center font-bold text-lg mb-1">Primer Leg</h3>
+            <h3 className="text-center font-bold text-lg mb-1">Primer Match</h3>
             <div className="text-center mb-1">
               <span className="text-gray-400 text-sm">{fmtAR(leg1.date)}</span>
             </div>
@@ -154,7 +154,9 @@ export default async function KoMatchPage({
         {/* Leg 2 */}
         {leg2 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <h3 className="text-center font-bold text-lg mb-3">Segundo Leg</h3>
+            <h3 className="text-center font-bold text-lg mb-3">
+              Segundo Match
+            </h3>
             <div className="text-center mb-2">
               <span className="text-gray-400 text-sm">{fmtAR(leg2.date)}</span>
             </div>

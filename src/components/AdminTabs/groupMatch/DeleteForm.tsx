@@ -4,6 +4,7 @@ import { useState, useTransition } from "react";
 import { deleteMatch } from "./actions";
 import ConfirmDeleteModal from "@/components/ConfirmDeleteModal";
 import type { Tournament, Team, GroupMatch } from "@/generated/prisma/client";
+import { fmtAR } from "@/lib/date-utils";
 
 type MatchWithTeams = GroupMatch & {
   homeTeam: Team;
@@ -81,7 +82,7 @@ export default function DeleteMatchForm({ tournaments, groupMatches }: Props) {
         <option value="">Select Group Match to Delete</option>
         {filteredMatches.map((m) => (
           <option key={m.id} value={m.id}>
-            {m.homeTeam.name} vs {m.awayTeam.name}
+            {fmtAR(m.date)} - {m.homeTeam.name} vs {m.awayTeam.name}
           </option>
         ))}
       </select>

@@ -1,5 +1,5 @@
 import prisma from "@/lib/prisma";
-import { fmtAR } from "@/lib/date-utils";
+// import { fmtAR } from "@/lib/date-utils";
 import Link from "next/link";
 
 type TieWithLegs = {
@@ -226,14 +226,17 @@ function MatchCard({
       {label && <div className="ko-label">{label}</div>}
 
       {/* Fechas */}
+      {/**
       {(leg1?.date || leg2?.date) && (
         <div className="flex flex-col items-center text-xs text-gray-400">
           {leg1?.date && <span>{fmtAR(leg1.date)}</span>}
           {leg2?.date && <span>{fmtAR(leg2.date)}</span>}
         </div>
       )}
+      **/}
 
       {/* Logos */}
+      {/**
       <div className="flex justify-center gap-3 mb-1 mt-1">
         <img
           className="ko-team-logo"
@@ -246,6 +249,7 @@ function MatchCard({
           alt={tie.awayTeam.shortName}
         />
       </div>
+      **/}
 
       {/* Team names */}
       <div className="ko-teams flex gap-1 items-center">
@@ -299,10 +303,10 @@ function MatchCard({
         <div className="text-xs text-yellow-400 mt-1">TBD</div>
       )}
       {isSingleLeg && leg1 && !tie.isFinished && (
-        <div className="text-xs text-blue-400 mt-1">In progress</div>
+        <div className="text-xs text-blue-400 mt-1">Ready</div>
       )}
       {!isSingleLeg && leg1 && !leg2 && (
-        <div className="text-xs text-blue-400 mt-1">1 leg missing</div>
+        <div className="text-xs text-blue-400 mt-1">1 match missing</div>
       )}
     </Link>
   );
