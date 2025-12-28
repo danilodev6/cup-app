@@ -50,8 +50,8 @@ export default async function StatsView({
       <div className="space-y-8 md:w-[500px] mx-auto">
         {/* Goals */}
         <div className="explore-stat flex flex-col w-auto">
-          <div className="flex items-center">
-            <img className="w-10 h-10" src="/icons/goals.png" />
+          <div className="flex items-center mb-4">
+            <img className="w-10 h-10 mr-2" src="/icons/goals.png" />
             <h3 className="text-2xl font-bold">Goals</h3>
           </div>
           <div className="space-y-2">
@@ -63,7 +63,9 @@ export default async function StatsView({
                   src={player.photoUrl}
                 />
                 <span>{player.name}</span>
-                <span className="text-gray-400">{player.team.name}</span>
+                <span className="text-gray-400 mr-auto">
+                  {player.team.name}
+                </span>
                 <span className="ml-auto mr-4 font-bold">{player.goals}</span>
               </div>
             ))}
@@ -72,8 +74,8 @@ export default async function StatsView({
 
         {/* Yellow Cards */}
         <div className="explore-stat flex flex-col w-auto">
-          <div className="flex items-center">
-            <img className="w-10 h-10" src="/icons/yellow-card.png" />
+          <div className="flex items-center mb-4">
+            <img className="w-10 h-10 mr-2" src="/icons/yellow-card.png" />
             <h3 className="text-2xl font-bold">Yellow Cards</h3>
           </div>
           <div className="space-y-2">
@@ -96,8 +98,8 @@ export default async function StatsView({
 
         {/* Red Cards */}
         <div className="explore-stat flex flex-col w-auto">
-          <div className="flex items-center">
-            <img className="w-10 h-10" src="/icons/red-card.png" />
+          <div className="flex items-center mb-4">
+            <img className="w-10 h-10 mr-2" src="/icons/red-card.png" />
             <h3 className="text-2xl font-bold">Red Cards</h3>
           </div>
           <div className="space-y-2">
