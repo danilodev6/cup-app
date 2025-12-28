@@ -101,31 +101,29 @@ export default async function KoMatchPage({
       </Link>
 
       {/* Header principal con marcador agregado */}
-      <div className="flex items-center gap-4 mb-6">
-        <div className="explore-btn flex flex-col items-center">
-          <div>
-            <span className="flex-1 text-right mr-1 text-xl">
-              {koTie.homeTeam.name}
-            </span>
-            <img
-              className="w-[30px] mx-2"
-              src={koTie.homeTeam.logoUrl}
-              alt={koTie.homeTeam.name}
-            />
-            <span className="px-3 whitespace-nowrap text-2xl font-bold">
-              {homeAggregate} - {awayAggregate}
-            </span>
-            <img
-              className="w-[30px] mx-2"
-              src={koTie.awayTeam.logoUrl}
-              alt={koTie.awayTeam.name}
-            />
-            <span className="flex-1 text-left ml-1 text-xl">
-              {koTie.awayTeam.name}
-            </span>
-          </div>
-          <div className="text-sm text-gray-400">Aggregate Score</div>
+      <div className="explore-btn flex flex-col items-center gap-4 mb-6">
+        <div className="flex items-center justify-around gap-1">
+          <span className="flex-1 text-right mr-1 text-xl">
+            {koTie.homeTeam.name}
+          </span>
+          <img
+            className="w-[30px] mx-2"
+            src={koTie.homeTeam.logoUrl}
+            alt={koTie.homeTeam.name}
+          />
+          <span className="px-3 whitespace-nowrap text-2xl font-bold">
+            {homeAggregate} - {awayAggregate}
+          </span>
+          <img
+            className="w-[30px] mx-2"
+            src={koTie.awayTeam.logoUrl}
+            alt={koTie.awayTeam.name}
+          />
+          <span className="flex-1 text-left ml-1 text-xl">
+            {koTie.awayTeam.name}
+          </span>
         </div>
+        <div className="text-sm text-gray-400">Aggregate Score</div>
       </div>
 
       {/* Detalles de cada leg */}
