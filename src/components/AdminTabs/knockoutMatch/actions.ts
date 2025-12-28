@@ -17,7 +17,7 @@ export async function createKnockoutTie(
   const koPosition = Number(formData.get("koPosition"));
   const homeTeamId = Number(formData.get("homeTeamId"));
   const awayTeamId = Number(formData.get("awayTeamId"));
-  const format = (formData.get("format") as string) || "two-leg"; // NUEVO
+  const format = (formData.get("format") as string) || "two-leg";
 
   // Validaciones
   if (homeTeamId === awayTeamId) {
@@ -60,7 +60,7 @@ export async function createKnockoutTie(
       koPosition,
       homeTeamId,
       awayTeamId,
-      format, // NUEVO
+      format,
     },
   });
 
@@ -128,7 +128,7 @@ export async function createKnockoutLeg(
     };
   }
 
-  // NUEVO: Validar según el formato del tie
+  // Validar según el formato del tie
   if (tie.format === "single-leg" && legNumber !== 1) {
     return {
       ok: false,
@@ -146,8 +146,6 @@ export async function createKnockoutLeg(
   }
 
   // Determinar los equipos según el leg
-  // Leg 1: homeTeam del tie juega en casa
-  // Leg 2: awayTeam del tie juega en casa (se invierten)
   const homeTeamId = legNumber === 1 ? tie.homeTeamId : tie.awayTeamId;
   const awayTeamId = legNumber === 1 ? tie.awayTeamId : tie.homeTeamId;
 
@@ -188,8 +186,16 @@ export async function editKnockoutLeg(
   const awayScore = Number(formData.get("awayScore") || 0);
   const isFinished = formData.get("isFinished") === "on";
 
+  // NUEVO: Obtener datos del tie
   const markTieAsFinished = formData.get("markTieAsFinished") === "on";
-  const tieWinnerId = Number(formData.get("tieWinnerId"));
+  const tieWinnerIdRaw = formData.get("tieWinnerId");
+
+  // IMPORTANTE: Convertir correctamente el winnerId
+  // Si es string vacío "", debe ser null, no 0
+  let tieWinnerId: number | null = null;
+  if (tieWinnerIdRaw && tieWinnerIdRaw !== "") {
+    tieWinnerId = Number(tieWinnerIdRaw);
+  }
 
   // Validations
   if (homeScore < 0 || awayScore < 0) {
@@ -221,22 +227,28 @@ export async function editKnockoutLeg(
     },
   });
 
-  if ((tieId && markTieAsFinished) || tieWinnerId) {
+  // IMPORTANTE: Actualizar el tie si se proporcionaron datos
+  if (tieId) {
+    console.log("Updating tie:", { tieId, markTieAsFinished, tieWinnerId }); // Debug
+
     await prisma.knockoutTie.update({
       where: { id: tieId },
       data: {
         isFinished: markTieAsFinished,
-        winnerId: tieWinnerId ? Number(tieWinnerId) : null,
+        winnerId: tieWinnerId,
       },
     });
   }
 
-  // Recalcular el ganador si es necesario
-  if (isFinished) {
+  // Recalcular el ganador automáticamente solo si no se marcó manualmente
+  if (isFinished && !markTieAsFinished) {
     await updateTieWinner(leg.tieId);
   }
 
   revalidatePath("/admin");
+  revalidatePath("/komatches");
+  revalidatePath(`/komatches/${tieId}`);
+
   return { ok: true };
 }
 
@@ -291,9 +303,7 @@ async function updateTieWinner(tieId: number) {
 
   if (!tie) return;
 
-  // NUEVO: Lógica diferente según el formato
   if (tie.format === "single-leg") {
-    // Para single-leg, solo necesitamos el leg 1
     const leg1 = tie.legs.find((l) => l.legNumber === 1);
 
     if (!leg1?.isFinished) return;
@@ -305,7 +315,6 @@ async function updateTieWinner(tieId: number) {
     } else if (leg1.awayScore > leg1.homeScore) {
       winnerId = tie.awayTeamId;
     }
-    // Si empatan, winnerId queda null (penales o prórroga)
 
     await prisma.knockoutTie.update({
       where: { id: tieId },
@@ -315,7 +324,6 @@ async function updateTieWinner(tieId: number) {
       },
     });
   } else {
-    // Para two-leg, necesitamos ambos legs
     if (tie.legs.length !== 2) return;
 
     const leg1 = tie.legs.find((l) => l.legNumber === 1);
@@ -323,9 +331,6 @@ async function updateTieWinner(tieId: number) {
 
     if (!leg1?.isFinished || !leg2?.isFinished) return;
 
-    // Calcular marcador agregado
-    // En leg1: homeTeam del tie juega en casa
-    // En leg2: awayTeam del tie juega en casa (invertido)
     const homeTeamAggregate = leg1.homeScore + leg2.awayScore;
     const awayTeamAggregate = leg1.awayScore + leg2.homeScore;
 
@@ -337,14 +342,11 @@ async function updateTieWinner(tieId: number) {
       winnerId = tie.awayTeamId;
     } else {
       // Empate en agregado - aplicar regla de gol de visitante
-      // Goles de visitante del homeTeam: leg2.awayScore
-      // Goles de visitante del awayTeam: leg1.awayScore
       if (leg2.awayScore > leg1.awayScore) {
         winnerId = tie.homeTeamId;
       } else if (leg1.awayScore > leg2.awayScore) {
         winnerId = tie.awayTeamId;
       }
-      // Si empatan en gol de visitante, quedaría en null (penales)
     }
 
     await prisma.knockoutTie.update({

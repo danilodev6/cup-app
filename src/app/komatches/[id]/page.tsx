@@ -105,7 +105,7 @@ export default async function KoMatchPage({
 
       {/* Header with added marker */}
       <div className="flex flex-col items-center mb-2 mx-auto">
-        <div className="text-sm text-gray-400">Aggregate Score</div>
+        <div className="text-sm text-gray-400 mb-1">Aggregate Score</div>
         <div className="explore-btn flex items-center justify-around">
           <span className="flex-1 text-right mr-1 text-xl">
             {koTie.homeTeam.name}
