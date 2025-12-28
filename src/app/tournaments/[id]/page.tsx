@@ -17,15 +17,15 @@ export default async function TournamentPage({
   const tournament = await prisma.tournament.findUnique({
     where: { id: parseInt(id) },
   });
-
   const { tab } = await searchParams;
   const activeTab = tab || "groups";
 
   return (
     <div>
       <h2 className="text-center">{tournament?.name}</h2>
+
       {/* Tabs navigation */}
-      <div className="explore-btn grid grid-cols-2 md:grid-cols-5 gap-3 mt-6 mb-4 mx-auto">
+      <div className="explore-tabs-container mt-6 mb-4">
         <Link
           href={`/tournaments/${id}?tab=groups`}
           className={`explore-tab text-center ${activeTab === "groups" ? "active" : ""}`}
@@ -57,6 +57,7 @@ export default async function TournamentPage({
           Stats
         </Link>
       </div>
+
       {/* Renderizado condicional */}
       {activeTab === "groups" && <GroupsView tournamentId={id} />}
       {activeTab === "knockout" && <KnockoutView tournamentId={id} />}

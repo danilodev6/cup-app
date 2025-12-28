@@ -10,7 +10,7 @@ import type {
   GroupMatch,
   KnockoutLeg,
 } from "@/generated/prisma/client";
-import { formatArgentinianDate } from "@/lib/date-utils";
+import { fmtAR } from "@/lib/date-utils";
 
 type MatchWithTeams = GroupMatch & {
   homeTeam: { id: number; name: string };
@@ -109,9 +109,9 @@ export default function DeleteMatchEventForm({
         <option value="">Select Match Event to Delete</option>
         {filteredMatchEvents.map((me) => {
           const matchInfo = me.groupMatch
-            ? `[${formatArgentinianDate(me.groupMatch.date)}] GroupMatch: ${me.groupMatch.homeTeam.name} vs ${me.groupMatch.awayTeam.name}`
+            ? `[${fmtAR(me.groupMatch.date)}] GroupMatch: ${me.groupMatch.homeTeam.name} vs ${me.groupMatch.awayTeam.name}`
             : me.knockoutLeg
-              ? `[${formatArgentinianDate(me.knockoutLeg.date)}] KO Leg ${me.knockoutLeg.legNumber} - ${me.knockoutLeg.homeTeam.name} vs ${me.knockoutLeg.awayTeam.name}`
+              ? `[${fmtAR(me.knockoutLeg.date)}] KO Leg ${me.knockoutLeg.legNumber} - ${me.knockoutLeg.homeTeam.name} vs ${me.knockoutLeg.awayTeam.name}`
               : "No match";
           return (
             <option key={me.id} value={me.id}>
