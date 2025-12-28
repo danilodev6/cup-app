@@ -101,7 +101,7 @@ export default async function KoMatchPage({
       </Link>
 
       {/* Header principal con marcador agregado */}
-      <div className="flex flex-col items-center gap-4 mb-6">
+      <div className="flex items-center gap-4 mb-6">
         <div className="explore-btn flex flex-col items-center">
           <div>
             <span className="flex-1 text-right mr-1 text-xl">

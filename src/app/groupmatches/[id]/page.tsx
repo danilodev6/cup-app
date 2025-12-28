@@ -1,6 +1,6 @@
 import prisma from "@/lib/prisma";
 import type { Player, MatchEvent } from "@/generated/prisma/client";
-import { fmtAR } from "@/lib/date-utils";
+import { fmtARid } from "@/lib/date-utils";
 
 type PlayerWithEvents = Player & {
   matchEvents: MatchEvent[];
@@ -41,7 +41,7 @@ export default async function MatchPage({
 
   return (
     <>
-      <div className="explore-btn flex">
+      <div className="explore-btn flex mx-auto">
         <span className="flex-1 text-right mr-1 text-xl">
           {groupMatch.homeTeam.name}
         </span>
@@ -56,7 +56,7 @@ export default async function MatchPage({
       </div>
       <span className="mt-4 text-center text-xl">
         {" "}
-        {fmtAR(groupMatch.date)}{" "}
+        {fmtARid(groupMatch.date)}{" "}
       </span>
 
       <h3 className="text-center mt-4">Lineup</h3>
