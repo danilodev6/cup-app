@@ -53,7 +53,7 @@ export default async function KnockoutView({
     <div className="md:w-[555px] md:mx-auto">
       {/* Mostrar resultados finales */}
       {finalTie?.isFinished && finalTie.winnerId && (
-        <div className="mb-8 p-6 bg-gradient-to-b from-dark-100 to-dark-200 rounded-3xl border border-dark-200">
+        <div className="mb-4 mt-4 p-6 bg-gradient-to-b from-dark-100 to-dark-200 rounded-3xl border border-dark-200">
           <h2 className="text-2xl font-bold text-center mb-6 text-gradient">
             Tournament Results
           </h2>
@@ -236,7 +236,6 @@ function MatchCard({
       **/}
 
       {/* Logos */}
-      {/**
       <div className="flex justify-center gap-3 mb-1 mt-1">
         <img
           className="ko-team-logo"
@@ -249,7 +248,6 @@ function MatchCard({
           alt={tie.awayTeam.shortName}
         />
       </div>
-      **/}
 
       {/* Team names */}
       <div className="ko-teams flex gap-1 items-center">

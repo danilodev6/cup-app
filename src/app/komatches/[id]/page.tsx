@@ -101,8 +101,9 @@ export default async function KoMatchPage({
       </Link>
 
       {/* Header with added marker */}
-      <div className="explore-btn flex flex-col items-center gap-3 mb-2 mx-auto">
-        <div className="flex items-center justify-around">
+      <div className="flex flex-col items-center mb-2 mx-auto">
+        <div className="text-sm text-gray-400">Aggregate Score</div>
+        <div className="explore-btn flex items-center justify-around">
           <span className="flex-1 text-right mr-1 text-xl">
             {koTie.homeTeam.name}
           </span>
@@ -123,15 +124,14 @@ export default async function KoMatchPage({
             {koTie.awayTeam.name}
           </span>
         </div>
-        <div className="text-sm text-gray-400">Aggregate Score</div>
       </div>
 
       {/* leg details */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-2 max-w-4xl mx-auto">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-1 md:gap-6 mb-2 max-w-4xl mx-auto">
         {/* Leg 1 */}
         {leg1 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <h3 className="text-center font-bold text-lg mb-1">Primer Match</h3>
+            <h3 className="text-center font-bold text-lg mb-1">First Match</h3>
             <div className="text-center mb-1">
               <span className="text-gray-400 text-sm">{fmtAR(leg1.date)}</span>
             </div>
@@ -154,9 +154,7 @@ export default async function KoMatchPage({
         {/* Leg 2 */}
         {leg2 && (
           <div className="bg-gray-800 p-4 rounded-lg border border-gray-700">
-            <h3 className="text-center font-bold text-lg mb-3">
-              Segundo Match
-            </h3>
+            <h3 className="text-center font-bold text-lg mb-3">Second Match</h3>
             <div className="text-center mb-2">
               <span className="text-gray-400 text-sm">{fmtAR(leg2.date)}</span>
             </div>
@@ -179,10 +177,10 @@ export default async function KoMatchPage({
 
       {/* Tie winner if defined */}
       {koTie.isFinished && koTie.winnerId && (
-        <div className="text-center mb-6">
+        <div className="text-center md:mb-4 mb-2">
           <div className="inline-block bg-yellow-500/10 border border-yellow-500/30 rounded-lg px-6 py-3">
             <div className="text-sm text-yellow-500 font-semibold mb-1">
-              GANADOR DEL TIE
+              TIE WINNER
             </div>
             <div className="text-xl font-bold">
               {koTie.winnerId === koTie.homeTeamId
@@ -194,9 +192,7 @@ export default async function KoMatchPage({
       )}
 
       {/* Lineup and stats */}
-      <h3 className="text-center mb-2 text-xl font-bold">
-        Lineup & Estadísticas
-      </h3>
+      <h3 className="text-center mb-2 text-xl font-bold">Lineup & Stats</h3>
 
       <div className="flex flex-col md:flex-row justify-center gap-8 w-[95%] mx-auto">
         {/* Home Team */}
