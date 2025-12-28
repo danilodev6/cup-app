@@ -10,9 +10,9 @@ const Teams = async () => {
       <ul>
         {teams.map((team: Team) => (
           <Link key={team.id} href={`/teams/${team.id}`}>
-            <li key={team.id} className="explore-btn flex">
+            <li key={team.id} className="explore-btn flex gap-4 mt-4">
               <img className="w-[30px]" src={team.logoUrl} />
-              <span className="text-2xl ml-4">{team.name}</span>
+              <span className="text-2xl">{team.name}</span>
             </li>
           </Link>
         ))}
