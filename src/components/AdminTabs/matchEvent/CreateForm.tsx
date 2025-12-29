@@ -86,7 +86,14 @@ export default function CreateMatchEventForm({
       try {
         await createMatchEvent(formData);
         setMessage("✅ Match Event created successfully!");
+
+        // IMPORTANTE: Resetear todos los estados
         formRef.current?.reset();
+        setSelectedTournamentId(null);
+        setSelectedMatchId("");
+        setSelectedKoLegId("");
+        setSelectedTeamId("");
+
         setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error creating match event");
@@ -103,7 +110,13 @@ export default function CreateMatchEventForm({
       <select
         name="tournamentId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        value={selectedTournamentId || ""}
+        onChange={(e) => {
+          setSelectedTournamentId(Number(e.target.value) || null);
+          setSelectedMatchId("");
+          setSelectedKoLegId("");
+          setSelectedTeamId("");
+        }}
         disabled={isPending}
         required
       >

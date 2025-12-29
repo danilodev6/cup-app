@@ -94,8 +94,15 @@ export default function EditMatchEventForm({
       try {
         await editMatchEvent(formData);
         setMessage("✅ Match Event updated successfully!");
-        setSelectedMatchEvent(null);
+
+        // IMPORTANTE: Resetear todos los estados
         formRef.current?.reset();
+        setSelectedTournamentId(null);
+        setSelectedMatchEvent(null);
+        setSelectedMatchId("");
+        setSelectedKoLegId("");
+        setSelectedTeamId("");
+
         setTimeout(() => setMessage(""), 1500);
       } catch (error) {
         setMessage("❌ Error updating match event");
@@ -118,7 +125,14 @@ export default function EditMatchEventForm({
 
       <select
         className="bg-gray-600 text-white rounded-md px-4 py-2"
-        onChange={(e) => setSelectedTournamentId(Number(e.target.value))}
+        value={selectedTournamentId || ""}
+        onChange={(e) => {
+          setSelectedTournamentId(Number(e.target.value) || null);
+          setSelectedMatchEvent(null);
+          setSelectedMatchId("");
+          setSelectedKoLegId("");
+          setSelectedTeamId("");
+        }}
         disabled={isPending}
       >
         <option value="">Select Tournament</option>
@@ -136,9 +150,7 @@ export default function EditMatchEventForm({
         disabled={isPending || !selectedTournamentId}
         required
       >
-        <option value="" disabled>
-          Select Match Event to Edit
-        </option>
+        <option value="">Select Match Event to Edit</option>
         {filteredMatchEvents.map((me) => {
           const matchInfo = me.groupMatch
             ? `[${fmtAR(me.groupMatch.date)}] GroupMatch: ${me.groupMatch.homeTeam.name} vs ${me.groupMatch.awayTeam.name}`
@@ -187,7 +199,6 @@ export default function EditMatchEventForm({
         ))}
       </select>
 
-      {/* CAMBIADO: Ahora es knockoutLegId */}
       <select
         name="knockoutLegId"
         className="bg-gray-600 text-white rounded-md px-4 py-2"
