@@ -41,7 +41,7 @@ export default async function MatchPage({
 
   return (
     <>
-      <div className="explore-btn flex mx-auto">
+      <div className="explore-match flex mx-auto">
         <span className="flex-1 text-right mr-1 text-xl">
           {groupMatch.homeTeam.name}
         </span>
