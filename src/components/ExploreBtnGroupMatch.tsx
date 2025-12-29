@@ -10,7 +10,7 @@ const ExploreBtnGroupMatch = ({
   return (
     <Link
       href={`/groupmatches/${groupMatch.id}`}
-      className="explore-btn flex-col items-center mt-7 mx-auto"
+      className="explore-match flex-col items-center mt-7 mx-auto"
     >
       <div>
         <span className="text-center text-xs sm:text-base">
