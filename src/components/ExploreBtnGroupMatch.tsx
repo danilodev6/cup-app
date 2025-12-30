@@ -17,7 +17,7 @@ const ExploreBtnGroupMatch = ({
           {fmtAR(groupMatch.date)}
         </span>
       </div>
-      <div className="flex items-center justify-center gap-1 sm:gap-2 mx-auto mt-2">
+      <div className="flex items-center justify-center gap-1 sm:gap-2 mx-auto mt-1">
         <span className="text-right w-20 sm:w-32 truncate text-xs sm:text-base">
           {groupMatch.homeTeam.name}
         </span>
