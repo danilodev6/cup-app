@@ -325,6 +325,7 @@ ul {
   height: 4px;
   top: -27px;
   left: 50%;
+  transform: translateX(-50%);
   background-color: #59deca;
 }
 
@@ -335,6 +336,7 @@ ul {
   height: 22px;
   top: -27px;
   left: 50%;
+  transform: translateX(-50%);
   background-color: #59deca;
 }
 
