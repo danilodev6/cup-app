@@ -318,13 +318,14 @@ ul {
   right: 0;
 }
 
-.braceket-line-top::before {
+.bracket-line-top::before {
   content: "";
   position: absolute;
   width: 22px;
   height: 2px;
   top: -27px;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #59deca;
 }
 
@@ -334,7 +335,8 @@ ul {
   width: 2px;
   height: 22px;
   top: -5px;
-  left: 0;
+  left: 50%;
+  transform: translateX(-50%);
   background-color: #59deca;
 }
 
