@@ -345,7 +345,7 @@ ul {
 .bracket-line-top-semi::before {
   content: "";
   position: absolute;
-  width: 125px;
+  width: 145px;
   height: 4px;
   top: -30px;
   left: 50%;
@@ -422,7 +422,7 @@ ul {
 .bracket-line-bottom-semi::after {
   content: "";
   position: absolute;
-  width: 125px;
+  width: 145px;
   height: 4px;
   bottom: -30px;
   left: 50%;
