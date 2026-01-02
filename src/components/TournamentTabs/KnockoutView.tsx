@@ -154,10 +154,11 @@ export default async function KnockoutView({
         <MatchCard tournament={tournamentId} tie={getTie(13)} label="Semi" />
       </div>
 
-      <div className="bracket-flex justify-around">
-        <div className="w-[97px]" />
+      <div className="bracket-flex bracket-final-row">
+        <div></div>
         <MatchCard tournament={tournamentId} tie={getTie(16)} label="FINAL" />
         <MatchCard tournament={tournamentId} tie={getTie(15)} label="3ER POS" />
+        <div></div>
       </div>
 
       <div className="bracket-flex justify-around">
