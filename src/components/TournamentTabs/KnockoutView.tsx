@@ -137,61 +137,73 @@ export default async function KnockoutView({
       )}
 
       {/* Bracket layout */}
-      <div className="bracket-flex justify-between">
-        <MatchCard tournament={tournamentId} tie={getTie(1)} label="8vos" />
-        <MatchCard tournament={tournamentId} tie={getTie(2)} label="8vos" />
-        <div className="spacer-2" />
-        <MatchCard tournament={tournamentId} tie={getTie(3)} label="8vos" />
-        <MatchCard tournament={tournamentId} tie={getTie(4)} label="8vos" />
-      </div>
-
-      <div className="bracket-flex justify-around">
-        <MatchCard
-          tournament={tournamentId}
-          tie={getTie(9)}
-          label="4tos"
-          className="bracket-line-top"
-        />
-        <MatchCard
-          tournament={tournamentId}
-          tie={getTie(10)}
-          label="4tos"
-          className="bracket-line-top"
-        />
-      </div>
-
-      <div className="bracket-flex justify-center">
-        <MatchCard tournament={tournamentId} tie={getTie(13)} label="Semi" />
-      </div>
-
-      <div className="bracket-flex bracket-final-row">
-        <div className="final-wrapper">
-          <MatchCard tournament={tournamentId} tie={getTie(16)} label="FINAL" />
+      <div className="md:w-[370px]">
+        <div className="bracket-flex justify-between">
+          <MatchCard tournament={tournamentId} tie={getTie(1)} label="8vos" />
+          <MatchCard tournament={tournamentId} tie={getTie(2)} label="8vos" />
+          <div className="spacer-2" />
+          <MatchCard tournament={tournamentId} tie={getTie(3)} label="8vos" />
+          <MatchCard tournament={tournamentId} tie={getTie(4)} label="8vos" />
         </div>
-        <div className="third-place-wrapper">
+
+        <div className="bracket-flex justify-around">
           <MatchCard
             tournament={tournamentId}
-            tie={getTie(15)}
-            label="3ER POS"
+            tie={getTie(9)}
+            label="4tos"
+            className="bracket-line-top-4tos"
+          />
+          <MatchCard
+            tournament={tournamentId}
+            tie={getTie(10)}
+            label="4tos"
+            className="bracket-line-top-4tos"
           />
         </div>
-      </div>
 
-      <div className="bracket-flex justify-around">
-        <MatchCard tournament={tournamentId} tie={getTie(14)} label="Semi" />
-      </div>
+        <div className="bracket-flex justify-center">
+          <MatchCard
+            tournament={tournamentId}
+            tie={getTie(13)}
+            label="Semi"
+            className="bracket-line-top-semi"
+          />
+        </div>
 
-      <div className="bracket-flex justify-around">
-        <MatchCard tournament={tournamentId} tie={getTie(11)} label="4tos" />
-        <MatchCard tournament={tournamentId} tie={getTie(12)} label="4tos" />
-      </div>
+        <div className="bracket-flex bracket-final-row">
+          <div className="final-wrapper">
+            <MatchCard
+              tournament={tournamentId}
+              tie={getTie(16)}
+              label="FINAL"
+              className="bracket-line-top-final"
+            />
+          </div>
+          <div className="third-place-wrapper">
+            <MatchCard
+              tournament={tournamentId}
+              tie={getTie(15)}
+              label="3ER POS"
+            />
+          </div>
+        </div>
 
-      <div className="bracket-flex justify-between">
-        <MatchCard tournament={tournamentId} tie={getTie(5)} label="8vos" />
-        <MatchCard tournament={tournamentId} tie={getTie(6)} label="8vos" />
-        <div />
-        <MatchCard tournament={tournamentId} tie={getTie(7)} label="8vos" />
-        <MatchCard tournament={tournamentId} tie={getTie(8)} label="8vos" />
+        <div className="bracket-flex justify-around">
+          <MatchCard tournament={tournamentId} tie={getTie(14)} label="Semi" />
+        </div>
+
+        <div className="bracket-flex justify-around">
+          <MatchCard tournament={tournamentId} tie={getTie(11)} label="4tos" />
+          <MatchCard tournament={tournamentId} tie={getTie(12)} label="4tos" />
+        </div>
+
+        <div className="bracket-flex justify-between">
+          <MatchCard tournament={tournamentId} tie={getTie(5)} label="8vos" />
+          <MatchCard tournament={tournamentId} tie={getTie(6)} label="8vos" />
+          <div />
+          <MatchCard tournament={tournamentId} tie={getTie(7)} label="8vos" />
+          <MatchCard tournament={tournamentId} tie={getTie(8)} label="8vos" />
+        </div>
       </div>
     </div>
   );

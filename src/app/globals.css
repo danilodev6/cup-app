@@ -209,7 +209,7 @@ ul {
   display: flex;
   flex-direction: row;
   max-width: 100%;
-  margin: 35 auto;
+  margin: 40 auto;
 }
 
 .bracket-grid {
@@ -318,7 +318,9 @@ ul {
   right: 0;
 }
 
-.bracket-line-top::before {
+/* Brackets Lines */
+
+.bracket-line-top-4tos::before {
   content: "";
   position: absolute;
   width: 85px;
@@ -329,12 +331,56 @@ ul {
   background-color: #59deca;
 }
 
-.bracket-line-top::after {
+.bracket-line-top-4tos::after {
   content: "";
   position: absolute;
   width: 4px;
   height: 22px;
   top: -27px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-top-semi::before {
+  content: "";
+  position: absolute;
+  width: 105px;
+  height: 4px;
+  top: -27px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-top-semi::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  top: -27px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-top-final::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  top: -27px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-top-final::after {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  bottom: 27px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
