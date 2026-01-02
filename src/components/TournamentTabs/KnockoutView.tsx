@@ -146,8 +146,18 @@ export default async function KnockoutView({
       </div>
 
       <div className="bracket-flex justify-around">
-        <MatchCard tournament={tournamentId} tie={getTie(9)} label="4tos" />
-        <MatchCard tournament={tournamentId} tie={getTie(10)} label="4tos" />
+        <MatchCard
+          tournament={tournamentId}
+          tie={getTie(9)}
+          label="4tos"
+          className="bracket-line-top"
+        />
+        <MatchCard
+          tournament={tournamentId}
+          tie={getTie(10)}
+          label="4tos"
+          className="bracket-line-top"
+        />
       </div>
 
       <div className="bracket-flex justify-center">
@@ -191,10 +201,12 @@ function MatchCard({
   tournament,
   tie,
   label,
+  className,
 }: {
   tie: TieWithLegs | null;
   label?: string;
   tournament: string;
+  className?: string;
 }) {
   if (!tie) return null;
 
