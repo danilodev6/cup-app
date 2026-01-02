@@ -321,22 +321,20 @@ ul {
 .bracket-line-top::before {
   content: "";
   position: absolute;
-  width: 22px;
-  height: 2px;
+  width: 85px;
+  height: 4px;
   top: -27px;
   left: 50%;
-  transform: translateX(-50%);
   background-color: #59deca;
 }
 
 .bracket-line-top::after {
   content: "";
   position: absolute;
-  width: 2px;
+  width: 4px;
   height: 22px;
-  top: -5px;
+  top: -27px;
   left: 50%;
-  transform: translateX(-50%);
   background-color: #59deca;
 }
 
