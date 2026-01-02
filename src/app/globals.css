@@ -206,10 +206,11 @@ ul {
 
 /* Bracket css */
 .bracket-flex {
+  position: relative;
   display: flex;
   flex-direction: row;
   max-width: 100%;
-  margin: 12 auto;
+  margin: 18 auto;
 }
 
 .bracket-grid {
@@ -322,7 +323,7 @@ ul {
   position: absolute;
   width: 22px;
   height: 2px;
-  top: -5px;
+  top: -27px;
   left: 0;
   background-color: #59deca;
 }
