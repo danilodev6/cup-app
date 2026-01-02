@@ -244,7 +244,7 @@ function MatchCard({
   return (
     <Link
       href={`/komatches?tournamentId=${tournament}`}
-      className="ko-card flex flex-col"
+      className={`ko-card flex flex-col ${className}`}
     >
       {label && <div className="ko-label">{label}</div>}
 
