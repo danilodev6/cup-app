@@ -137,7 +137,7 @@ export default async function KnockoutView({
       )}
 
       {/* Bracket layout */}
-      <div className="md:w-[370px]">
+      <div className="md:w-[370px] mx-auto">
         <div className="bracket-flex justify-between">
           <MatchCard tournament={tournamentId} tie={getTie(1)} label="8vos" />
           <MatchCard tournament={tournamentId} tie={getTie(2)} label="8vos" />

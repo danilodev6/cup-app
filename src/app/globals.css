@@ -209,7 +209,7 @@ ul {
   display: flex;
   flex-direction: row;
   max-width: 100%;
-  margin: 40 auto;
+  margin: 38 auto;
 }
 
 .bracket-grid {
@@ -323,9 +323,9 @@ ul {
 .bracket-line-top-4tos::before {
   content: "";
   position: absolute;
-  width: 85px;
+  width: 95px;
   height: 4px;
-  top: -27px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
@@ -336,7 +336,7 @@ ul {
   position: absolute;
   width: 4px;
   height: 22px;
-  top: -27px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
@@ -345,9 +345,9 @@ ul {
 .bracket-line-top-semi::before {
   content: "";
   position: absolute;
-  width: 105px;
+  width: 125px;
   height: 4px;
-  top: -27px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
@@ -358,7 +358,7 @@ ul {
   position: absolute;
   width: 4px;
   height: 22px;
-  top: -27px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
@@ -369,7 +369,7 @@ ul {
   position: absolute;
   width: 4px;
   height: 22px;
-  top: -27px;
+  top: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
@@ -380,7 +380,51 @@ ul {
   position: absolute;
   width: 4px;
   height: 22px;
-  bottom: 27px;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-bottom-4tos::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-bottom-4tos::after {
+  content: "";
+  position: absolute;
+  width: 95px;
+  height: 4px;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-bottom-semi::before {
+  content: "";
+  position: absolute;
+  width: 4px;
+  height: 22px;
+  bottom: -30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #59deca;
+}
+
+.bracket-line-bottom-semi::after {
+  content: "";
+  position: absolute;
+  width: 125px;
+  height: 4px;
+  bottom: -30px;
   left: 50%;
   transform: translateX(-50%);
   background-color: #59deca;
