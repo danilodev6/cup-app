@@ -210,7 +210,7 @@ ul {
   display: flex;
   flex-direction: row;
   max-width: 100%;
-  margin: 18 auto;
+  margin: 35 auto;
 }
 
 .bracket-grid {
@@ -328,7 +328,7 @@ ul {
   background-color: #59deca;
 }
 
-.bracket-line-top::before {
+.bracket-line-top::after {
   content: "";
   position: absolute;
   width: 2px;
@@ -336,11 +336,6 @@ ul {
   top: -5px;
   left: 0;
   background-color: #59deca;
-}
-
-.bracket-line-top::after {
-  top: -5px;
-  left: 0;
 }
 
 input {
