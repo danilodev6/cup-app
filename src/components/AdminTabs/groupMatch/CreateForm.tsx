@@ -88,10 +88,7 @@ export default function CreateMatchForm({ tournaments, teams }: Props) {
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm mb-1">
-            Home Team Score
-            {filteredTeams ? ` ${filteredTeams[0].shortName}` : ""}
-          </label>
+          <label className="block text-sm mb-1">Home Team Score</label>
           <input
             type="number"
             name="homeScore"
@@ -103,10 +100,7 @@ export default function CreateMatchForm({ tournaments, teams }: Props) {
         </div>
 
         <div>
-          <label className="block text-sm mb-1">
-            Away Team Score
-            {filteredTeams ? ` ${filteredTeams[1].shortName}` : ""}
-          </label>
+          <label className="block text-sm mb-1">Away Team Score</label>
           <input
             type="number"
             name="awayScore"
