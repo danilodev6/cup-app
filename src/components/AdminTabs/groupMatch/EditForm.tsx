@@ -24,7 +24,9 @@ export default function EditMatchForm({
   const [selectedTournamentId, setSelectedTournamentId] = useState<
     number | null
   >(null);
-  const [selectedMatch, setSelectedMatch] = useState<GroupMatch | null>(null);
+  const [selectedMatch, setSelectedMatch] = useState<MatchWithTeams | null>(
+    null,
+  );
   const [isPending, startTransition] = useTransition();
   const [message, setMessage] = useState("");
   const formRef = useRef<HTMLFormElement>(null);
@@ -158,7 +160,10 @@ export default function EditMatchForm({
 
       <div className="grid grid-cols-2 gap-4">
         <div>
-          <label className="block text-sm mb-1">Home Team Score</label>
+          <label className="block text-sm mb-1">
+            Home Team Score{" "}
+            {selectedMatch && ` ${selectedMatch?.homeTeam.shortName}`}
+          </label>
           <input
             type="number"
             name="homeScore"
@@ -170,7 +175,10 @@ export default function EditMatchForm({
         </div>
 
         <div>
-          <label className="block text-sm mb-1">Away Team Score</label>
+          <label className="block text-sm mb-1">
+            Away Team Score{" "}
+            {selectedMatch && ` ${selectedMatch?.awayTeam.shortName}`}
+          </label>
           <input
             type="number"
             name="awayScore"
