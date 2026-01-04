@@ -162,7 +162,7 @@ export default function EditMatchForm({
         <div>
           <label className="block text-sm mb-1">
             Home Team Score{" "}
-            {selectedMatch && ` ${selectedMatch?.homeTeam.shortName}`}
+            {selectedMatch && ` (${selectedMatch?.homeTeam.shortName})`}
           </label>
           <input
             type="number"
@@ -177,7 +177,7 @@ export default function EditMatchForm({
         <div>
           <label className="block text-sm mb-1">
             Away Team Score{" "}
-            {selectedMatch && ` ${selectedMatch?.awayTeam.shortName}`}
+            {selectedMatch && ` (${selectedMatch?.awayTeam.shortName})`}
           </label>
           <input
             type="number"
